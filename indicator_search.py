@@ -114,7 +114,7 @@ def reinstall_packages():
 
     elif platform == "darwin":
         subprocess.run(
-            ["sudo", "brew", "install", "libpq", "python3-dev", "python3-venv"],
+            ["brew", "install", "libpq", "virtualenv"],
             check=True,
         )
 
