@@ -1,0 +1,56 @@
+{{ render_partial("shared/_logo.html") }}
+
+<div style="margin-top: 10px; margin-bottom: 30px" class="ui container">
+
+  <div class="form-container" style="display: flex;justify-content: center;align-items: center;" >
+    <form class="ui form" action="/search" method="get">
+      <div class="fields">
+        <div class="field">
+          <input type="text" name="indicator_id" placeholder="ID">
+        </div>
+        <div class="field">
+          <input type="text" name="indicator_name" placeholder="Indicator">
+        </div>
+        <div class="field">
+          <input type="text" name="indicator_type" placeholder="Type">
+        </div>
+        <div class="field">
+          <input type="text" name="indicator_tags" placeholder="Tags">
+        </div>
+        <div class="field">
+          <input type="text" name="indicator_notes" placeholder="Notes">
+        </div>
+        <div class="field">
+          <input type="text" name="indicator_results" placeholder="Results">
+        </div>
+        <div class="field">
+          <input type="text" name="indicator_ioc_id" placeholder="IOC ID">
+        </div>
+      </div>
+      <center>
+        <div class="ui buttons">
+          <button class="ui blue button" type="submit">Filter <i class="fa-solid fa-filter"></i></button>
+          <div class="or"></div>
+          <button class="ui red button" onclick="location.href='/search';">Clear <i class="fa-solid fa-filter-circle-xmark"></i></button>
+        </div>
+      </center>
+    </form>
+  </div>
+  {% if _message %}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document
+        .querySelector(".message .close")
+        .addEventListener("click", () => {
+          document.querySelector(".message").style.display = "none";
+        });
+    });
+  </script>
+  <div class="ui {{_message_color}} message">
+    <i class="close icon"></i>
+    <div class="header">{{_message_header}}</div>
+    <p>{{ _message }}</p>
+  </div>
+  <br />
+  {% endif %}
+</div>

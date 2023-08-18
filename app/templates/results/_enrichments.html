@@ -1,0 +1,31 @@
+{% if indicator.enrichments %}
+  {% for key,value in indicator.enrichments.items() %}
+  {% if key == "Last Scan Screenshot" %}
+  <div class="ui segment">
+    <p class="ui small header">
+      <i class="fa-solid fa-camera"></i> URLScan.io Screenshot</p>
+    <img src="{{value}}" style="width: 100%" />
+  </div>
+
+  {% elif key == "Geo Data" %}
+  <div class="ui segment">
+    <p class="ui small header"><i class="fa-solid fa-map"></i> IPinfo.io Mapping</p>
+    <iframe
+      width="100%"
+      height="400"
+      frameborder="0"
+      scrolling="no"
+      marginheight="0"
+      marginwidth="0"
+      src="https://www.openstreetmap.org/export/embed.html?bbox={{value[0]}}%2C{{value[1]}}%2C4.272308349609376%2C40.14476441357181&amp;layer=mapnik&amp;marker={{value[0]}}%2C{{value[1]}}"
+      style="border: 0px"
+    ></iframe
+    ><br /><small
+      ><a
+        href="https://www.openstreetmap.org/?mlat={{value[0]}}&amp;mlon={{value[1]}}#map=12/{{value[0]}}/{{value[1]}}"
+        >View Larger Map</a
+      ></small
+    >
+  </div>
+  {% endif %} {% endfor %}
+{% endif %} 

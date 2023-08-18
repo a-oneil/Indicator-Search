@@ -1,0 +1,29 @@
+<div style="margin-top: 10px; margin-bottom: 30px;" class="ui container">
+    <form class="ui form" action="/user/login" method="post">
+        <div class="field">
+            <input type="text" required name="username" placeholder="Username"><br>
+        </div>
+        <div class="field">
+            <input type="text" required name="password" placeholder="Password"><br>
+        </div>
+        <button class="ui red button" type="submit">Login</button>
+    </form>
+
+    {% if _message %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.message .close').addEventListener('click', () => {
+                document.querySelector('.message').style.display = 'none';
+            });
+        });
+    </script>
+    <div class="ui {{_message_color}} message">
+        <i class="close icon"></i>
+        <div class="header">
+            {{_message_header}}
+        </div>
+        <p>{{ _message }}</p>
+    </div>
+    <br />
+    {% endif %}
+</div>

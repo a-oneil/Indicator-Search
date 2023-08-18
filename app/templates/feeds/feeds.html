@@ -1,0 +1,10 @@
+{% extends "base.html" %} {% block content %} {{
+render_partial("shared/_logo.html") }} {{
+render_partial("feeds/_add_feed_form.html", _message_header=_message_header, _message_color=_message_color, _message=_message) }}
+
+<div class="ui container">
+  {% set feedlist_message = "Feeds: " + feed_lists | selectattr("active", "equalto", true) | list | count | string + " out of " + feed_lists | length |  string + " enabled" %} 
+  {{render_partial("shared/_divider.html", text=feedlist_message, icon="fa-solid fa-list")}}
+</div>
+{{render_partial("feeds/_table.html", feed_lists=feed_lists) }} 
+{% endblock %}

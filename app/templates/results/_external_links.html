@@ -1,0 +1,21 @@
+{% if indicator.external_links %}
+  <div class="ui segment">
+    <p class="ui small header">
+      <i class="fa-solid fa-link"></i> External Links:</p>
+    <div class="ui four column grid">
+      {# Display a card with the results info #} {% for key,value in
+      indicator.external_links.items() %}
+        <div class="column">
+          <div class="ui raised fluid card">
+            <button
+              class="fluid ui blue button"
+              onclick="window.open('{{value}}', '_blank')"
+            >
+              {{key}}
+            </button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}

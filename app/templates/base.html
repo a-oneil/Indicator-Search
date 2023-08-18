@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Indicator Search</title>
+
+        <link rel="icon" type="image/x-icon" href="/static/images/icon.png">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+        <script src="https://kit.fontawesome.com/f4e48ec8cd.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/accordion.js"></script>
+        <link rel="stylesheet" href="/static/main.css">
+
+    </head>
+
+    <body>
+        {{ render_partial('shared/_navbar.html') }}        
+        <div class="container" style="margin-top: 30px; margin-bottom: 30px">{% block content %}{% endblock %}</div>
+    </body>
+    <footer>
+        <center>
+        <h2>
+            <a href="https://github.com/rc-austinoneil/indicator-search"class="fa-brands fa-github" style="color:white"></a>
+        </h2>
+        </center>
+        <br />
+        <br />
+    </footer>
+</html>

@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block content %} 
+{{render_partial("search/_search_bar.html", _message_header=_message_header, _message_color=_message_color, _message=_message)}}
+<div class="ui container">
+  {{render_partial("shared/_divider.html", text="All Searches", icon="fa-brands fa-searchengin", count_of_results=search_results|length)}}
+  </div>
+  {{render_partial("search/_table.html", search_results=search_results)}}
+{% endblock %}

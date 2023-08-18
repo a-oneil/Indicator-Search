@@ -1,0 +1,7 @@
+.python-version
+venv
+venv/**
+.mypy_cache/
+__pycache__
+db.sqlite
+config/.env

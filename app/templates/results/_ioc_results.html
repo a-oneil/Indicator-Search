@@ -1,0 +1,13 @@
+{% if ioc %}
+    <div class="ui segment">
+      <p class="ui small header">
+        <i class="fa-solid fa-triangle-exclamation" style="color: #db2828"></i>
+        Indicator is an IOC
+      </p>
+      <ul>
+        <li>IOC ID: <a href="/api/iocs/{{ioc.id}}">{{ioc.id}}</a></li>
+        <li>Time Created: {{ioc.time_created}}</li>
+        <li>Ageout Date: {{ioc.ageout}}</li>
+      </ul>
+    </div>
+{% endif %}

@@ -1,0 +1,61 @@
+<div
+  class="ui center aligned fluid container"
+  style="padding-top: 15px; padding-left: 15px; padding-right: 15px"
+>
+  <table class="ui small celled striped fixed table">
+    <thead>
+      <tr>
+        <th class="one wide">ID</th>
+        <th class="one wide">Created</th>
+        <th class="one wide">Type</th>
+        <th class="two wide" style="word-wrap: break-word">Feedlist</th>
+        <th class="two wide">Description</th>
+        <th class="one wide">Category</th>
+        <th class="one wide">Refreshed</th>
+        <th class="one wide">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for feedlist in feed_lists %}
+      <tr>
+        <td>{{ feedlist.id }}</td>
+        <td>{{ feedlist.time_created }}</td>
+        <td>{{ feedlist.list_type }}</td>
+        <td>
+          <a href="{{feedlist.url}}">{{ feedlist.name }}</a>
+        </td>
+        <td>{{ feedlist.description }}</td>
+        <td>{{ feedlist.category }}</td>
+        <td>{{ feedlist.list_period }}</td>
+        <td>
+          {% if feedlist.active == True %}
+          <center>
+            <a
+              class="ui compact green tiny button"
+              href="/feeds/update/{{ feedlist.id }}"
+              >Enabled</a
+            >
+          </center>
+          {% else %}
+          <center>
+            <a
+              class="ui compact red tiny button"
+              href="/feeds/update/{{ feedlist.id }}"
+              >Disabled</a
+            >
+          </center>
+          {% endif %}
+          <br />
+          <center>
+            <a
+              class="ui compact red tiny button"
+              href="/feeds/delete/{{ feedlist.id }}"
+              >Delete</a
+            >
+          </center>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,45 @@
+
+{% if indicator.tags %}
+  {% for key,value in indicator.tags.items() %} 
+    {% if key == "Malicious" %}
+      <a class="ui red label">
+          {{key}}
+        </a>
+
+    {% elif key == "IOC" %}
+      <a class="ui red label" href="/api/iocs/{{value}}">
+          {{key}}
+        </a>
+
+      {% elif key == "Suspicious" %}
+      <a class="ui yellow label">
+          {{key}}
+        </a>
+
+      {% elif key == "Feedlist Match" %}
+      <a class="ui yellow label">
+          {{key}}
+        </a>
+
+      {% elif key == "Tweetfeed Match" %}
+      <a class="ui yellow label">
+          {{key}}
+        </a>
+
+      {% elif key == "Known Binary" %}
+      <a class="ui green label">
+          {{key}}
+        </a>
+
+      {% elif key == "Error" %}
+      <a class="ui red label">
+          {{key}}
+        </a>
+
+      {% else %}
+      <a class="ui label">
+          {{key}}: {{value}}
+        </a>
+    {% endif %}
+  {% endfor %} 
+{% endif %}

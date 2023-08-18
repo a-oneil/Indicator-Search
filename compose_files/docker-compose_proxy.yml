@@ -1,0 +1,58 @@
+version: "3.8"
+networks:
+  traefik:
+    driver: bridge
+
+services:
+  traefik:
+    image: traefik:3.0
+    container_name: traefik
+    command:
+      - "--api.insecure=true" # Enable insecure API (only for demo purposes)
+      - "--providers.docker=true" # Enable Docker provider
+      - "--providers.docker.exposedbydefault=false" # Do not expose all services by default
+      - "--entrypoints.web.address=:80" # HTTP entrypoint on port 80
+      - "--entrypoints.websecure.address=:443" # HTTPS entrypoint on port 443
+      - "--providers.file.directory=/etc/traefik/dynamic" # Load dynamic configuration from file
+      - "80:80" # Expose HTTP entrypoint
+      - "443:443" # Expose HTTPS entrypoint
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro" # Mount Docker socket
+      - "./certs/certs-traefik.yaml:/etc/traefik/dynamic/certs-traefik.yaml"
+      - "./certs/key.key:/etc/certs/key.key"
+      - "./certs/cert.crt:/etc/certs/cert.crt"
+    networks:
+      - traefik
+
+  db:
+    container_name: postgres
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - traefik
+
+  app:
+    container_name: app
+    build: .
+    image: ubuntu:22.04
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true" # Enable Traefik for this service
+      - "traefik.http.routers.app.entrypoints=websecure" # Use websecure (HTTPS) entrypoint
+      - "traefik.http.routers.app.rule=Host(`10.20.0.67`)" # Host rule to match the domain/IP
+      - "traefik.http.services.app.loadbalancer.server.port=8000" # Port where the app is running
+    networks:
+      - traefik
+
+volumes:
+  db:
+    driver: local

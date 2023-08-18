@@ -1,0 +1,77 @@
+{% if related_indicators %}
+  <div class="ui two column centered grid">
+    <div class="column">
+      <div class="ui fluid card" style="height: 222px">
+        <div class="content">
+          <p class="ui small header"><i class="fa fa-clipboard"></i> Notes</p>
+          <form
+            class="ui form"
+            action="/indicator/notes/{{indicator.id}}"
+            method="post"
+          >
+            <div class="field">
+              <input
+                type="text"
+                name="notes"
+                placeholder="{{indicator.notes}}"
+                value="{{indicator.notes}}"
+              /><br />
+            </div>
+            <button class="ui blue button" type="submit">
+              Save <i class="fa-solid fa-floppy-disk"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {# Display the related indicators if any #}
+    <div class="column" style="padding-left: 0px">
+      <div class="ui fluid card" style="height: 222px">
+        <div class="content">
+          <p class="ui small header">
+            <i class="fa fa-clone"></i> Related Searches
+          </p>
+          <p class="ui small">Last 5 Matches:</p>
+          <ul>
+            {% for related_indicator in related_indicators %}
+            <li>
+              <div class="description">
+                <b>[ID-{{ related_indicator.id }}]: </b
+                ><a href="/indicator/results/{{related_indicator.id}}"
+                  >{{related_indicator.time_created|time_created_strftime}}</a
+                >
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+          <br />
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="ui segment">
+    <div class="content">
+      <p class="ui small header"><i class="fa fa-clipboard"></i> Notes</p>
+      <form
+        class="ui form"
+        action="/indicator/notes/{{indicator.id}}"
+        method="post"
+      >
+        <div class="field">
+          <input
+            type="text"
+            name="notes"
+            placeholder="{{indicator.notes}}"
+            value="{{indicator.notes}}"
+          /><br />
+        </div>
+        <button class="ui blue button" type="submit">
+          Save <i class="fa-solid fa-floppy-disk"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+  {% endif %} 
+  

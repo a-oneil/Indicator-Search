@@ -1,0 +1,44 @@
+<div class="ui center aligned fluid container" style="padding-top: 15px; padding-left: 15px; padding-right: 15px">
+  <table class="ui small celled striped fixed table">
+    <thead>
+      <tr>
+        <th class="one wide">ID</th>
+        <th class="two wide">Created</th>
+        <th class="one wide">Type</th>
+        <th class="six wide" style="word-wrap: break-word">Indicator</th>
+        <th class="left aligned">Notes</th>
+        <th class="left aligned">Tags</th>
+        <th class="one wide">JSON</th>
+        <th class="one wide">Actions</th
+      </tr>
+    </thead>
+    <tbody>
+      {% for indicator in search_results %}
+      <tr>
+        <td>
+          <a href="/indicator/results/{{ indicator.id }}">{{ indicator.id }}</a>
+        <td>{{ indicator.time_created }}</td>
+        <td>{{ indicator.indicator_type }}</td>
+        <td>
+          <a href="/indicator/results/{{ indicator.id }}">{{ indicator.indicator }}</a>
+        </td>
+        <td>{{ indicator.notes }}</td>
+        <td><div class="ui labels">
+          {{ render_partial("shared/_indicator_tags.html", indicator=indicator) }}
+        </div></td>
+        <td>
+          <a href="/api/indicator/results/{{ indicator.id }}">JSON</a>
+        </td>
+        <td>
+        <center>
+          <a
+            class="ui compact red tiny button"
+            href="/indicator/delete/{{ indicator.id }}"
+            >Delete</a>
+        </center>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

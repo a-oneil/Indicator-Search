@@ -1,0 +1,24 @@
+{% if count_of_successful_scans %}
+    <div class="ui large labels" style="float: right">
+    <div class="ui green label">
+        <i class="fa-solid fa-check"></i> Successful: {{count_of_successful_scans}}
+    </div>
+    <div class="ui red label">
+        <i class="fa-solid fa-x"></i> Failed: {{count_of_failed_scans}}
+    </div>
+    </div>
+{% endif %}
+
+{% if count_of_results %}
+    <div class="ui large labels" style="float: right">
+        <div class="ui green label">
+            <i class="fa-solid fa-check"></i> Results: {{count_of_results}}
+        </div>
+    </div>
+{% endif %}
+
+<h3 class="ui header">
+    <i class="{{icon}}"></i>
+    {{text}}
+</h3>
+<div class="ui clearing divider"></div>

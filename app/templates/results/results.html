@@ -1,0 +1,30 @@
+{% extends "base.html" %} {% block content %}
+<div class="ui container">
+  <script>
+    // If the indicator is not complete, refresh the page every 5 seconds
+    function checkFlag(complete, id) {
+      if (complete === "False") {
+        setTimeout(function () {
+          window.location.href = "/indicator/results/" + id;
+        }, 5000);
+      }
+    }
+    checkFlag("{{ indicator.complete }}", "{{ indicator.id }}");
+  </script>
+
+  {{render_partial("shared/_add_indicator_form.html", _message_header=_message_header, _message_color=_message_color, _message=_message)}} 
+  {{render_partial("shared/_divider.html", text="Search Results", icon="fa-fa-square-poll-horizontal")}} 
+  {{render_partial("results/_buttons.html", indicator=indicator)}}
+  {% if indicator.complete %} 
+    {{render_partial("results/_indicator_info.html", indicator=indicator)}} 
+    {{render_partial("results/_notes_related_indicators.html", indicator=indicator, related_indicators=related_indicators)}}
+    {{render_partial("results/_external_links.html", indicator=indicator)}} 
+    {{render_partial("results/_ioc_results.html", ioc=ioc)}}
+    {{render_partial("results/_enrichments.html", indicator=indicator)}} 
+    {{render_partial("results/_feedlist_results.html", indicator=indicator)}}
+    {{render_partial("results/_results.html", indicator=indicator)}} 
+  {% else %}
+    {{render_partial("results/_loading.html", indicator=indicator)}} 
+  {% endif %}
+</div>
+{% endblock %}

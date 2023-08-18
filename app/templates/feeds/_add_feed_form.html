@@ -1,0 +1,49 @@
+<div style="margin-top: 10px; margin-bottom: 30px;" class="ui container">
+    <form class="ui form" action="/feeds/add" method="post">
+        <div class="field">
+            <input type="text" required name="name" value="Feed list name"><br>
+        </div>
+        <div class="field">
+            <input type="text" required name="url" value="URL where the feed list is hosted"><br>
+        </div>
+        <div class="field">
+            <input type="text" name="description" value="Description of this list (Optional)"><br>
+        </div>
+        <div class="field">
+            <input type="text" required name="category" value="Category (Malware, Spam, C2)"><br>
+        </div>
+        <div class="field">
+            <div class="field">
+                <select class="ui search dropdown">
+                <option value="">List Type</option>
+                <option value="ipv4">ip</option>
+                <option value="hash">hash</option>
+                <option value="fqdn">fqdn</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field">
+            <input type="text" name="list_type" value="How often does this list refresh (Optional)"><br>
+        </div>
+        <button class="ui red button" type="submit">Add</button>
+    </form>
+
+    {% if _message %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.message .close').addEventListener('click', () => {
+                document.querySelector('.message').style.display = 'none';
+            });
+        });
+    </script>
+    <div class="ui {{_message_color}} message">
+        <i class="close icon"></i>
+        <div class="header">
+            {{_message_header}}
+        </div>
+        <p>{{ _message }}</p>
+    </div>
+    <br />
+    {% endif %}
+</div>

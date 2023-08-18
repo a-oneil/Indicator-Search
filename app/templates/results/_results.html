@@ -1,0 +1,59 @@
+{%for site in indicator.results %}
+
+    {% if "is not set in .env file" in site.results.Error %} 
+    
+    {% elif "No results found" in site.results.Error %}
+    <div class="ui segment">
+      <p class="ui small header"><i class="fa-solid fa-circle-xmark"></i> {{site.site}}: No results found</p>
+    </div>
+    
+    {% else %}
+    <div class="ui segment">
+      <p class="ui small header">
+        <i class="fa-solid fa-circle-check"></i> {{site.site}}
+      </p>
+      <div class="ui two column grid">
+        {% for key,value in site.results.items() %}
+        <div class="column" style="padding: 14px; word-wrap: break-word">
+          <div class="ui raised fluid card">
+            <div class="content">
+              {# Display the key as the header #}
+              <a class="header">{{key}}</a>
+              {# If the value is a list, display it as a bulleted list #} {% if
+              value is iterable and (value is not string and value is not
+              mapping) %}
+              <div class="ui bulleted list">
+                {% for item in value %} {% if item is mapping %} {% for k,v in
+                item.items() %}
+                <div class="item"><b>{{k|capitalize}}:</b> {{v}}</div>
+                {% endfor %}
+                <div class="ui clearing divider"></div>
+                {% else %}
+                <div class="item">{{item}}</div>
+                {% endif %} {% endfor %}
+              </div>
+
+              {% elif value is mapping %}
+              <div class="ui bulleted list">
+                {% for k,v in value.items() %}
+                <div class="item"><b>{{k|capitalize}}:</b> {{v}}</div>
+                {% endfor %}
+              </div>
+
+              {% else %} {# If the value is not a list, display it as a string
+              #} {% if value is string and "\n" in value %}
+              <div class="description" style="word-wrap: break-word">
+                {{value}}
+              </div>
+              {% else %}
+              <div class="description">{{value}}</div>
+              {% endif %} {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <br />
+    </div>
+    {% endif %}
+{% endfor %}
