@@ -71,6 +71,7 @@ docker run -p 8000:8000 -v /path/to/config/.env:/code/config/.env indicator-sear
 
 ## Screenshots:
 ![Search Results](images/results1.png)
+---
 ![Search Results](images/results2.png)
 
 
