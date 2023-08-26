@@ -16,4 +16,4 @@ ENV TZ=America/New_York
 
 RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && dpkg-reconfigure -f noninteractive tzdata && service ntp start && date && python3 -m venv ./venv && ./venv/bin/pip3 install --no-cache-dir -r ./config/requirements.txt
 
-CMD /bin/bash -c "venv/bin/uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+CMD /bin/bash -c "venv/bin/python3 ./indicator_search.py --run"
