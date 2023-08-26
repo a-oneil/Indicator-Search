@@ -1,0 +1,112 @@
+[
+    {
+      "name": "Referrer-spam-blacklist",
+      "category": "Suspicious",
+      "listURL": "https://raw.githubusercontent.com/matomo-org/referrer-spam-blacklist/master/spammers.txt"
+    },
+    {
+      "name": "KADhosts",
+      "category": "Suspicious",
+      "listURL": "https://raw.githubusercontent.com/PolishFiltersTeam/KADhosts/master/KADhosts.txt"
+    },
+    {
+      "name": "FadeMind-AddSpam",
+      "category": "Suspicious",
+      "listURL": "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Spam/hosts"
+    },
+    {
+      "name": "Firebog-W3KBL",
+      "category": "Suspicious",
+      "listURL": "https://v.firebog.net/hosts/static/w3kbl.txt"
+    },
+    {
+      "name": "Easyprivacy",
+      "category": "Tracking & Telemetry Lists",
+      "listURL": "https://v.firebog.net/hosts/Easyprivacy.txt"
+    },
+    {
+      "name": "Prigent-Ads",
+      "category": "Tracking & Telemetry Lists",
+      "listURL": "https://v.firebog.net/hosts/Prigent-Ads.txt"
+    },
+    {
+      "name": "FadeMind-2o7Net",
+      "category": "Tracking & Telemetry Lists",
+      "listURL": "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.2o7Net/hosts"
+    },
+    {
+      "name": "WindowsSpyBlocker-spy",
+      "category": "Tracking & Telemetry Lists",
+      "listURL": "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt"
+    },
+    {
+      "name": "Frogeye-firstparty-trackers",
+      "category": "Tracking & Telemetry Lists",
+      "listURL": "https://hostfiles.frogeye.fr/firstparty-trackers-hosts.txt"
+    },
+    {
+      "name": "DandelionSprout Anti-Malware List",
+      "category": "Malicious Lists",
+      "listURL": "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareHosts.txt"
+    },
+    {
+      "name": "DigitalSide Threat Intel",
+      "category": "Malicious Lists",
+      "listURL": "https://osint.digitalside.it/Threat-Intel/lists/latestdomains.txt"
+    },
+    {
+      "name": "Disconnect.me Simple Malvertising",
+      "category": "Malicious Lists",
+      "listURL": "https://s3.amazonaws.com/lists.disconnect.me/simple_malvertising.txt"
+    },
+    {
+      "name": "Prigent-Crypto",
+      "category": "Malicious Lists",
+      "listURL": "https://v.firebog.net/hosts/Prigent-Crypto.txt"
+    },
+    {
+      "name": "FadeMind Risk List",
+      "category": "Malicious Lists",
+      "listURL": "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Risk/hosts"
+    },
+    {
+      "name": "Mandiant APT1 Report",
+      "category": "Malicious Lists",
+      "listURL": "https://bitbucket.org/ethanr/dns-blacklists/raw/8575c9f96e5b4a1308f2f12394abd86d0927a4a0/bad_lists/Mandiant_APT1_Report_Appendix_D.txt"
+    },
+    {
+      "name": "Phishing Army Extended Blocklist",
+      "category": "Malicious Lists",
+      "listURL": "https://phishing.army/download/phishing_army_blocklist_extended.txt"
+    },
+    {
+      "name": "notrack-malware",
+      "category": "Malicious Lists",
+      "listURL": "https://gitlab.com/quidsup/notrack-blocklists/raw/master/notrack-malware.txt"
+    },
+    {
+      "name": "RPiList-Malware",
+      "category": "Malicious Lists",
+      "listURL": "https://v.firebog.net/hosts/RPiList-Malware.txt"
+    },
+    {
+      "name": "RPiList-Phishing",
+      "category": "Malicious Lists",
+      "listURL": "https://v.firebog.net/hosts/RPiList-Phishing.txt"
+    },
+    {
+      "name": "Spam404 Main Blacklist",
+      "category": "Malicious Lists",
+      "listURL": "https://raw.githubusercontent.com/Spam404/lists/master/main-blacklist.txt"
+    },
+    {
+      "name": "Stalkerware Indicators",
+      "category": "Malicious Lists",
+      "listURL": "https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts"
+    },
+    {
+      "name": "URLhaus Hostfile",
+      "category": "Malicious Lists",
+      "listURL": "https://urlhaus.abuse.ch/downloads/hostfile/"
+    }
+  ]
