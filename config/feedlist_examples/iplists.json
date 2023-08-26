@@ -1,0 +1,128 @@
+[
+    {
+        "name": "Blocklist.de",
+        "category": "abuse",
+        "desc": "All IP addresses that have attacked one of our customers/servers in the last 48 hours.",
+        "listURL": "https://lists.blocklist.de/lists/all.txt",
+        "period": "48 hours"
+    },
+    {
+        "name": "botvrij.eu",
+        "desc": "Indicators of Compromise (IOCS) about malicious destination IPs, gathered via open source information feeds",
+        "category": "attacks",
+        "listURL": "http://www.botvrij.eu/data/ioclist.ip-dst.raw",
+        "period": "6 months"
+    },
+    {
+        "name": "myip.ms",
+        "desc": "IPs identified as web bots in the last 15 minutes, using several sites that require human action",
+        "category": "abuse",
+        "listURL": "http://www.myip.ms/files/blacklist/csf/latest_blacklist.txt",
+        "period": "10 days"
+    },
+    {
+        "name": "NiX Spam",
+        "desc": "IP addresses that have sent spam in the last twelve hours.",
+        "category": "spam",
+        "listURL": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/nixspam.ipset",
+        "period": "12 hours"
+    },
+    {
+        "name": "Tor Exit Nodes",
+        "desc": "Tor Exit Nodes in the last 30 days",
+        "category": "anonymizers",
+        "listURL": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/tor_exits_30d.ipset",
+        "period": "30 days"
+    },
+    {
+        "name": "Malc0de",
+        "desc": "Malcode malicious IPs of the last 30 days",
+        "category": "malware",
+        "listURL": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/malc0de.ipset",
+        "period": "30 days"
+    },
+    {
+        "name": "Malware Domain List",
+        "desc": "List of malware active ip addresses in the last twelve hours.",
+        "category": "malware",
+        "listURL": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/malwaredomainlist.ipset",
+        "period": "12 hours"
+    },
+    {
+        "name": "Threat Crowd",
+        "desc": "Crowd-sourcing list of malicious IPs in the last hour.",
+        "category": "abuse",
+        "listURL": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/threatcrowd.ipset",
+        "period": "1 hour"
+    },
+    {
+        "name": "Alien Vault",
+        "desc": "Alien Vault list of malicious IPs in the last six hours.",
+        "category": "abuse",
+        "listURL": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/alienvault_reputation.ipset",
+        "period": "6 hours"
+    },
+    {
+        "name": "Binary Defense",
+        "desc": "Binary Defense Systems Artillery Threat Intelligence Feed and Banlist Feed",
+        "category": "abuse",
+        "listURL": "https://www.binarydefense.com/banlist.txt",
+        "period": "6 hours"
+    },
+    {
+        "name": "Montysecurity Brute Ratel C2",
+        "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
+        "category": "C2",
+        "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Brute%20Ratel%20C4%20IPs.txt",
+        "period": "Nightly"
+    },
+    {
+        "name": "Montysecurity Cobalt Strike",
+        "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
+        "category": "C2",
+        "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Cobalt%20Strike%20C2%20IPs.txt",
+        "period": "Nightly"
+    },
+    {
+        "name": "Montysecurity Sliver C2",
+        "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
+        "category": "C2",
+        "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Sliver%20C2%20IPs.txt",
+        "period": "Nightly"
+    },
+    {
+        "name": "Montysecurity Posh C2",
+        "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
+        "category": "C2",
+        "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Posh%20C2%20IPs.txt",
+        "period": "Nightly"
+    },
+    {
+        "name": "Montysecurity Metasploit",
+        "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
+        "category": "C2",
+        "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Metasploit%20Framework%20C2%20IPs.txt",
+        "period": "Nightly"
+    },
+    {
+        "name": "Montysecurity Havoc C2",
+        "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
+        "category": "C2",
+        "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Havoc%20C2%20IPs.txt",
+        "period": "Nightly"
+    },
+    {
+        "name": "Montysecurity GoPhish C2",
+        "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
+        "category": "C2",
+        "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/GoPhish%20IPs.txt",
+        "period": "Nightly"
+    },
+    {
+        "name": "Montysecurity Mythic C2",
+        "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
+        "category": "C2",
+        "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Mythic%20C2%20IPs.txt",
+        "period": "Nightly"
+    }
+]

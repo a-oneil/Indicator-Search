@@ -129,15 +129,30 @@ def ioc_ageout_automation():
 
 
 def reinstall_packages():
-    from sys import platform
+    import platform
 
-    if platform == "linux" or platform == "linux2":
-        subprocess.run(
-            ["sudo", "apt", "install", "libpq-dev", "python3-dev", "python3-venv"],
-            check=True,
-        )
+    print(
+        f"{color.YELLOW}Installing required OS packages (see Readme), requesting password. {color.ENDCOLOR}"
+    )
+    system = platform.system()
+    if system.lower() == "linux":
+        distro = platform.uname().release.lower()
+        if "debian" in distro or "ubuntu" in distro:
+            subprocess.run(
+                ["sudo", "apt", "install", "libpq-dev", "python3-dev", "python3-venv"],
+                check=True,
+            )
 
-    elif platform == "darwin":
+        elif "manjaro" in distro or "arch" in distro:
+            subprocess.run(
+                ["sudo", "pacman", "-S", "postgresql-libs", "python3"],
+                check=True,
+            )
+        else:
+            print(f"{color.RED}Unsupported Linux Distro{color.ENDCOLOR}")
+            exit(1)
+
+    elif system.lower() == "darwin":
         subprocess.run(
             ["brew", "install", "libpq", "virtualenv"],
             check=True,
@@ -226,6 +241,8 @@ def build_docker_image():
 
 
 def seed_feedlists():
+    import json
+
     def seed(json_input, list_type):
         from app.database import SessionManager
         from app.models import FeedLists
@@ -262,286 +279,39 @@ def seed_feedlists():
                 f"{color.BLUE}{list_type.capitalize()} DB Seeding complete{color.ENDCOLOR}"
             )
 
-    domainslists = [
-        {
-            "name": "Referrer-spam-blacklist",
-            "category": "Suspicious",
-            "listURL": "https://raw.githubusercontent.com/matomo-org/referrer-spam-blacklist/master/spammers.txt",
-        },
-        {
-            "name": "KADhosts",
-            "category": "Suspicious",
-            "listURL": "https://raw.githubusercontent.com/PolishFiltersTeam/KADhosts/master/KADhosts.txt",
-        },
-        {
-            "name": "FadeMind-AddSpam",
-            "category": "Suspicious",
-            "listURL": "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Spam/hosts",
-        },
-        {
-            "name": "Firebog-W3KBL",
-            "category": "Suspicious",
-            "listURL": "https://v.firebog.net/hosts/static/w3kbl.txt",
-        },
-        {
-            "name": "Easyprivacy",
-            "category": "Tracking & Telemetry Lists",
-            "listURL": "https://v.firebog.net/hosts/Easyprivacy.txt",
-        },
-        {
-            "name": "Prigent-Ads",
-            "category": "Tracking & Telemetry Lists",
-            "listURL": "https://v.firebog.net/hosts/Prigent-Ads.txt",
-        },
-        {
-            "name": "FadeMind-2o7Net",
-            "category": "Tracking & Telemetry Lists",
-            "listURL": "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.2o7Net/hosts",
-        },
-        {
-            "name": "WindowsSpyBlocker-spy",
-            "category": "Tracking & Telemetry Lists",
-            "listURL": "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt",
-        },
-        {
-            "name": "Frogeye-firstparty-trackers",
-            "category": "Tracking & Telemetry Lists",
-            "listURL": "https://hostfiles.frogeye.fr/firstparty-trackers-hosts.txt",
-        },
-        {
-            "name": "DandelionSprout Anti-Malware List",
-            "category": "Malicious Lists",
-            "listURL": "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareHosts.txt",
-        },
-        {
-            "name": "DigitalSide Threat Intel",
-            "category": "Malicious Lists",
-            "listURL": "https://osint.digitalside.it/Threat-Intel/lists/latestdomains.txt",
-        },
-        {
-            "name": "Disconnect.me Simple Malvertising",
-            "category": "Malicious Lists",
-            "listURL": "https://s3.amazonaws.com/lists.disconnect.me/simple_malvertising.txt",
-        },
-        {
-            "name": "Prigent-Crypto",
-            "category": "Malicious Lists",
-            "listURL": "https://v.firebog.net/hosts/Prigent-Crypto.txt",
-        },
-        {
-            "name": "FadeMind Risk List",
-            "category": "Malicious Lists",
-            "listURL": "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Risk/hosts",
-        },
-        {
-            "name": "Mandiant APT1 Report",
-            "category": "Malicious Lists",
-            "listURL": "https://bitbucket.org/ethanr/dns-blacklists/raw/8575c9f96e5b4a1308f2f12394abd86d0927a4a0/bad_lists/Mandiant_APT1_Report_Appendix_D.txt",
-        },
-        {
-            "name": "Phishing Army Extended Blocklist",
-            "category": "Malicious Lists",
-            "listURL": "https://phishing.army/download/phishing_army_blocklist_extended.txt",
-        },
-        {
-            "name": "notrack-malware",
-            "category": "Malicious Lists",
-            "listURL": "https://gitlab.com/quidsup/notrack-blocklists/raw/master/notrack-malware.txt",
-        },
-        {
-            "name": "RPiList-Malware",
-            "category": "Malicious Lists",
-            "listURL": "https://v.firebog.net/hosts/RPiList-Malware.txt",
-        },
-        {
-            "name": "RPiList-Phishing",
-            "category": "Malicious Lists",
-            "listURL": "https://v.firebog.net/hosts/RPiList-Phishing.txt",
-        },
-        {
-            "name": "Spam404 Main Blacklist",
-            "category": "Malicious Lists",
-            "listURL": "https://raw.githubusercontent.com/Spam404/lists/master/main-blacklist.txt",
-        },
-        {
-            "name": "Stalkerware Indicators",
-            "category": "Malicious Lists",
-            "listURL": "https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts",
-        },
-        {
-            "name": "URLhaus Hostfile",
-            "category": "Malicious Lists",
-            "listURL": "https://urlhaus.abuse.ch/downloads/hostfile/",
-        },
-    ]
+    try:
+        iplist_path = "./config/feedlist_examples/iplists.json"
+        hashlist_path = "./config/feedlist_examples/hashlists.json"
+        domainslist_path = "./config/feedlist_examples/domainlists.json"
 
-    iplists = [
-        {
-            "name": "Blocklist.de",
-            "category": "abuse",
-            "desc": "All IP addresses that have attacked one of our customers/servers in the last 48 hours.",
-            "listURL": "https://lists.blocklist.de/lists/all.txt",
-            "period": "48 hours",
-        },
-        {
-            "name": "botvrij.eu",
-            "desc": "Indicators of Compromise (IOCS) about malicious destination IPs, gathered via open source information feeds",
-            "category": "attacks",
-            "listURL": "http://www.botvrij.eu/data/ioclist.ip-dst.raw",
-            "period": "6 months",
-        },
-        {
-            "name": "myip.ms",
-            "desc": "IPs identified as web bots in the last 15 minutes, using several sites that require human action",
-            "category": "abuse",
-            "listURL": "http://www.myip.ms/files/blacklist/csf/latest_blacklist.txt",
-            "period": "10 days",
-        },
-        {
-            "name": "NiX Spam",
-            "desc": "IP addresses that have sent spam in the last twelve hours.",
-            "category": "spam",
-            "listURL": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/nixspam.ipset",
-            "period": "12 hours",
-        },
-        {
-            "name": "Tor Exit Nodes",
-            "desc": "Tor Exit Nodes in the last 30 days",
-            "category": "anonymizers",
-            "listURL": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/tor_exits_30d.ipset",
-            "period": "30 days",
-        },
-        {
-            "name": "Malc0de",
-            "desc": "Malcode malicious IPs of the last 30 days",
-            "category": "malware",
-            "listURL": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/malc0de.ipset",
-            "period": "30 days",
-        },
-        {
-            "name": "Malware Domain List",
-            "desc": "List of malware active ip addresses in the last twelve hours.",
-            "category": "malware",
-            "listURL": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/malwaredomainlist.ipset",
-            "period": "12 hours",
-        },
-        {
-            "name": "Threat Crowd",
-            "desc": "Crowd-sourcing list of malicious IPs in the last hour.",
-            "category": "abuse",
-            "listURL": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/threatcrowd.ipset",
-            "period": "1 hour",
-        },
-        {
-            "name": "Alien Vault",
-            "desc": "Alien Vault list of malicious IPs in the last six hours.",
-            "category": "abuse",
-            "listURL": "https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/alienvault_reputation.ipset",
-            "period": "6 hours",
-        },
-        {
-            "name": "Binary Defense",
-            "desc": "Binary Defense Systems Artillery Threat Intelligence Feed and Banlist Feed",
-            "category": "abuse",
-            "listURL": "https://www.binarydefense.com/banlist.txt",
-            "period": "6 hours",
-        },
-        {
-            "name": "Montysecurity Brute Ratel C2",
-            "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
-            "category": "C2",
-            "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Brute%20Ratel%20C4%20IPs.txt",
-            "period": "Nightly",
-        },
-        {
-            "name": "Montysecurity Cobalt Strike",
-            "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
-            "category": "C2",
-            "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Cobalt%20Strike%20C2%20IPs.txt",
-            "period": "Nightly",
-        },
-        {
-            "name": "Montysecurity Sliver C2",
-            "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
-            "category": "C2",
-            "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Sliver%20C2%20IPs.txt",
-            "period": "Nightly",
-        },
-        {
-            "name": "Montysecurity Posh C2",
-            "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
-            "category": "C2",
-            "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Posh%20C2%20IPs.txt",
-            "period": "Nightly",
-        },
-        {
-            "name": "Montysecurity Metasploit",
-            "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
-            "category": "C2",
-            "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Metasploit%20Framework%20C2%20IPs.txt",
-            "period": "Nightly",
-        },
-        {
-            "name": "Montysecurity Havoc C2",
-            "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
-            "category": "C2",
-            "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Havoc%20C2%20IPs.txt",
-            "period": "Nightly",
-        },
-        {
-            "name": "Montysecurity GoPhish C2",
-            "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
-            "category": "C2",
-            "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/GoPhish%20IPs.txt",
-            "period": "Nightly",
-        },
-        {
-            "name": "Montysecurity Mythic C2",
-            "desc": "Montysecurity C2-Tracker IP Threat Intelligence Feed",
-            "category": "C2",
-            "listURL": "https://raw.githubusercontent.com/montysecurity/C2-Tracker/main/data/Mythic%20C2%20IPs.txt",
-            "period": "Nightly",
-        },
-    ]
+        with open(iplist_path, "r") as json_file:
+            iplists = json.load(json_file)
+        json_file.close()
 
-    hashlists = [
-        {
-            "name": "Bazaar Abuse.ch MD5",
-            "category": "MD5 Recent additions",
-            "listURL": "https://bazaar.abuse.ch/export/txt/md5/recent/",
-        },
-        {
-            "name": "Threatfox Abuse.ch MD5",
-            "category": "MD5 Recently found malicious files on C2",
-            "listURL": "https://threatfox.abuse.ch/export/txt/md5/recent/",
-        },
-        {
-            "name": "Bazaar Abuse.ch SHA1",
-            "category": "SHA1 Recent additions",
-            "listURL": "https://bazaar.abuse.ch/export/txt/sha1/recent/",
-        },
-        {
-            "name": "Bazaar Abuse.ch SHA256",
-            "category": "SHA256 Recent additions",
-            "listURL": "https://bazaar.abuse.ch/export/txt/sha256/recent/",
-        },
-        {
-            "name": "Threatfox Abuse.ch SHA256",
-            "category": "SHA256 Recently found malicious files on C2",
-            "listURL": "https://threatfox.abuse.ch/export/txt/sha256/recent/",
-        },
-    ]
+        with open(hashlist_path, "r") as json_file:
+            hashlists = json.load(json_file)
+        json_file.close()
 
-    if os.path.exists("./db.sqlite"):
-        # fmt: off
-        seed(iplists, list_type="ip")
-        seed(hashlists, list_type="hash")
-        seed(domainslists, list_type="fqdn")
-        # fmt: on
-    else:
+        with open(domainslist_path, "r") as json_file:
+            domainslists = json.load(json_file)
+        json_file.close()
+
+        if os.path.exists("./db.sqlite"):
+            # fmt: off
+            seed(iplists, list_type="ip")
+            seed(hashlists, list_type="hash")
+            seed(domainslists, list_type="fqdn")
+            # fmt: on
+        else:
+            raise Exception(
+                "Local database does not exist, please start the dev instance first then retry"
+            )
+    except ModuleNotFoundError:
         print(
-            "Local database does not exit, please start the dev instance first then retry"
+            f"{color.RED}Please run 'source ./venv/bin/activate' then try again.{color.ENDCOLOR}"
         )
+    except Exception as e:
+        print(f"{color.RED}Error: {str(e)}{color.ENDCOLOR}")
 
 
 def seed_indicators():
