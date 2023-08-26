@@ -243,9 +243,13 @@ def build_docker_image():
 def seed_feedlists():
     import json
 
-    def seed(json_input, list_type):
+    def seed(json_file_path, list_type):
         from app.database import SessionManager
         from app.models import FeedLists
+
+        with open(json_file_path, "r") as json_file:
+            json_input = json.load(json_file)
+        json_file.close()
 
         with SessionManager() as db:
             for entry in json_input:
@@ -280,27 +284,11 @@ def seed_feedlists():
             )
 
     try:
-        iplist_path = "./config/feedlist_examples/iplists.json"
-        hashlist_path = "./config/feedlist_examples/hashlists.json"
-        domainslist_path = "./config/feedlist_examples/domainlists.json"
-
-        with open(iplist_path, "r") as json_file:
-            iplists = json.load(json_file)
-        json_file.close()
-
-        with open(hashlist_path, "r") as json_file:
-            hashlists = json.load(json_file)
-        json_file.close()
-
-        with open(domainslist_path, "r") as json_file:
-            domainslists = json.load(json_file)
-        json_file.close()
-
         if os.path.exists("./db.sqlite"):
             # fmt: off
-            seed(iplists, list_type="ip")
-            seed(hashlists, list_type="hash")
-            seed(domainslists, list_type="fqdn")
+            seed("./config/feedlist_examples/iplists.json", list_type="ip")
+            seed("./config/feedlist_examples/hashlists.json", list_type="hash")
+            seed("./config/feedlist_examples/domainlists.json", list_type="fqdn")
             # fmt: on
         else:
             raise Exception(
