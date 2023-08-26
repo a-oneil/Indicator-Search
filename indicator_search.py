@@ -1,5 +1,8 @@
 import subprocess
 import os
+import time
+from threading import Thread
+import argparse
 
 
 class terminalColors:
@@ -103,6 +106,28 @@ def menu_switch(choice):
         menu()
 
 
+def ioc_ageout_automation():
+    import requests
+
+    first_run = True
+    while True:
+        if not first_run:
+            print("running")
+            response = requests.post(
+                f"{config['SERVER_ADDRESS']}/api/iocs/ageout",
+                headers={
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
+            )
+            for value in response.json().values():
+                print(f"{color.YELLOW}IOC Automation: {color.ENDCOLOR}{value}")
+            time.sleep(21600)
+        else:
+            first_run = False
+            time.sleep(21600)
+
+
 def reinstall_packages():
     from sys import platform
 
@@ -155,6 +180,8 @@ def reconfig():
 
 
 def run_local():
+    t = Thread(target=ioc_ageout_automation)
+    t.start()
     subprocess.run(
         [
             "./venv/bin/uvicorn",
@@ -168,6 +195,8 @@ def run_local():
 
 
 def run_local_global():
+    t = Thread(target=ioc_ageout_automation)
+    t.start()
     subprocess.run(
         [
             "./venv/bin/uvicorn",
@@ -552,20 +581,29 @@ def delete_sqlite():
 
 
 if __name__ == "__main__":
-    print("")
-    color = terminalColors()
-    if not os.path.exists("./venv"):
-        reinstall_packages()
-        reconfig()
-        print("")
-        print(
-            f"{color.YELLOW}Setup complete, please configure your env file located at ./config/.env{color.ENDCOLOR}"
-        )
-        print("")
+    parser = argparse.ArgumentParser(
+        description="Indicator Search",
+    )
+    parser.add_argument(
+        "-r",
+        "--run",
+        action="store_true",
+        help="You know what you're doing, start the server",
+    )
+
+    if parser.parse_args().run:
+        color = terminalColors()
+        config = load_config()
+        run_local_global()
+
     else:
-        try:
+        color = terminalColors()
+        if not os.path.exists("./venv"):
+            reinstall_packages()
+            reconfig()
+            print(
+                f"{color.YELLOW}Setup complete, please configure your env file located at ./config/.env{color.ENDCOLOR}"
+            )
+        else:
             config = load_config()
             menu()
-        except KeyboardInterrupt:
-            print(f"{color.YELLOW}Exiting...{color.ENDCOLOR}")
-            print("")
