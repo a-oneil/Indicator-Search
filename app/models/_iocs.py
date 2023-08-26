@@ -158,3 +158,19 @@ class Iocs(Base):
             flag_modified(input_indicator, "tags")
             db.add(input_indicator)
         return input_indicator
+
+    @classmethod
+    def ageout_iocs(cls, db: Session):
+        iocs = (
+            db.query(cls)
+            .filter(cls.ageout < datetime.date.today().strftime("%Y-%m-%dT%H:%M:%S"))
+            .order_by(cls.time_created.desc())
+            .all()
+        )
+
+        if iocs:
+            for ioc in iocs:
+                cls.remove_ioc(ioc.id, db)
+            return {"Success": f"{len(iocs)} IOCs aged out"}
+        else:
+            raise Exception("No IOCs to age out")

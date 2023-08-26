@@ -47,3 +47,13 @@ def search(
         )
     except Exception:
         return {"Error": "No results found"}
+
+
+# fmt: off
+@router.post("/iocs/ageout", name="Ageout IOCs", tags=["IOCs"], include_in_schema=False)
+# fmt: on
+def ageout(request: Request, db: Session = Depends(get_db)):
+    try:
+        return Iocs.ageout_iocs(db)
+    except Exception as e:
+        return {"Error": str(e)}
