@@ -1,11 +1,11 @@
 import subprocess
 import os
 import time
-from threading import Thread
 import argparse
 import json
 import platform
 import shutil
+from threading import Thread
 
 
 class terminalColors:
@@ -119,7 +119,9 @@ def ioc_ageout_automation():
                 print(f"{color.YELLOW}IOC Automation: {color.ENDCOLOR}{value}")
             time.sleep(3600)
         else:
-            print(f"{color.YELLOW}IOC Automation: {color.ENDCOLOR}{value}")
+            print(
+                f"{color.YELLOW}IOC Automation: {color.ENDCOLOR} Automation started, waiting 1 hour before first run"
+            )
             first_run = False
             time.sleep(3600)
 
