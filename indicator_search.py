@@ -266,9 +266,8 @@ def seed_feedlists():
                         print(f"{color.RED}{value}{color.ENDCOLOR}")
                 else:
                     print(
-                        f"{color.RED}Successfully seeded {response.json().get('list_type')} feedlist: {color.ENDCOLOR}{response.json().get('name')}"
+                        f"{color.BLUE}Successfully seeded {response.json().get('list_type')} feedlist: {color.ENDCOLOR}{response.json().get('name')}"
                     )
-                print("")
 
     api_key = str(input(f"{color.YELLOW}Enter API Key: {color.ENDCOLOR}")).strip()
     seed("./config/feedlist_examples/iplists.json", api_key, list_type="ip")
