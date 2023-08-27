@@ -3,6 +3,9 @@ import os
 import time
 from threading import Thread
 import argparse
+import json
+import platform
+import shutil
 
 
 class terminalColors:
@@ -14,8 +17,6 @@ class terminalColors:
 
 def load_config():
     try:
-        import json
-
         f = open("./config/.env", "r")
         config = json.load(f)
         f.close()
@@ -29,8 +30,6 @@ def load_config():
 
 
 def toggle_env_value(new_env=None):
-    import json
-
     try:
         with open("./config/.env", "r") as f:
             config = json.load(f)
@@ -48,11 +47,7 @@ def toggle_env_value(new_env=None):
 
 
 def check_env_status():
-    import json
-
     try:
-        with open("./config/.env", "r") as f:
-            config = json.load(f)
         current_env = config.get("ENV", "DEV")
         print(f"{color.BLUE}Current ENV status:{color.ENDCOLOR} {current_env}")
     except Exception as e:
@@ -70,8 +65,8 @@ def menu():
     print(f"{color.BLUE}3.{color.ENDCOLOR} Run local instance (127.0.0.1:8000)")
     print(f"{color.BLUE}4.{color.ENDCOLOR} Run local instance (0.0.0.0:8000)")
     print(f"{color.BLUE}5.{color.ENDCOLOR} Build docker image")
-    print(f"{color.BLUE}6.{color.ENDCOLOR} Seed feedlists database")
-    print(f"{color.BLUE}7.{color.ENDCOLOR} Seed indicators")
+    print(f"{color.BLUE}6.{color.ENDCOLOR} Seed feedlists database (API)")
+    print(f"{color.BLUE}7.{color.ENDCOLOR} Seed indicators (API)")
     print(f"{color.BLUE}8.{color.ENDCOLOR} Delete local sqlite database")
     print(f"{color.BLUE}9.{color.ENDCOLOR} Exit")
     menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
@@ -122,15 +117,14 @@ def ioc_ageout_automation():
             )
             for value in response.json().values():
                 print(f"{color.YELLOW}IOC Automation: {color.ENDCOLOR}{value}")
-            time.sleep(21600)
+            time.sleep(3600)
         else:
+            print(f"{color.YELLOW}IOC Automation: {color.ENDCOLOR}{value}")
             first_run = False
-            time.sleep(21600)
+            time.sleep(3600)
 
 
 def reinstall_packages():
-    import platform
-
     print(
         f"{color.YELLOW}Installing required OS packages (see Readme), requesting password. {color.ENDCOLOR}"
     )
@@ -164,8 +158,6 @@ def reinstall_packages():
 
 
 def reconfig():
-    import shutil
-
     if not os.path.exists("./config/.env"):
         shutil.copyfile("./config/.env.example", "./config/.env")
         print(
@@ -241,65 +233,47 @@ def build_docker_image():
 
 
 def seed_feedlists():
-    import json
+    import requests
 
-    def seed(json_file_path, list_type):
-        from app.database import SessionManager
-        from app.models import FeedLists
-
+    def seed(json_file_path, api_key, list_type):
         with open(json_file_path, "r") as json_file:
             json_input = json.load(json_file)
         json_file.close()
 
-        with SessionManager() as db:
-            for entry in json_input:
-                url_already_in_feedlists = FeedLists.get_feedlist_by_url(
-                    entry.get("listURL"), db
-                )
+        for feedlist in json_input:
+            response = requests.post(
+                f"{config['SERVER_ADDRESS']}/api/feeds",
+                headers={
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
+                json={
+                    "api_key": api_key,
+                    "name": feedlist.get("name"),
+                    "url": feedlist.get("listURL"),
+                    "description": feedlist.get("description"),
+                    "category": feedlist.get("category"),
+                    "list_type": list_type,
+                    "list_period": feedlist.get("list_period"),
+                },
+            )
 
-                if not url_already_in_feedlists:
-                    new_feedlist = FeedLists(
-                        name=entry.get("name"),
-                        category=entry.get("category"),
-                        description=entry.get("desc"),
-                        url=entry.get("listURL"),
-                        list_period=entry.get("period"),
-                        list_type=list_type,
-                    )
-
-                    db.add(new_feedlist)
-                    db.commit()
-                    print(
-                        f"{color.BLUE}Adding:{color.ENDCOLOR} {entry.get('name')} from {list_type.capitalize()} list."
-                    )
+            if response.status_code != 200:
+                print(color.RED + response.text + color.ENDCOLOR)
+            else:
+                if response.json().get("Error"):
+                    for value in response.json().values():
+                        print(f"{color.RED}{value}{color.ENDCOLOR}")
                 else:
                     print(
-                        f"{color.BLUE}Skipping:{color.ENDCOLOR} {entry.get('name')} from {list_type.capitalize()} list. Entry already exists in database."
+                        f"{color.RED}Successfully seeded {response.json().get('list_type')} feedlist: {color.ENDCOLOR}{response.json().get('name')}"
                     )
-                    continue
+                print("")
 
-            db.close()
-            print(
-                f"{color.BLUE}{list_type.capitalize()} DB Seeding complete{color.ENDCOLOR}"
-            )
-
-    try:
-        if os.path.exists("./db.sqlite"):
-            # fmt: off
-            seed("./config/feedlist_examples/iplists.json", list_type="ip")
-            seed("./config/feedlist_examples/hashlists.json", list_type="hash")
-            seed("./config/feedlist_examples/domainlists.json", list_type="fqdn")
-            # fmt: on
-        else:
-            raise Exception(
-                "Local database does not exist, please start the dev instance first then retry"
-            )
-    except ModuleNotFoundError:
-        print(
-            f"{color.RED}Please run 'source ./venv/bin/activate' then try again.{color.ENDCOLOR}"
-        )
-    except Exception as e:
-        print(f"{color.RED}Error: {str(e)}{color.ENDCOLOR}")
+    api_key = str(input(f"{color.YELLOW}Enter API Key: {color.ENDCOLOR}")).strip()
+    seed("./config/feedlist_examples/iplists.json", api_key, list_type="ip")
+    seed("./config/feedlist_examples/hashlists.json", api_key, list_type="hash")
+    seed("./config/feedlist_examples/domainlists.json", api_key, list_type="fqdn")
 
 
 def seed_indicators():
