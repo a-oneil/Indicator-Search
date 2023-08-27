@@ -35,6 +35,10 @@ def create(
 ):
     try:
         auth_api_key(request, db)
+        url_already_in_feedlists = FeedLists.get_feedlist_by_url(request.url, db)
+        if url_already_in_feedlists:
+            raise Exception(f"{request.url} already exists in database.")
+
         new_feedlist = FeedLists(
             name=request.name,
             category=request.category,

@@ -28,6 +28,10 @@ def create(
     list_period: Optional[str] = Form(None),
     db: Session = Depends(get_db),
 ):
+    url_already_in_feedlists = FeedLists.get_feedlist_by_url(url, db)
+    if url_already_in_feedlists:
+        raise Exception(f"{url} already exists in database.")
+
     new_feedlist = FeedLists(
         name=name,
         category=category,
