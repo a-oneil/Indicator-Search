@@ -111,7 +111,6 @@ def ioc_ageout_automation():
     first_run = True
     while True:
         if not first_run:
-            print("running")
             response = requests.post(
                 f"{config['SERVER_ADDRESS']}/api/iocs/ageout",
                 headers={
