@@ -67,8 +67,9 @@ def menu():
     print(f"{color.BLUE}5.{color.ENDCOLOR} Build docker image")
     print(f"{color.BLUE}6.{color.ENDCOLOR} Seed feedlists database (API)")
     print(f"{color.BLUE}7.{color.ENDCOLOR} Seed indicators (API)")
-    print(f"{color.BLUE}8.{color.ENDCOLOR} Delete local sqlite database")
-    print(f"{color.BLUE}9.{color.ENDCOLOR} Exit")
+    print(f"{color.BLUE}8.{color.ENDCOLOR} Create user")
+    print(f"{color.BLUE}9.{color.ENDCOLOR} Delete local sqlite database")
+    print(f"{color.BLUE}10.{color.ENDCOLOR} Exit")
     menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
 
 
@@ -94,8 +95,11 @@ def menu_switch(choice):
         seed_indicators()
         menu()
     elif choice == "8":
-        delete_sqlite()
+        create_user()
+        menu()
     elif choice == "9":
+        delete_sqlite()
+    elif choice == "10":
         exit(0)
     else:
         menu()
@@ -303,6 +307,29 @@ def seed_indicators():
             print(
                 f"{color.BLUE}Successfully seeded {response.json().get('indicator_type')} indicator: {color.ENDCOLOR}{response.json().get('indicator')}"
             )
+
+
+def create_user():
+    import requests
+
+    user = str(input(f"{color.YELLOW}Enter username: {color.ENDCOLOR}")).strip()
+    password = str(input(f"{color.YELLOW}Enter password: {color.ENDCOLOR}")).strip()
+
+    response = requests.post(
+        f"{config['SERVER_ADDRESS']}/api/users",
+        headers={"Content-Type": "application/json", "Accept": "application/json"},
+        json={
+            "username": user,
+            "password": password,
+            "invite_key": config["USER_INVITE_KEY"],
+        },
+    )
+    if response.status_code != 200:
+        print(color.RED + response.text + color.ENDCOLOR)
+    else:
+        print(
+            f"{color.BLUE}Successfully created user: {color.ENDCOLOR}{response.json().get('username')} : {response.json().get('api_key')}"
+        )
 
 
 def delete_sqlite():
