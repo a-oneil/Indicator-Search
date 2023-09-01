@@ -3,7 +3,6 @@ from sqlalchemy import (
     DateTime,
 )
 from sqlalchemy.sql import func
-
 from sqlalchemy.orm import Session
 
 

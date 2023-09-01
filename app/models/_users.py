@@ -8,9 +8,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Session, relationship
-
 from ..database import Base
-
 from ._utils import BaseMixin
 
 
@@ -23,10 +21,6 @@ class User_Accounts(Base, BaseMixin):
     password_hash = Column(String)
     disabled = Column(Boolean, default=True)
     indicators = relationship("Indicators", back_populates="creator")
-    session_id = ForeignKey("sessions.id")
-    session = relationship(
-        "Sessions", back_populates="user", cascade="save-update, merge, delete"
-    )
 
     @classmethod
     def get_user_by_username(cls, db: Session, username: str):
