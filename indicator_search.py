@@ -67,7 +67,7 @@ def menu():
     print(f"{color.BLUE}5.{color.ENDCOLOR}  Build docker image")
     print(f"{color.BLUE}6.{color.ENDCOLOR}  Seed feedlists database (API)")
     print(f"{color.BLUE}7.{color.ENDCOLOR}  Seed indicators (API)")
-    print(f"{color.BLUE}8.{color.ENDCOLOR}  Create user")
+    print(f"{color.BLUE}8.{color.ENDCOLOR}  Create user (API)")
     print(f"{color.BLUE}9.{color.ENDCOLOR}  Delete local sqlite database")
     print(f"{color.BLUE}10.{color.ENDCOLOR} Exit")
     menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
@@ -111,7 +111,6 @@ def ioc_ageout_automation():
     first_run = True
     while True:
         if not first_run:
-            print("running")
             response = requests.post(
                 f"{config['SERVER_ADDRESS']}/api/iocs/ageout",
                 headers={
