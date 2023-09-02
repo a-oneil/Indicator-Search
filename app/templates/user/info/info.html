@@ -1,0 +1,8 @@
+{% extends "base.html" %} {% block content %} 
+{{ render_partial("shared/_logo.html") }}
+
+<div style="margin-top: 10px; margin-bottom: 30px;" class="ui container">
+  {{ render_partial("shared/_divider.html", text="User Info", icon="fa-solid fa-user") }}
+  {{ render_partial("user/info/_user_info.html", user=user) }}
+</div>
+{% endblock %}
