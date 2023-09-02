@@ -1,146 +1,186 @@
+from fastapi import (
+    APIRouter,
+    Depends,
+    status,
+    Request,
+    Form,
+    BackgroundTasks,
+    HTTPException,
+    Security,
+    Header,
+)
+import jwt
+import secrets
+import bcrypt
 from datetime import datetime, timedelta
+from .. import database, templates, config, schemas
+from ..models import User_Accounts
+from ..database import get_db
+from sqlalchemy.orm import Session
+from starlette.responses import RedirectResponse, HTMLResponse
+from fastapi.security import (
+    HTTPAuthorizationCredentials,
+    HTTPBearer,
+    OAuth2PasswordBearer,
+)
 from typing import Annotated
-
-from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import JWTError, jwt
 from passlib.context import CryptContext
-from pydantic import BaseModel
+from fastapi import FastAPI, Body, Depends
+from ..schemas import Login, GetUser
+from ..authentication import signJWT, jwtBearer, decodeJWT
+import traceback
 
-# to get a string like this run:
-# openssl rand -hex 32
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+router = APIRouter(
+    prefix="/user", tags=["Users Frontend Testing"], include_in_schema=True
+)
 
+# @router.post("/login", name="Login")
+# def login(
+#     request: Request,
+#     username: str = Form(...),
+#     password: str = Form(...),
+#     db: Session = Depends(get_db),
+# ):
+#     user = User_Accounts.get_user_by_username(db, username)
 
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-        "disabled": False,
-    }
-}
+#     if user:
+#         pw = password
+#         provided_password = pw.encode("utf-8")
+#         stored_password_hash = user.password_hash
 
+#         if bcrypt.checkpw(provided_password, stored_password_hash):
+#             Sessions.create_session(db, user)
+#             return {"Success": "Logged in successfully"}
+#         else:
+#             return {"Error": "Invalid username and/or password"}
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class TokenData(BaseModel):
-    username: str | None = None
-
-
-class User(BaseModel):
-    username: str
-    email: str | None = None
-    full_name: str | None = None
-    disabled: bool | None = None
-
-
-class UserInDB(User):
-    hashed_password: str
+#     raise HTTPException(
+#         status_code=status.HTTP_401_UNAUTHORIZED,
+#         detail="Invalid username and/or password",
+#         headers={"WWW-Authenticate": "Bearer"},
+#     )
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# dependencies=[Depends(jwtBearer())]
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-app = FastAPI()
-
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+""" LOGIN """
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="user/token")
 
 
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
-
-
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
-    return user
-
-
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
+@router.get("/", response_class=HTMLResponse)
+def feeds(request: Request, db: Session = Depends(get_db)):
+    return templates.TemplateResponse(
+        "user/user.html",
+        {"request": request},
     )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except JWTError:
-        raise credentials_exception
-    user = get_user(fake_users_db, username=token_data.username)
-    if user is None:
-        raise credentials_exception
-    return user
 
 
-async def get_current_active_user(
-    current_user: Annotated[User, Depends(get_current_user)]
+@router.post("/token")
+def user_login(
+    request: Request,
+    db: Session = Depends(get_db),
+    username: str = Form(...),
+    password: str = Form(...),
 ):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user
-
-
-@app.post("/token", response_model=Token)
-async def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
-):
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
+    if check_user_login(username, password, db):
+        jwt_token = signJWT(username)
+        # return jwt_token
+        return templates.TemplateResponse(
+            "user/success.html",
+            {
+                "request": request,
+                "token": jwt_token,
+            },
         )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+    return templates.TemplateResponse(
+        "user/user.html",
+        {
+            "request": request,
+            "_message_header": "Error!",
+            "_message_color": "red",
+            "_message": "Invalid login!",
+        },
     )
-    return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.get("/users/me/", response_model=User)
-async def read_users_me(
-    current_user: Annotated[User, Depends(get_current_active_user)]
+""" USER INFO """
+
+
+@router.get("/info")
+def user_info(
+    request: Request,
+    token: Annotated[str, Depends(oauth2_scheme)],
+    db: Session = Depends(get_db),
 ):
-    return current_user
+    return templates.TemplateResponse(
+        "user/info/info.html",
+        {"request": request, "user": User_Accounts.get_all_users(db)},
+    )
 
 
-@app.get("/users/me/items/")
-async def read_own_items(
-    current_user: Annotated[User, Depends(get_current_active_user)]
+""" SIGN UP """
+
+
+@router.get("/signup")
+def signup_form(request: Request, db: Session = Depends(get_db)):
+    return templates.TemplateResponse(
+        "user/signup/signup.html",
+        {"request": request},
+    )
+
+
+@router.post("/signup/new")
+def new_user(
+    request: Request,
+    db: Session = Depends(get_db),
+    username: str = Form(...),
+    password: str = Form(...),
+    invite_key: str = Form(...),
 ):
-    return [{"item_id": "Foo", "owner": current_user.username}]
+    try:
+        if User_Accounts.get_user_by_username(db, username):
+            raise Exception("Username already exists")
+
+        if invite_key != config["USER_INVITE_KEY"]:
+            raise Exception("Invalid invite key")
+
+        new_user = User_Accounts(
+            username=username,
+            password_hash=bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()),
+            api_key=secrets.token_urlsafe(32),
+        )
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return templates.TemplateResponse(
+            "user/user.html",
+            {
+                "request": request,
+                "_message_header": "Success!",
+                "_message_color": "blue",
+                "_message": "User created, please login!",
+            },
+        )
+
+    except Exception as e:
+        return templates.TemplateResponse(
+            "user/signup/signup.html",
+            {
+                "request": request,
+                "_message_header": "Error!",
+                "_message_color": "red",
+                "_message": str(e),
+            },
+        )
+
+
+""" UTILS - Move to user utils """
+
+
+def check_user_login(username, password, db: Session):
+    users = User_Accounts.get_all_users(db)
+    for user in users:
+        if user.username == username:
+            if bcrypt.checkpw(password.encode("utf-8"), user.password_hash):
+                return True
+    return False

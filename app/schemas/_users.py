@@ -1,5 +1,5 @@
-from pydantic import BaseModel
 from datetime import datetime
+from pydantic import BaseModel, Field
 
 
 class CreateUser(BaseModel):
@@ -13,11 +13,12 @@ class GetUser(BaseModel):
     username: str
     api_key: str
     time_created: datetime
+    password_hash: str
 
     class Config:
         from_attributes = True
 
 
 class Login(BaseModel):
-    username: str
-    password: str
+    username: str = Field(default=None)
+    password: str = Field(default=None)

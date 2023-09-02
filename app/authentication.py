@@ -1,13 +1,13 @@
-import os
-import binascii
-import base64
-import json
-from functools import wraps
-from fastapi import Request, Header
-
+import time
+import jwt
+from . import config
 from .exceptions import AuthenticationException
-from .utils import b64_add_padding
 from .models import User_Accounts
+from fastapi import Request, HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+JWT_SECRET = config["JWT_SECRET"]
+JWT_ALGORITHM = config["JWT_ALGORITHM"]
 
 
 def auth_api_key(request, db):
@@ -16,120 +16,51 @@ def auth_api_key(request, db):
         raise AuthenticationException("Invalid API key")
 
 
-def requires_auth(required=True, auth_header: str = Header(None)):
-    # Import here to prevent circular imports
-    from .models import Sessions
-
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            try:
-                if not auth_header:
-                    raise AuthenticationException(
-                        "Authorization header missing from request"
-                    )
-                print(auth_header)
-                # Header format: 'Authorization: Bearer <JWT>'
-                parts = auth_header.split()
-                if len(parts) != 2:
-                    raise AuthenticationException("Header is incorrectly formatted")
-
-                auth_token = parts[1]
-            except AuthenticationException as e:
-                if not required:
-                    return func(*args, **kwargs)
-
-                else:
-                    raise e
-
-            try:
-                # Validate JWT segments
-                _, _, _, _ = parse_jwt_segments(auth_token)
-            except ValueError:
-                # Not enough segments in the JWT, it is invalid
-                raise AuthenticationException("Invalid JWT: Not enough segments")
-
-            # Decode JWT and get user ID
-            session = Sessions.validate_auth_token(auth_token)
-            if not session:
-                # This would only happen if the user was deleted and the session data was not
-                # In that case, return a 401 error cause the authentication details are invalid
-                raise AuthenticationException("This user no longer exists")
-
-            # Set authenticated user
-            Request.user_session = session
-
-            # Pass auth token to endpoint function
-            return func(*args, **kwargs)
-
-        return wrapper
-
-    return decorator
+# Function returns the generated JWT token
+def token_response(token: str):
+    return token
 
 
-def parse_jwt_segments(jwt):
+# Function for signing the JWT string
+def signJWT(username: str) -> dict:
+    payload = {"username": username, "expires": time.time() + 600}
+    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return token_response(token)
+
+
+# Function for decoding the JWT string
+def decodeJWT(token: str) -> dict:
     try:
-        # Validate JWT segments
-        signing_input, crypto_segment = jwt.rsplit(".", 1)
-        header_segment, payload_segment = signing_input.split(".", 1)
-    except ValueError:
-        # Not enough segments in the JWT, it is invalid
-        return None
-
-    return (header_segment, payload_segment, signing_input, crypto_segment)
+        decode_token = jwt.decode(token, JWT_SECRET, algorithms=JWT_ALGORITHM)
+        return decode_token if decode_token["expires"] >= time.time() else None
+    except:
+        return {}
 
 
-def get_jwt_payload(jwt):
-    try:
-        (
-            header_segment,
-            payload_segment,
-            signing_input,
-            crypto_segment,
-        ) = parse_jwt_segments(jwt)
-    except ValueError:
-        # Not enough segments in the JWT, it is invalid
-        raise AuthenticationException("Invalid JWT: Not enough segments")
+class jwtBearer(HTTPBearer):
+    def __init__(self, auto_error: bool = True):
+        super(jwtBearer, self).__init__(auto_error=auto_error)
 
-    # GET HEADER JSON
-    """
-    try:
-        header_data = base64.b64decode(header_segment)
-    except (TypeError, binascii.Error):
-        # Invalid header segment (invalid base64 string)
-        return None
+    async def __call__(self, request: Request):
+        credentials: HTTPAuthorizationCredentials = await super(
+            jwtBearer, self
+        ).__call__(request)
+        if credentials:
+            if not credentials.scheme == "Bearer":
+                raise HTTPException(
+                    status_code=403, detail="Invalid authentication scheme."
+                )
+            if not self.verify_jwt(credentials.credentials):
+                raise HTTPException(
+                    status_code=403, detail="Invalid token or expired token."
+                )
+            return credentials.credentials
+        else:
+            raise HTTPException(status_code=403, detail="Invalid authorization code.")
 
-    try:
-        header = json.loads(header_data.decode('utf-8'))
-    except ValueError as e:
-        # Invalid header string
-        return None
-    """
-
-    # GET PAYLOAD JSON
-
-    try:
-        payload_segment = b64_add_padding(payload_segment)
-        payload_data = base64.b64decode(payload_segment)
-    except (TypeError, binascii.Error):
-        # Invalid payload segment (invalid base64 string)
-        raise AuthenticationException("Invalid payload segment")
-
-    try:
-        payload = json.loads(payload_data.decode("utf-8"))
-    except ValueError as e:
-        # Invalid payload string
-        raise AuthenticationException("Invalid payload string")
-
-    # GET SIGNATURE
-    # NOTE: probably don't need this
-    """
-    try:
-        signature = base64.b64decode(crypto_segment)
-    except (TypeError, binascii.Error):
-        # Invalid signature segment (invalid base64 string)
-        return None
-    """
-
-    return payload
-    # return (header, payload, signing_input, crypto_segment)=
+    def verify_jwt(self, jwtoken: str):
+        isTokenValid: bool = False
+        payload = decodeJWT(jwtoken)
+        if payload:
+            isTokenValid = True
+        return isTokenValid

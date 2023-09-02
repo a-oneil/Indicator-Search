@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends, Request, Header
+import secrets
+import bcrypt
+from fastapi import APIRouter, Depends
 from .. import schemas, config
-from ..models import User_Accounts, Sessions
+from ..models import User_Accounts
 from ..database import get_db
 from sqlalchemy.orm import Session
 from typing import List
@@ -10,10 +12,6 @@ from fastapi import (
     status,
     HTTPException,
 )
-import jwt
-import secrets
-import bcrypt
-from datetime import datetime, timedelta
 
 
 router = APIRouter(prefix="/api")
