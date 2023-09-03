@@ -614,10 +614,6 @@ def stopforumspam_ip(indicator):
 
 
 def abuse_ipdb(indicator):
-    """
-    This function checks the indicator against the AbuseIPDB and outputs the
-    Abuse Confidence Score, the number of reports, and the last report date.
-    """
     try:
         if config["AB_API_KEY"] == "":
             raise Exception("AB_API_KEY is not set in .env file.")
@@ -708,11 +704,6 @@ def emailrepio(indicator):
 
 
 def tweetfeed_live(indicator):
-    """
-    This function checks the indicator against the Tweetfeed.live API
-    and outputs the date, user, value, tweet, and tags.
-    """
-
     def query_api(url):
         try:
             return requests.get(url)
@@ -1220,3 +1211,53 @@ def inquestlabs(indicator):
         )
     except Exception as e:
         return failed_to_run("InQuestLabs", e)
+
+
+def maltiverse(indicator):
+    try:
+        if config["MALTIVERSE_API_KEY"] == "":
+            raise Exception("MALTIVERSE_API_KEY is not set in .env file.")
+
+        if indicator.indicator_type == "hash.md5":
+
+        elif indicator.indicator_type == "hash.sha1":
+  
+        elif indicator.indicator_type == "hash.sha256":
+
+        elif indicator.indicator_type == "hash.sha512":
+
+        elif indicator.indicator_type == "fqdn":
+
+        elif indicator.indicator_type == "email":
+
+        elif indicator.indicator_type == "ipv4":
+
+        elif indicator.indicator_type == "url":
+
+
+        
+
+        # else:
+        #     raise Exception("Invalid indicator type for Maltiverse")
+
+        # if response.status_code != 200:
+        #     return status_code_error(
+        #         "Maltiverse", response.status_code, response.reason
+        #     )
+
+        # if response.json().get("success") is False:
+        #     return no_results_found("Maltiverse")
+
+        # if not response.json().get("data"):
+        #     return no_results_found("Maltiverse")
+
+        return (
+            # fmt: off
+                {
+                    "site": "Maltiverse",
+                    "results": {},
+                },
+            # fmt: on
+        )
+    except Exception as e:
+        return failed_to_run("Maltiverse", e)
