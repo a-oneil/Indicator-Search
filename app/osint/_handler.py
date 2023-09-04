@@ -33,6 +33,7 @@ def new_indicator_handler(indicator, db: Session):
             indicator.results += tools.stopforumspam_ip(indicator)
             indicator.results += tools.shodan(indicator)
             indicator.results += tools.inquestlabs(indicator)
+            indicator.results += tools.maltiverse(indicator)
 
         elif indicator.indicator_type == "ipv6":
             indicator.results += tools.ipinfoio(indicator)
@@ -49,6 +50,7 @@ def new_indicator_handler(indicator, db: Session):
             indicator.results += tools.checkphish(indicator)
             indicator.results += tools.urlscanio(indicator)
             indicator.results += tools.inquestlabs(indicator)
+            indicator.results += tools.maltiverse(indicator)
 
         elif indicator.indicator_type == "url":
             indicator.results += tools.tweetfeed_live(indicator)
@@ -58,6 +60,7 @@ def new_indicator_handler(indicator, db: Session):
             indicator.results += tools.checkphish(indicator)
             indicator.results += tools.urlscanio(indicator)
             indicator.results += tools.inquestlabs(indicator)
+            indicator.results += tools.maltiverse(indicator)
 
         elif indicator.indicator_type == "email":
             indicator.results += tools.emailrepio(indicator)
@@ -75,6 +78,7 @@ def new_indicator_handler(indicator, db: Session):
             indicator.results += tools.hybrid_analysis(indicator)
             indicator.results += tools.malware_bazzar(indicator)
             indicator.results += tools.inquestlabs(indicator)
+            indicator.results += tools.maltiverse(indicator)
 
         elif indicator.indicator_type == "hash.sha1":
             indicator.results += tools.circl_lu(indicator)
@@ -82,6 +86,7 @@ def new_indicator_handler(indicator, db: Session):
             indicator.results += tools.hybrid_analysis(indicator)
             indicator.results += tools.malware_bazzar(indicator)
             indicator.results += tools.inquestlabs(indicator)
+            indicator.results += tools.maltiverse(indicator)
 
         elif indicator.indicator_type == "hash.sha256":
             indicator.results += tools.circl_lu(indicator)
@@ -91,10 +96,12 @@ def new_indicator_handler(indicator, db: Session):
             indicator.results += tools.hybrid_analysis(indicator)
             indicator.results += tools.malware_bazzar(indicator)
             indicator.results += tools.inquestlabs(indicator)
+            indicator.results += tools.maltiverse(indicator)
 
         elif indicator.indicator_type == "hash.sha512":
             indicator.results += tools.virustotal_hash(indicator)
             indicator.results += tools.inquestlabs(indicator)
+            indicator.results += tools.maltiverse(indicator)
 
         elif indicator.indicator_type == "mac":
             indicator.results += tools.macvendors(indicator)

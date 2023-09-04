@@ -7,6 +7,7 @@ import time
 import base64
 from .. import config, notifications
 from ..models import FeedLists
+from maltiverse import Maltiverse
 from shodan import Shodan
 from .utils import (
     no_results_found,
@@ -614,10 +615,6 @@ def stopforumspam_ip(indicator):
 
 
 def abuse_ipdb(indicator):
-    """
-    This function checks the indicator against the AbuseIPDB and outputs the
-    Abuse Confidence Score, the number of reports, and the last report date.
-    """
     try:
         if config["AB_API_KEY"] == "":
             raise Exception("AB_API_KEY is not set in .env file.")
@@ -708,11 +705,6 @@ def emailrepio(indicator):
 
 
 def tweetfeed_live(indicator):
-    """
-    This function checks the indicator against the Tweetfeed.live API
-    and outputs the date, user, value, tweet, and tags.
-    """
-
     def query_api(url):
         try:
             return requests.get(url)
@@ -1220,3 +1212,54 @@ def inquestlabs(indicator):
         )
     except Exception as e:
         return failed_to_run("InQuestLabs", e)
+
+
+def maltiverse(indicator):
+    try:
+        if config["MALTIVERSE_API_KEY"] == "":
+            raise Exception("MALTIVERSE_API_KEY is not set in .env file.")
+
+        maltiverse = Maltiverse(auth_token=config["MALTIVERSE_API_KEY"])
+
+        if indicator.indicator_type == "hash.md5":
+            result = maltiverse.sample_get_by_md5(indicator.indicator)
+
+        elif indicator.indicator_type == "hash.sha1":
+            result = maltiverse.sample_get_by_sha1(indicator.indicator)
+
+        elif indicator.indicator_type == "hash.sha256":
+            result = maltiverse.sample_get_by_sha256(indicator.indicator)
+
+        elif indicator.indicator_type == "hash.sha512":
+            result = maltiverse.sample_get_by_sha512(indicator.indicator)
+
+        elif indicator.indicator_type == "fqdn":
+            result = maltiverse.hostname_get(indicator.indicator)
+
+        elif indicator.indicator_type == "ipv4":
+            result = maltiverse.ip_get(indicator.indicator)
+
+        elif indicator.indicator_type == "url":
+            result = maltiverse.url_get(indicator.indicator)
+
+        else:
+            raise Exception("Invalid indicator type for Maltiverse")
+
+        if not result:
+            raise Exception("No results found")
+
+        return (
+            # fmt: off
+                {
+                    "site": "Maltiverse",
+                    "results": {
+                        "Classification": result.get("classification", ""),
+                        "Blacklist": result.get("blacklist", []),
+                        "Tags": result.get("tag", []),
+
+                        },
+                },
+            # fmt: on
+        )
+    except Exception as e:
+        return failed_to_run("Maltiverse", e)
