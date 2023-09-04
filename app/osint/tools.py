@@ -7,6 +7,7 @@ import time
 import base64
 from .. import config, notifications
 from ..models import FeedLists
+from maltiverse import Maltiverse
 from shodan import Shodan
 from .utils import (
     no_results_found,
@@ -1218,44 +1219,45 @@ def maltiverse(indicator):
         if config["MALTIVERSE_API_KEY"] == "":
             raise Exception("MALTIVERSE_API_KEY is not set in .env file.")
 
+        maltiverse = Maltiverse(auth_token=config["MALTIVERSE_API_KEY"])
+
         if indicator.indicator_type == "hash.md5":
+            result = maltiverse.sample_get_by_md5(indicator.indicator)
 
         elif indicator.indicator_type == "hash.sha1":
-  
+            result = maltiverse.sample_get_by_sha1(indicator.indicator)
+
         elif indicator.indicator_type == "hash.sha256":
+            result = maltiverse.sample_get_by_sha256(indicator.indicator)
 
         elif indicator.indicator_type == "hash.sha512":
+            result = maltiverse.sample_get_by_sha512(indicator.indicator)
 
         elif indicator.indicator_type == "fqdn":
-
-        elif indicator.indicator_type == "email":
+            result = maltiverse.hostname_get(indicator.indicator)
 
         elif indicator.indicator_type == "ipv4":
+            result = maltiverse.ip_get(indicator.indicator)
 
         elif indicator.indicator_type == "url":
+            result = maltiverse.url_get(indicator.indicator)
 
+        else:
+            raise Exception("Invalid indicator type for Maltiverse")
 
-        
-
-        # else:
-        #     raise Exception("Invalid indicator type for Maltiverse")
-
-        # if response.status_code != 200:
-        #     return status_code_error(
-        #         "Maltiverse", response.status_code, response.reason
-        #     )
-
-        # if response.json().get("success") is False:
-        #     return no_results_found("Maltiverse")
-
-        # if not response.json().get("data"):
-        #     return no_results_found("Maltiverse")
+        if not result:
+            raise Exception("No results found")
 
         return (
             # fmt: off
                 {
                     "site": "Maltiverse",
-                    "results": {},
+                    "results": {
+                        "Classification": result.get("classification", ""),
+                        "Blacklist": result.get("blacklist", []),
+                        "Tags": result.get("tag", []),
+
+                        },
                 },
             # fmt: on
         )
