@@ -4,42 +4,47 @@
     {% if key == "Malicious" %}
       <a class="ui red label">
           {{key}}
-        </a>
+      </a>
 
     {% elif key == "IOC" %}
       <a class="ui red label" href="/api/iocs/{{value}}">
           {{key}}
-        </a>
+      </a>
 
       {% elif key == "Suspicious" %}
       <a class="ui yellow label">
           {{key}}
-        </a>
+      </a>
 
       {% elif key == "Feedlist Match" %}
       <a class="ui yellow label">
           {{key}}
-        </a>
+      </a>
 
       {% elif key == "Tweetfeed Match" %}
       <a class="ui yellow label">
           {{key}}
-        </a>
+      </a>
 
       {% elif key == "Known Binary" %}
       <a class="ui green label">
           {{key}}
-        </a>
+      </a>
 
+      {% elif key == "Newly Created Domain" %}
+      <a class="ui yellow label">
+          {{key}}
+      </a>
+      
       {% elif key == "Error" %}
       <a class="ui red label">
           {{key}}
-        </a>
+      </a>
 
       {% else %}
       <a class="ui label">
           {{key}}: {{value}}
-        </a>
+      </a>
     {% endif %}
   {% endfor %} 
 {% endif %}

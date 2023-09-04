@@ -1,4 +1,5 @@
 from .utils import remove_duplicate_keys
+from datetime import datetime, timedelta
 
 
 def tagging_handler(indicator, db):
@@ -107,6 +108,16 @@ def virustotal(indicator):
                     tags.update({"Suspicious": True})
                 if malicious_hits >= 10:
                     tags.update({"Malicious": True})
+            if site.get("results").get("Creation Date"):
+                # Parse the input time string into a datetime object
+                date_object = datetime.strptime(site.get("results").get("Creation Date"), "%a %b %d %H:%M:%S %Y")
+                # Calculate the current date
+                current_date = datetime.now()
+                # Calculate the date 3 months ago from the current date
+                three_months_ago = current_date - timedelta(days=90)
+                # Check if the parsed date is within the last 3 months
+                if date_object >= three_months_ago and date_object <= current_date:
+                    tags.update({"Newly Created Domain": True})
         # fmt: on
     return tags
 
