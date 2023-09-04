@@ -18,3 +18,4 @@ xmltodict
 shodan
 python-jose[cryptography]
 pyjwt
+maltiverse
