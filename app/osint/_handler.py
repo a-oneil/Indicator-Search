@@ -60,6 +60,7 @@ def new_indicator_handler(indicator, db: Session):
             indicator.results += tools.checkphish(indicator)
             indicator.results += tools.urlscanio(indicator)
             indicator.results += tools.inquestlabs(indicator)
+            indicator.results += tools.maltiverse(indicator)
 
         elif indicator.indicator_type == "email":
             indicator.results += tools.emailrepio(indicator)
