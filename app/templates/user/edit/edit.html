@@ -1,0 +1,10 @@
+{% extends "base.html" %} {% block content %} 
+{{ render_partial("shared/_logo.html") }}
+<div style="margin-top: 10px; margin-bottom: 30px;" class="ui container">
+    {{ render_partial("shared/_divider.html", text="Editing " + user.username, icon="fa-solid fa-user-plus") }}
+</div>
+
+<div class="ui container">
+    {{ render_partial("user/edit/_edit_form.html", user=user, _message_header=_message_header, _message_color=_message_color, _message=_message) }}
+</div>
+{% endblock %}

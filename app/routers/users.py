@@ -33,6 +33,86 @@ def get_user(
     )
 
 
+@router.get("/edit", response_class=HTMLResponse)
+def edit_user(
+    request: Request,
+    db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
+):
+    user = frontend_auth_required(access_token, db)
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
+    return templates.TemplateResponse(
+        "user/edit/edit.html",
+        {"request": request, "user": user},
+    )
+
+
+@router.post("/edit", response_class=HTMLResponse)
+def update_user(
+    request: Request,
+    db: Session = Depends(get_db),
+    password: str = Form(...),
+    api_key: str = Form(...),
+    access_token: Optional[str] = Cookie(None),
+):
+    user = frontend_auth_required(access_token, db)
+    password = password.strip()
+    api_key = api_key.strip()
+
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
+
+    if not password or not api_key:
+        return templates.TemplateResponse(
+            "user/edit/edit.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please fill out all fields!",
+                "user": user,
+            },
+        )
+
+    if password != user.password_hash:
+        user.password_hash = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+
+    if api_key != user.api_key:
+        user.api_key = api_key
+
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    return templates.TemplateResponse(
+        "user/login.html",
+        {
+            "request": request,
+            "_message_header": "",
+            "_message_color": "blue",
+            "_message": "User updated!",
+            "user": user,
+        },
+    )
+
+
 @router.get("/delete/{api_key}", response_class=HTMLResponse)
 def get_user(
     request: Request,
@@ -104,7 +184,7 @@ async def login_for_access_token(
             "request": request,
             "_message_header": "Success!",
             "_message_color": "blue",
-            "_message": f"Successfully logged into {user.username}",
+            "_message": f"Logged into {user.username}",
             "user": user,
         },
     )
