@@ -2,7 +2,7 @@ import secrets
 import bcrypt
 from datetime import timedelta
 from .. import templates, config
-from ..models import User_Accounts
+from ..models import User_Accounts, Indicators
 from ..database import get_db
 from fastapi import APIRouter, Depends, Request, Form, Cookie
 from ..authentication import (
@@ -113,15 +113,14 @@ def update_user(
     )
 
 
-@router.get("/delete/{api_key}", response_class=HTMLResponse)
+@router.get("/delete", response_class=HTMLResponse)
 def get_user(
     request: Request,
-    api_key: str,
     db: Session = Depends(get_db),
     access_token: Optional[str] = Cookie(None),
 ):
     user = frontend_auth_required(access_token, db)
-    if user.api_key != api_key:
+    if not user:
         return templates.TemplateResponse(
             "user/login.html",
             {
@@ -266,6 +265,60 @@ def new_user(
     except Exception as e:
         return templates.TemplateResponse(
             "user/signup/signup.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": str(e),
+            },
+        )
+
+
+@router.get("/indicators/delete", response_class=HTMLResponse)
+def delete_users_indicators(
+    request: Request,
+    db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
+):
+    try:
+        user = frontend_auth_required(access_token, db)
+        if not user:
+            raise Exception("Please log in!")
+
+        indicators = Indicators.get_search_results(
+            db,
+            indicator_name=None,
+            indicator_type=None,
+            indicator_tags=None,
+            indicator_id=None,
+            indicator_notes=None,
+            indicator_ioc_id=None,
+            indicator_results=None,
+            created_by=user.username,
+        )
+
+        if not indicators:
+            raise Exception("No indicators found!")
+
+        for indicator in indicators:
+            db.delete(indicator)
+            db.commit()
+
+        db.refresh(user)
+
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "blue",
+                "_message": f"{len(indicators)} Indicators deleted!",
+                "user": user,
+            },
+        )
+    except Exception as e:
+        return templates.TemplateResponse(
+            "user/login.html",
             {
                 "request": request,
                 "_message_header": "",
