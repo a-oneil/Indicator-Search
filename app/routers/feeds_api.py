@@ -29,8 +29,8 @@ def get(request: Request, feedlist_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/feeds", name="Add a new feed", tags=["Feed Lists"])
-def create(
-    request: schemas.AddFeedlist,
+def create_feedlist(
+    request: schemas.CreateFeedlist,
     db: Session = Depends(get_db),
 ):
     try:
@@ -57,10 +57,9 @@ def create(
 
 
 @router.post("/feeds/{feedlists_id}", name="Enable/Disable a feed", tags=["Feed Lists"])
-def disable(
-    request: schemas.DisableFeedlist, feedlists_id: int, db: Session = Depends(get_db)
-):
-    feedlist = FeedLists.get_feedlist_by_id(feedlists_id, db)
+def disable_feedlist(request: schemas.DisableFeedlist, db: Session = Depends(get_db)):
+    auth_api_key(request, db)
+    feedlist = FeedLists.get_feedlist_by_id(request.feedlist_id, db)
     try:
         auth_api_key(request, db)
         if feedlist:
@@ -75,7 +74,7 @@ def disable(
 
 
 @router.delete("/feeds/{feedlists_id}", name="Delete a feed", tags=["Feed Lists"])
-def delete(request: schemas.DeleteFeedlist, db: Session = Depends(get_db)):
+def delete_feedlist(request: schemas.DeleteFeedlist, db: Session = Depends(get_db)):
     try:
         auth_api_key(request, db)
         feedlist = FeedLists.get_feedlist_by_id(request.feedlists_id, db)
@@ -83,6 +82,22 @@ def delete(request: schemas.DeleteFeedlist, db: Session = Depends(get_db)):
             db.delete(feedlist)
             db.commit()
             return {"Success": "Feedlist deleted successfully"}
+        else:
+            raise Exception("Feedlist not found")
+    except Exception as e:
+        return {"Error": str(e)}
+
+
+@router.delete("/feeds", name="Delete all feedlists", tags=["Feed Lists"])
+def delete_feedlist(request: schemas.DeleteAllFeedlists, db: Session = Depends(get_db)):
+    try:
+        auth_api_key(request, db)
+        feedlists = FeedLists.get_feedlists(db)
+        if feedlists:
+            for feedlist in feedlists:
+                db.delete(feedlist)
+                db.commit()
+            return {"Success": "All feedlists deleted"}
         else:
             raise Exception("Feedlist not found")
     except Exception as e:

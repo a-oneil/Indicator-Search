@@ -11,12 +11,12 @@ router = APIRouter(prefix="/api")
 
 
 @router.get("/iocs", name="Get the whole Ioc list", tags=["IOCs"])
-def get_all(request: Request, db: Session = Depends(get_db)):
+def get_all(db: Session = Depends(get_db)):
     return Iocs.get_all_iocs(db)
 
 
-@router.get("/iocs/{ioc_id}", name="Get a IOC by ID", tags=["IOCs"])
-def get(request: Request, ioc_id: int, db: Session = Depends(get_db)):
+@router.get("/iocs/{ioc_id}", name="Get an IOC by ID", tags=["IOCs"])
+def get(ioc_id: int, db: Session = Depends(get_db)):
     ioc = Iocs.get_ioc_by_id(ioc_id, db)
     if ioc is None:
         return {"Error": "IOC not found"}
@@ -33,10 +33,7 @@ def delete(request: schemas.DeleteIOC, db: Session = Depends(get_db)):
 
 
 @router.post("/iocs/search", name="Search for Iocs", tags=["IOCs"])
-def search(
-    request: schemas.SearchIocs,
-    db: Session = Depends(get_db),
-):
+def search_iocs(request: schemas.SearchIocs, db: Session = Depends(get_db)):
     try:
         return Iocs.get_search_results(
             db,
@@ -49,10 +46,8 @@ def search(
         return {"Error": "No results found"}
 
 
-# fmt: off
-@router.post("/iocs/ageout", name="Ageout IOCs", tags=["IOCs"], include_in_schema=False)
-# fmt: on
-def ageout(request: Request, db: Session = Depends(get_db)):
+@router.post("/iocs/ageout", name="Ageout IOCs", tags=["IOCs"])
+def ageout(db: Session = Depends(get_db)):
     try:
         return Iocs.ageout_iocs(db)
     except Exception as e:

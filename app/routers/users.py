@@ -1,128 +1,149 @@
-from fastapi import (
-    APIRouter,
-    Depends,
-    status,
-    Request,
-    Form,
-    BackgroundTasks,
-    HTTPException,
-    Security,
-    Header,
-)
-import jwt
 import secrets
 import bcrypt
-from datetime import datetime, timedelta
-from .. import database, templates, config, schemas
+from datetime import timedelta
+from .. import templates, config
 from ..models import User_Accounts
 from ..database import get_db
+from fastapi import APIRouter, Depends, Request, Form, Cookie
+from ..authentication import (
+    check_user_login,
+    create_access_token,
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES,
+    frontend_auth_required,
+)
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from starlette.responses import RedirectResponse, HTMLResponse
-from fastapi.security import (
-    HTTPAuthorizationCredentials,
-    HTTPBearer,
-    OAuth2PasswordBearer,
-)
-from typing import Annotated
-from passlib.context import CryptContext
-from fastapi import FastAPI, Body, Depends
-from ..schemas import Login, GetUser
-from ..authentication import signJWT, jwtBearer, decodeJWT
-import traceback
+from starlette.responses import HTMLResponse
+from typing import Annotated, Optional
 
-router = APIRouter(
-    prefix="/user", tags=["Users Frontend Testing"], include_in_schema=True
-)
-
-# @router.post("/login", name="Login")
-# def login(
-#     request: Request,
-#     username: str = Form(...),
-#     password: str = Form(...),
-#     db: Session = Depends(get_db),
-# ):
-#     user = User_Accounts.get_user_by_username(db, username)
-
-#     if user:
-#         pw = password
-#         provided_password = pw.encode("utf-8")
-#         stored_password_hash = user.password_hash
-
-#         if bcrypt.checkpw(provided_password, stored_password_hash):
-#             Sessions.create_session(db, user)
-#             return {"Success": "Logged in successfully"}
-#         else:
-#             return {"Error": "Invalid username and/or password"}
-
-#     raise HTTPException(
-#         status_code=status.HTTP_401_UNAUTHORIZED,
-#         detail="Invalid username and/or password",
-#         headers={"WWW-Authenticate": "Bearer"},
-#     )
-
-
-# dependencies=[Depends(jwtBearer())]
-
-""" LOGIN """
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="user/token")
+router = APIRouter(prefix="/user", include_in_schema=False)
 
 
 @router.get("/", response_class=HTMLResponse)
-def feeds(request: Request, db: Session = Depends(get_db)):
+def get_user(
+    request: Request,
+    db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
+):
+    user = frontend_auth_required(access_token, db)
+
     return templates.TemplateResponse(
-        "user/user.html",
-        {"request": request},
+        "user/login.html",
+        {"request": request, "user": user},
     )
+
+
+@router.get("/delete/{api_key}", response_class=HTMLResponse)
+def get_user(
+    request: Request,
+    api_key: str,
+    db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
+):
+    user = frontend_auth_required(access_token, db)
+    if user.api_key != api_key:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Failed to delete user!",
+            },
+        )
+    else:
+        db.delete(user)
+        db.commit()
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "blue",
+                "_message": "User deleted!",
+            },
+        )
 
 
 @router.post("/token")
-def user_login(
+async def login_for_access_token(
     request: Request,
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Session = Depends(get_db),
-    username: str = Form(...),
-    password: str = Form(...),
+    access_token: Optional[str] = Cookie(None),
 ):
-    if check_user_login(username, password, db):
-        jwt_token = signJWT(username)
-        # return jwt_token
+    if frontend_auth_required(access_token, db):
         return templates.TemplateResponse(
-            "user/success.html",
+            "user/login.html",
             {
                 "request": request,
-                "token": jwt_token,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Already logged in!",
             },
         )
-    return templates.TemplateResponse(
-        "user/user.html",
+    user = check_user_login(form_data.username, form_data.password, db)
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Invalid login!",
+            },
+        )
+    access_token = create_access_token(
+        data={"sub": user.username},
+        expires_delta=timedelta(minutes=JWT_ACCESS_TOKEN_EXPIRE_MINUTES),
+    )
+    user = frontend_auth_required(access_token, db)
+    response = templates.TemplateResponse(
+        "user/login.html",
         {
             "request": request,
-            "_message_header": "Error!",
-            "_message_color": "red",
-            "_message": "Invalid login!",
+            "_message_header": "Success!",
+            "_message_color": "blue",
+            "_message": f"Successfully logged into {user.username}",
+            "user": user,
         },
     )
+    response.set_cookie(key="access_token", value=access_token)
+    return response
 
 
-""" USER INFO """
-
-
-@router.get("/info")
-def user_info(
+@router.get("/logout")
+async def logout(
     request: Request,
-    token: Annotated[str, Depends(oauth2_scheme)],
+    access_token: Optional[str] = Cookie(None),
     db: Session = Depends(get_db),
 ):
-    return templates.TemplateResponse(
-        "user/info/info.html",
-        {"request": request, "user": User_Accounts.get_all_users(db)},
-    )
-
-
-""" SIGN UP """
+    if not frontend_auth_required(access_token, db):
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
+    else:
+        response = templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "blue",
+                "_message": "Successfully logged out",
+            },
+        )
+        response.delete_cookie(key="access_token")
+        return response
 
 
 @router.get("/signup")
-def signup_form(request: Request, db: Session = Depends(get_db)):
+def signup_form(request: Request):
     return templates.TemplateResponse(
         "user/signup/signup.html",
         {"request": request},
@@ -138,7 +159,7 @@ def new_user(
     invite_key: str = Form(...),
 ):
     try:
-        if User_Accounts.get_user_by_username(db, username):
+        if User_Accounts.get_user_by_username(username, db):
             raise Exception("Username already exists")
 
         if invite_key != config["USER_INVITE_KEY"]:
@@ -153,10 +174,10 @@ def new_user(
         db.commit()
         db.refresh(new_user)
         return templates.TemplateResponse(
-            "user/user.html",
+            "user/login.html",
             {
                 "request": request,
-                "_message_header": "Success!",
+                "_message_header": "",
                 "_message_color": "blue",
                 "_message": "User created, please login!",
             },
@@ -167,20 +188,8 @@ def new_user(
             "user/signup/signup.html",
             {
                 "request": request,
-                "_message_header": "Error!",
+                "_message_header": "",
                 "_message_color": "red",
                 "_message": str(e),
             },
         )
-
-
-""" UTILS - Move to user utils """
-
-
-def check_user_login(username, password, db: Session):
-    users = User_Accounts.get_all_users(db)
-    for user in users:
-        if user.username == username:
-            if bcrypt.checkpw(password.encode("utf-8"), user.password_hash):
-                return True
-    return False

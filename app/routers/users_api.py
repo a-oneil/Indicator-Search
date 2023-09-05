@@ -1,11 +1,10 @@
 import secrets
 import bcrypt
 from fastapi import APIRouter, Depends
-from .. import schemas, config
+from .. import config, schemas
 from ..models import User_Accounts
 from ..database import get_db
 from sqlalchemy.orm import Session
-from typing import List
 from fastapi import (
     APIRouter,
     Depends,
@@ -17,34 +16,30 @@ from fastapi import (
 router = APIRouter(prefix="/api")
 
 # fmt: off
-@router.get("/users", name="Get all users", tags=["Users"], response_model=List[schemas.GetUser])
-def get_all(db: Session = Depends(get_db)):
+@router.get( "/user", response_model=schemas.UserDetails, name="Get user details", tags=["Users"])
+def get_user(api_key: str, db: Session = Depends(get_db)):
 # fmt: on
-    return User_Accounts.get_all_users(db)
-
-
-# fmt: off
-@router.get( "/users/{id}", response_model=schemas.GetUser, name="Get a user by id", tags=["Users"])
-def get(id: int, db: Session = Depends(get_db)):
-# fmt:on
-    user = db.query(User_Accounts).filter(User_Accounts.id == id).first()
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
+    user = User_Accounts.get_user_by_api_key(api_key, db)
     return user
 
+@router.delete( "/user", name="Delete a user by their API key", tags=["Users"])
+def delete_user(api_key: str, db: Session = Depends(get_db)):
+    user = User_Accounts.get_user_by_api_key(api_key, db)
+    if user:
+        db.delete(user)
+        db.commit()
+        return {"Success": f"User {user.username} deleted"}
+    else:
+        return {"Error": "User not found"}
 
 # fmt: off
-@router.post("/users", name="Create a user",tags=["Users"], response_model=schemas.GetUser)
-def create(request: schemas.CreateUser,db: Session = Depends(get_db)):
+@router.post("/user", name="Create a user",tags=["Users"], response_model=schemas.GetUser)
+def create_user(request:schemas.CreateUser, db: Session = Depends(get_db)):
 # fmt: on
-    if User_Accounts.get_user_by_username(db, request.username):
+    if User_Accounts.get_user_by_username(request.username, db):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username is taken",
-            headers={"WWW-Authenticate": "Bearer"},
         )
 
     if request.invite_key != config["USER_INVITE_KEY"]:

@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 
-class AddFeedlist(BaseModel):
+class CreateFeedlist(BaseModel):
     name: str
     description: Optional[str] = None
     category: Optional[str] = None
@@ -13,8 +13,12 @@ class AddFeedlist(BaseModel):
     api_key: str
 
 
+class DeleteAllFeedlists(BaseModel):
+    api_key: str
+
+
 class DeleteFeedlist(BaseModel):
-    feedlist_id: int
+    feedlists_id: int
     api_key: str
 
 

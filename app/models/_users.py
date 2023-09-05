@@ -4,15 +4,13 @@ from sqlalchemy import (
     Integer,
     String,
     DateTime,
-    ForeignKey,
 )
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Session, relationship
 from ..database import Base
-from ._utils import BaseMixin
 
 
-class User_Accounts(Base, BaseMixin):
+class User_Accounts(Base):
     __tablename__ = "user_accounts"
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String)
@@ -23,7 +21,7 @@ class User_Accounts(Base, BaseMixin):
     indicators = relationship("Indicators", back_populates="creator")
 
     @classmethod
-    def get_user_by_username(cls, db: Session, username: str):
+    def get_user_by_username(cls, username: str, db: Session):
         return db.query(cls).filter(cls.username == username).first()
 
     @classmethod

@@ -1,66 +1,80 @@
-import time
-import jwt
 from . import config
-from .exceptions import AuthenticationException
+import bcrypt
 from .models import User_Accounts
-from fastapi import Request, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from passlib.context import CryptContext
+from sqlalchemy.orm import Session
+from .schemas import TokenData
+from jose import JWTError, jwt
+from datetime import datetime, timedelta
+from fastapi import HTTPException, status
 
 JWT_SECRET = config["JWT_SECRET"]
 JWT_ALGORITHM = config["JWT_ALGORITHM"]
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES = config["JWT_ACCESS_TOKEN_EXPIRE_MINUTES"]
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+class AuthenticationException(HTTPException):
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = "Unauthorized"
+    headers = {"WWW-Authenticate": "Bearer"}
+
+    def __init__(self, detail=None):
+        if detail:
+            self.detail = detail
+        super().__init__(
+            status_code=self.status_code, detail=self.detail, headers=self.headers
+        )
 
 
 def auth_api_key(request, db):
-    api_key = User_Accounts.get_user_by_api_key(request.api_key, db)
-    if not api_key:
+    user = User_Accounts.get_user_by_api_key(request.api_key, db)
+    if not user:
         raise AuthenticationException("Invalid API key")
+    return user
 
 
-# Function returns the generated JWT token
-def token_response(token: str):
-    return token
+def check_user_login(username, password, db: Session):
+    user = User_Accounts.get_user_by_username(username, db)
+    if not user:
+        return False
+    if not bcrypt.checkpw(password.encode("utf-8"), user.password_hash):
+        return False
+    return user
 
 
-# Function for signing the JWT string
-def signJWT(username: str) -> dict:
-    payload = {"username": username, "expires": time.time() + 600}
-    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
-    return token_response(token)
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
 
 
-# Function for decoding the JWT string
-def decodeJWT(token: str) -> dict:
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+
+def frontend_auth_required(access_token, db):
+    if not access_token:
+        return False
     try:
-        decode_token = jwt.decode(token, JWT_SECRET, algorithms=JWT_ALGORITHM)
-        return decode_token if decode_token["expires"] >= time.time() else None
-    except:
-        return {}
+        payload = jwt.decode(access_token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            return False
+        token_data = TokenData(username=username)
+    except JWTError:
+        return False
+    user = User_Accounts.get_user_by_username(token_data.username, db)
+    if user is None:
+        return False
+    return user
 
 
-class jwtBearer(HTTPBearer):
-    def __init__(self, auto_error: bool = True):
-        super(jwtBearer, self).__init__(auto_error=auto_error)
-
-    async def __call__(self, request: Request):
-        credentials: HTTPAuthorizationCredentials = await super(
-            jwtBearer, self
-        ).__call__(request)
-        if credentials:
-            if not credentials.scheme == "Bearer":
-                raise HTTPException(
-                    status_code=403, detail="Invalid authentication scheme."
-                )
-            if not self.verify_jwt(credentials.credentials):
-                raise HTTPException(
-                    status_code=403, detail="Invalid token or expired token."
-                )
-            return credentials.credentials
-        else:
-            raise HTTPException(status_code=403, detail="Invalid authorization code.")
-
-    def verify_jwt(self, jwtoken: str):
-        isTokenValid: bool = False
-        payload = decodeJWT(jwtoken)
-        if payload:
-            isTokenValid = True
-        return isTokenValid
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return encoded_jwt

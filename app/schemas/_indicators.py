@@ -12,7 +12,11 @@ class DeleteIndicator(BaseModel):
     api_key: str
 
 
-class AddNotes(BaseModel):
+class DeleteAllIndicators(BaseModel):
+    api_key: str
+
+
+class CreateNote(BaseModel):
     indicator_id: int
     notes: str
     api_key: str
