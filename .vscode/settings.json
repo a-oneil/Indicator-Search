@@ -8,5 +8,6 @@
     "python.formatting.provider": "none",
     "flake8.args": [
         "--max-line-length=256"
-    ]
+    ],
+    "prettier.disableLanguages": ["html"]
 }
