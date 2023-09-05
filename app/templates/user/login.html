@@ -4,11 +4,14 @@
 {% if user %}
   <div style="margin-top: 10px; margin-bottom: 30px;" class="ui container">
     {{ render_partial("shared/_divider.html", text="Welcome, " + user.username, icon="fa-solid fa-user") }}
+    <button class="ui blue fluid button" onclick="window.location.href='/'">
+      Start Searching <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
     <div class="ui segment">
       <ul>
         <li><b>API Key:</b> {{user.api_key}}</li>
         <li><b>Time Created:</b> {{user.time_created}}</li>
-        <li><b>Count of submitted indicators:</b> {{user.indicators | length}}</li>
+        <li><b>Number of submitted indicators:</b> <a href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=&created_by={{ user.username }}">{{user.indicators | length}}</a></li>
       </ul>
     </div>
     <button class="ui red button" onclick="window.location.href='/user/logout'">
