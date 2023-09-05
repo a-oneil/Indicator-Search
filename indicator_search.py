@@ -364,5 +364,9 @@ if __name__ == "__main__":
                 f"{color.YELLOW}Setup complete, please configure your env file located at ./config/.env{color.ENDCOLOR}"
             )
         else:
-            config = load_config()
-            menu()
+            try:
+                config = load_config()
+                menu()
+            except KeyboardInterrupt:
+                print(f"{color.RED}\nExiting...{color.ENDCOLOR}")
+                menu()
