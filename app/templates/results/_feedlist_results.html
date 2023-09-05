@@ -1,53 +1,48 @@
 {% if indicator.feedlist_results %}
-    <div class="ui segment">
-      <p class="ui small header">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        {{indicator.feedlist_results|length}} Feedlist Match
-      </p>
-      {# Setup card grid #}
-      <div class="ui two column grid">
-        {% for item in indicator.feedlist_results %}
-        <div class="column">
-          <div class="ui fluid card">
-            <div class="content">
-              <a href="{{item.url}}" indicator="_blank" class="header"
-                >{{item.feedlist}} [ID-{{item.feedlist_id}}]</a
-              >
-              <ul>
-                <li>
-                  <div class="description"><b>Match:</b> {{item.match}}</div>
-                </li>
-                <li>
-                  <div class="description">
-                    <b>Description:</b> {{item.description}}
-                  </div>
-                </li>
-                <li>
-                  <div class="description">
-                    <b>Category:</b> {{item.category}}
-                  </div>
-                </li>
-                <li>
-                  <div class="list_period">
-                    <b>List Period:</b> {{item.list_period}}
-                  </div>
-                </li>
-                <li>
-                  <div class="list_type">
-                    <b>List Type:</b> {{item.list_type}}
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
+<div class="ui segment">
+  <p class="ui small header">
+    <i class="fa-solid fa-circle-check"></i> Feedlists
+  </p>
+  {# Setup card grid #}
+  <div class="ui two column grid">
+    {% for item in indicator.feedlist_results %}
+    <div class="column">
+      <div class="ui fluid card">
+        <div class="content">
+          <a href="{{item.url}}" indicator="_blank" class="header"
+            >{{item.feedlist}} [ID-{{item.feedlist_id}}]</a
+          >
+          <ul>
+            <li>
+              <div class="description"><b>Match:</b> {{item.match}}</div>
+            </li>
+            <li>
+              <div class="description">
+                <b>Description:</b> {{item.description}}
+              </div>
+            </li>
+            <li>
+              <div class="description"><b>Category:</b> {{item.category}}</div>
+            </li>
+            <li>
+              <div class="list_period">
+                <b>List Period:</b> {{item.list_period}}
+              </div>
+            </li>
+            <li>
+              <div class="list_type"><b>List Type:</b> {{item.list_type}}</div>
+            </li>
+          </ul>
         </div>
-        {% endfor %}
       </div>
     </div>
-    {% else %}
-    <div class="ui segment">
-      <p class="ui small header">
-        <i class="fa-solid fa-circle-check"></i> No Feedlist Matches
-      </p>
-    </div>
+    {% endfor %}
+  </div>
+</div>
+{% else %}
+<div class="ui segment">
+  <p class="ui small header">
+    <i class="fa-solid fa-circle-xmark"></i> Feedlists: No matches found
+  </p>
+</div>
 {% endif %}
