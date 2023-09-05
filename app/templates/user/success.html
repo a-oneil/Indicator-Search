@@ -1,0 +1,13 @@
+<html>
+    <script>
+    async function login(token) {      
+        if (token) {
+            localStorage.setItem("Authorization", "Bearer " + token);
+            console.log("Login success");
+        } else {
+            console.error("Login failed");
+        }
+    }
+    login("{{ token }}");
+    </script>
+</html>

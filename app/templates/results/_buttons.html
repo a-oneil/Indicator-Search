@@ -1,4 +1,4 @@
-<div class="ui two column centered grid">
+<div class="ui three column centered grid">
   <div class="column">
     <button class="ui blue fluid button" onclick="window.location.href='/'">
       Go Back <i class="fa-solid fa-arrow-left"></i>
@@ -17,4 +17,10 @@
     </button>
     {% endif %}
   </div>
+  <div class="column" style="padding-left: 0px">
+    <button class="ui red fluid button" onclick="window.location.href='/indicator/delete/{{ indicator.id }}'">
+      Delete Indicator
+    </button>
+  </div>
+
 </div>

@@ -2,7 +2,7 @@
 {% if indicator.tags %}
   {% for key,value in indicator.tags.items() %} 
     {% if key == "Malicious" %}
-      <a class="ui red label">
+      <a class="ui red label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
           {{key}}
       </a>
 
@@ -12,37 +12,37 @@
       </a>
 
       {% elif key == "Suspicious" %}
-      <a class="ui yellow label">
+      <a class="ui yellow label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
           {{key}}
       </a>
 
       {% elif key == "Feedlist Match" %}
-      <a class="ui yellow label">
+      <a class="ui yellow label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
           {{key}}
       </a>
 
       {% elif key == "Tweetfeed Match" %}
-      <a class="ui yellow label">
+      <a class="ui yellow label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
           {{key}}
       </a>
 
       {% elif key == "Known Binary" %}
-      <a class="ui green label">
+      <a class="ui green label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
           {{key}}
       </a>
 
       {% elif key == "Newly Created Domain" %}
-      <a class="ui yellow label">
+      <a class="ui yellow label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
           {{key}}
       </a>
       
       {% elif key == "Error" %}
-      <a class="ui red label">
+      <a class="ui red label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
           {{key}}
       </a>
 
       {% else %}
-      <a class="ui label">
+      <a class="ui label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{value}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
           {{key}}: {{value}}
       </a>
     {% endif %}

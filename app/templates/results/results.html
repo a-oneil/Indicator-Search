@@ -13,7 +13,7 @@
   </script>
 
   {{render_partial("shared/_add_indicator_form.html", _message_header=_message_header, _message_color=_message_color, _message=_message)}} 
-  {{render_partial("shared/_divider.html", text="Search Results", icon="fa-fa-square-poll-horizontal")}} 
+  {{render_partial("shared/_divider.html", text="Search Results", icon="fa-solid fa-square-poll-horizontal")}} 
   {{render_partial("results/_buttons.html", indicator=indicator)}}
   {% if indicator.complete %} 
     {{render_partial("results/_indicator_info.html", indicator=indicator)}} 

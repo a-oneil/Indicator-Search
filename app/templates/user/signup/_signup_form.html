@@ -1,12 +1,15 @@
 <div style="margin-top: 10px; margin-bottom: 30px;" class="ui container">
-    <form class="ui form" action="/user/token" method="post">
+    <form class="ui form" action="/user/signup/new" method="post">
         <div class="field">
             <input type="text" required name="username" placeholder="Username"><br>
         </div>
         <div class="field">
             <input type="password" required name="password" placeholder="Password"><br>
         </div>
-        <button class="ui red button" type="submit">Login</button>
+        <div class="field">
+            <input type="text" required name="invite_key" placeholder="Invite Key"><br>
+        </div>
+        <button class="ui red button" type="submit">Create</button>
     </form>
 
     {% if _message %}

@@ -1,7 +1,8 @@
 from .. import templates
 from ..database import get_db
 from ..models import FeedLists
-from fastapi import APIRouter
+from ..authentication import frontend_auth_required
+from fastapi import APIRouter, Cookie
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, status, Request, Form
 from starlette.responses import RedirectResponse, HTMLResponse
@@ -19,7 +20,8 @@ def feeds(request: Request, db: Session = Depends(get_db)):
 
 
 @router.post("/add", response_class=HTMLResponse)
-def create(
+def create_feedlist(
+    request: Request,
     name: str = Form(...),
     category: str = Form(...),
     url: str = Form(...),
@@ -27,7 +29,19 @@ def create(
     description: Optional[str] = Form(None),
     list_period: Optional[str] = Form(None),
     db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
 ):
+    user = frontend_auth_required(access_token, db)
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
     url_already_in_feedlists = FeedLists.get_feedlist_by_url(url, db)
     if url_already_in_feedlists:
         raise Exception(f"{url} already exists in database.")
@@ -49,7 +63,23 @@ def create(
 
 
 @router.get("/delete/{feedlists_id}", response_class=HTMLResponse)
-def delete(feedlists_id: int, db: Session = Depends(get_db)):
+def delete_feedlist(
+    request: Request,
+    feedlists_id: int,
+    db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
+):
+    user = frontend_auth_required(access_token, db)
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
     feedlist = FeedLists.get_feedlist_by_id(feedlists_id, db)
     url = router.url_path_for("feeds")
     if feedlist:
@@ -61,7 +91,23 @@ def delete(feedlists_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/update/{feedlists_id}", response_class=HTMLResponse)
-def disable(request: Request, feedlists_id: int, db: Session = Depends(get_db)):
+def disable_feedlist(
+    request: Request,
+    feedlists_id: int,
+    db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
+):
+    user = frontend_auth_required(access_token, db)
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
     feedlist = FeedLists.get_feedlist_by_id(feedlists_id, db)
     url = router.url_path_for("feeds")
     if feedlist:

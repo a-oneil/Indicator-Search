@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, Cookie
 from .. import templates
 from ..models import Iocs, Indicators
 from ..database import get_db
+from ..authentication import frontend_auth_required
 from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse, HTMLResponse
+from typing import Optional
 
 router = APIRouter(prefix="/iocs", tags=["IOCs"], include_in_schema=False)
 
@@ -20,7 +22,7 @@ templates.env.filters["time_created_strftime"] = time_created_strftime
 
 
 @router.get("/", response_class=HTMLResponse)
-def search(
+def search_iocs(
     request: Request,
     db: Session = Depends(get_db),
     ioc_id: str | None = None,
@@ -54,7 +56,19 @@ async def mark_ioc(
     request: Request,
     indicator_id: int,
     db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
 ):
+    user = frontend_auth_required(access_token, db)
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
     try:
         marked_indicator = Iocs.mark_ioc(indicator_id, db)
         return templates.TemplateResponse(
@@ -86,7 +100,23 @@ async def mark_ioc(
 
 
 @router.get("/delete/{ioc_id}", response_class=HTMLResponse)
-def delete(ioc_id: int, db: Session = Depends(get_db)):
+def delete(
+    request: Request,
+    ioc_id: int,
+    db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
+):
+    user = frontend_auth_required(access_token, db)
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
     Iocs.remove_ioc(ioc_id, db)
     return RedirectResponse(url=router.url_path_for("search"))
 
@@ -95,8 +125,22 @@ def delete(ioc_id: int, db: Session = Depends(get_db)):
 @router.get("/delete/results/{indicator_id}",response_class=HTMLResponse)
 # fmt: on
 def delete_from_results(
-    request: Request, indicator_id: int, db: Session = Depends(get_db)
+    request: Request,
+    indicator_id: int,
+    db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
 ):
+    user = frontend_auth_required(access_token, db)
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
     try:
         indicator = Indicators.get_indicator_by_id(indicator_id, db)
         Iocs.remove_ioc(indicator.ioc_id, db)

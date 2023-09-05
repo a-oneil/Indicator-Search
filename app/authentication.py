@@ -1,135 +1,80 @@
-import os
-import binascii
-import base64
-import json
-from functools import wraps
-from fastapi import Request, Header
-
-from .exceptions import AuthenticationException
-from .utils import b64_add_padding
+from . import config
+import bcrypt
 from .models import User_Accounts
+from passlib.context import CryptContext
+from sqlalchemy.orm import Session
+from .schemas import TokenData
+from jose import JWTError, jwt
+from datetime import datetime, timedelta
+from fastapi import HTTPException, status
+
+JWT_SECRET = config["JWT_SECRET"]
+JWT_ALGORITHM = config["JWT_ALGORITHM"]
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES = config["JWT_ACCESS_TOKEN_EXPIRE_MINUTES"]
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+class AuthenticationException(HTTPException):
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = "Unauthorized"
+    headers = {"WWW-Authenticate": "Bearer"}
+
+    def __init__(self, detail=None):
+        if detail:
+            self.detail = detail
+        super().__init__(
+            status_code=self.status_code, detail=self.detail, headers=self.headers
+        )
 
 
 def auth_api_key(request, db):
-    api_key = User_Accounts.get_user_by_api_key(request.api_key, db)
-    if not api_key:
+    user = User_Accounts.get_user_by_api_key(request.api_key, db)
+    if not user:
         raise AuthenticationException("Invalid API key")
+    return user
 
 
-def requires_auth(required=True, auth_header: str = Header(None)):
-    # Import here to prevent circular imports
-    from .models import Sessions
-
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            try:
-                if not auth_header:
-                    raise AuthenticationException(
-                        "Authorization header missing from request"
-                    )
-                print(auth_header)
-                # Header format: 'Authorization: Bearer <JWT>'
-                parts = auth_header.split()
-                if len(parts) != 2:
-                    raise AuthenticationException("Header is incorrectly formatted")
-
-                auth_token = parts[1]
-            except AuthenticationException as e:
-                if not required:
-                    return func(*args, **kwargs)
-
-                else:
-                    raise e
-
-            try:
-                # Validate JWT segments
-                _, _, _, _ = parse_jwt_segments(auth_token)
-            except ValueError:
-                # Not enough segments in the JWT, it is invalid
-                raise AuthenticationException("Invalid JWT: Not enough segments")
-
-            # Decode JWT and get user ID
-            session = Sessions.validate_auth_token(auth_token)
-            if not session:
-                # This would only happen if the user was deleted and the session data was not
-                # In that case, return a 401 error cause the authentication details are invalid
-                raise AuthenticationException("This user no longer exists")
-
-            # Set authenticated user
-            Request.user_session = session
-
-            # Pass auth token to endpoint function
-            return func(*args, **kwargs)
-
-        return wrapper
-
-    return decorator
+def check_user_login(username, password, db: Session):
+    user = User_Accounts.get_user_by_username(username, db)
+    if not user:
+        return False
+    if not bcrypt.checkpw(password.encode("utf-8"), user.password_hash):
+        return False
+    return user
 
 
-def parse_jwt_segments(jwt):
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+
+def frontend_auth_required(access_token, db):
+    if not access_token:
+        return False
     try:
-        # Validate JWT segments
-        signing_input, crypto_segment = jwt.rsplit(".", 1)
-        header_segment, payload_segment = signing_input.split(".", 1)
-    except ValueError:
-        # Not enough segments in the JWT, it is invalid
-        return None
+        payload = jwt.decode(access_token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            return False
+        token_data = TokenData(username=username)
+    except JWTError:
+        return False
+    user = User_Accounts.get_user_by_username(token_data.username, db)
+    if user is None:
+        return False
+    return user
 
-    return (header_segment, payload_segment, signing_input, crypto_segment)
 
-
-def get_jwt_payload(jwt):
-    try:
-        (
-            header_segment,
-            payload_segment,
-            signing_input,
-            crypto_segment,
-        ) = parse_jwt_segments(jwt)
-    except ValueError:
-        # Not enough segments in the JWT, it is invalid
-        raise AuthenticationException("Invalid JWT: Not enough segments")
-
-    # GET HEADER JSON
-    """
-    try:
-        header_data = base64.b64decode(header_segment)
-    except (TypeError, binascii.Error):
-        # Invalid header segment (invalid base64 string)
-        return None
-
-    try:
-        header = json.loads(header_data.decode('utf-8'))
-    except ValueError as e:
-        # Invalid header string
-        return None
-    """
-
-    # GET PAYLOAD JSON
-
-    try:
-        payload_segment = b64_add_padding(payload_segment)
-        payload_data = base64.b64decode(payload_segment)
-    except (TypeError, binascii.Error):
-        # Invalid payload segment (invalid base64 string)
-        raise AuthenticationException("Invalid payload segment")
-
-    try:
-        payload = json.loads(payload_data.decode("utf-8"))
-    except ValueError as e:
-        # Invalid payload string
-        raise AuthenticationException("Invalid payload string")
-
-    # GET SIGNATURE
-    # NOTE: probably don't need this
-    """
-    try:
-        signature = base64.b64decode(crypto_segment)
-    except (TypeError, binascii.Error):
-        # Invalid signature segment (invalid base64 string)
-        return None
-    """
-
-    return payload
-    # return (header, payload, signing_input, crypto_segment)=
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return encoded_jwt

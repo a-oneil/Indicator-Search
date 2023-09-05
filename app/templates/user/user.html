@@ -1,7 +1,0 @@
-{% extends "base.html" %} {% block content %} 
-{{ render_partial("shared/_logo.html") }} 
-{{ render_partial("user/_login_form.html", _message_header=_message_header, _message_color=_message_color, _message=_message) }}
-<div class="ui container">
-  {{ render_partial("user/_user_info.html", user=user) }}
-</div>
-{% endblock %}

@@ -44,6 +44,7 @@ class Indicators(Base):
         indicator_notes: str | None,
         indicator_results: str | None,
         indicator_ioc_id: int | None,
+        created_by: str | None,
     ):
         results = db.query(cls).order_by(cls.id.desc())
 
@@ -79,6 +80,8 @@ class Indicators(Base):
                 raise ValueError("Indicator ID must be a number")
             results = results.filter(cls.ioc_id == indicator_ioc_id)
 
+        if created_by:
+            results = results.filter(cls.username == created_by)
         query = results.all()
 
         return query

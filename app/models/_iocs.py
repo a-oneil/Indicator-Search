@@ -1,5 +1,5 @@
-from . import Indicators
 import datetime
+from . import Indicators
 from ..database import Base
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.sql import func
@@ -89,6 +89,7 @@ class Iocs(Base):
             indicator_notes=None,
             indicator_results=None,
             indicator_ioc_id=None,
+            created_by=None,
         )
 
         new_ioc = Iocs(
@@ -130,6 +131,7 @@ class Iocs(Base):
             indicator_notes=None,
             indicator_results=None,
             indicator_ioc_id=ioc_id,
+            created_by=None,
         )
 
         if iocd_indicators:

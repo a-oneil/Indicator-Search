@@ -5,13 +5,16 @@ from fastapi import (
     Form,
     BackgroundTasks,
     HTTPException,
+    Cookie,
 )
 from .. import templates
 from ..models import Indicators, Iocs
 from ..database import get_db
 from ..osint import new_indicator_handler, get_type, refang
+from ..authentication import frontend_auth_required
 from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse, HTMLResponse
+from typing import Optional
 
 router = APIRouter(tags=["Indicators"], include_in_schema=False)
 
@@ -41,7 +44,7 @@ def home(request: Request, db: Session = Depends(get_db)):
 
 
 @router.get("/search", response_class=HTMLResponse)
-def search(
+def search_for_indicator(
     request: Request,
     db: Session = Depends(get_db),
     indicator_id: str | None = None,
@@ -51,6 +54,7 @@ def search(
     indicator_notes: str | None = None,
     indicator_results: str | None = None,
     indicator_ioc_id: str | None = None,
+    created_by: str | None = None,
 ):
     try:
         results = Indicators.get_search_results(
@@ -62,6 +66,7 @@ def search(
             indicator_notes,
             indicator_results,
             indicator_ioc_id,
+            created_by,
         )
 
         return templates.TemplateResponse(
@@ -85,24 +90,38 @@ def search(
 
 
 @router.post("/indicator/create", response_class=HTMLResponse)
-async def create(
+async def create_indicator(
     request: Request,
     background_tasks: BackgroundTasks,
     indicator: str = Form(...),
     db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
 ):
     new_indicator = refang(indicator.strip())
     indicator_type = get_type(new_indicator)
-    user = None
+
+    user = frontend_auth_required(access_token, db)
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
 
     if indicator_type:
         new_indicator = Indicators(
-            indicator=new_indicator, indicator_type=indicator_type, username=user
+            indicator=new_indicator,
+            indicator_type=indicator_type,
+            username=user.username,
         )
         db.add(new_indicator)
         db.commit()
         db.refresh(new_indicator)
-        background_tasks.add_task(new_indicator_handler, new_indicator, db)
+        background_tasks.add_task(new_indicator_handler, new_indicator, user, db)
         return templates.TemplateResponse(
             "results/results.html",
             {"request": request, "indicator": new_indicator},
@@ -125,7 +144,11 @@ async def create(
 # fmt: off
 @router.get("/indicator/results/{indicator_id}",  response_class=HTMLResponse)
 # fmt: on
-def results(indicator_id: int, request: Request, db: Session = Depends(get_db)):
+def get_indicator_results(
+    indicator_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+):
     indicator = Indicators.get_indicator_by_id(indicator_id, db)
     if indicator:
         return templates.TemplateResponse(
@@ -144,12 +167,24 @@ def results(indicator_id: int, request: Request, db: Session = Depends(get_db)):
 # fmt: off
 @router.post("/indicator/notes/{indicator_id}",  response_class=HTMLResponse)
 # fmt: on
-def add_notes(
+def add_indicator_notes(
     request: Request,
     indicator_id: int,
     notes=Form(None),
     db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
 ):
+    user = frontend_auth_required(access_token, db)
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
     indicator = Indicators.get_indicator_by_id(indicator_id, db)
     if indicator:
         return templates.TemplateResponse(
@@ -167,7 +202,23 @@ def add_notes(
 # fmt: off
 @router.get("/indicator/delete/{indicator_id}",  response_class=HTMLResponse)
 # fmt: on
-def delete(indicator_id: int, db: Session = Depends(get_db)):
+def delete_indicator(
+    request: Request,
+    indicator_id: int,
+    db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
+):
+    user = frontend_auth_required(access_token, db)
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
     indicator = Indicators.get_indicator_by_id(indicator_id, db)
     if indicator:
         ioc = Iocs.get_ioc_by_id(indicator.ioc_id, db)
@@ -178,4 +229,4 @@ def delete(indicator_id: int, db: Session = Depends(get_db)):
 
         db.delete(indicator)
         db.commit()
-    return RedirectResponse(url=router.url_path_for("search"))
+    return RedirectResponse(url=router.url_path_for("home"))

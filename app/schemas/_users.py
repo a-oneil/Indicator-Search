@@ -1,5 +1,5 @@
-from pydantic import BaseModel
 from datetime import datetime
+from pydantic import BaseModel, Field
 
 
 class CreateUser(BaseModel):
@@ -9,6 +9,10 @@ class CreateUser(BaseModel):
 
 
 class GetUser(BaseModel):
+    api_key: str
+
+
+class UserDetails(BaseModel):
     id: int
     username: str
     api_key: str
@@ -19,5 +23,9 @@ class GetUser(BaseModel):
 
 
 class Login(BaseModel):
-    username: str
-    password: str
+    username: str = Field(default=None)
+    password: str = Field(default=None)
+
+
+class TokenData(BaseModel):
+    username: str | None = None

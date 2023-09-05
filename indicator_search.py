@@ -315,7 +315,7 @@ def create_user():
     password = str(input(f"{color.YELLOW}Enter password: {color.ENDCOLOR}")).strip()
 
     response = requests.post(
-        f"{config['SERVER_ADDRESS']}/api/users",
+        f"{config['SERVER_ADDRESS']}/api/user",
         headers={"Content-Type": "application/json", "Accept": "application/json"},
         json={
             "username": user,
@@ -327,7 +327,7 @@ def create_user():
         print(color.RED + response.text + color.ENDCOLOR)
     else:
         print(
-            f"{color.BLUE}Successfully created user: {color.ENDCOLOR}{response.json().get('username')} : {response.json().get('api_key')}"
+            f"{color.BLUE}Successfully created user, log into the user on the webapp to view the API Key{color.ENDCOLOR}"
         )
 
 

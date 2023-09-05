@@ -6,11 +6,11 @@ from sqlalchemy.orm import Session
 from time import process_time
 
 
-def new_indicator_handler(indicator, db: Session):
+def new_indicator_handler(indicator, user, db: Session):
     try:
         t1_start = process_time()
         notifications.console_output(
-            f"New indicator added, starting scan for {indicator.indicator_type}: {indicator.indicator}",
+            f"New indicator added by {user.username}, starting scan for {indicator.indicator_type}: {indicator.indicator}",
             indicator,
             "BLUE",
         )
