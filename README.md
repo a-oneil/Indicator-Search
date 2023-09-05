@@ -21,7 +21,7 @@ This project runs on Fastapi (Python3), you will need:
 3. Configure `./config/.env`. If you don't have the api keys, leave the value blank.
 4. Run `python3 indicator_search.py` again and choose an option from the menu.
 
-### Creating a user:
+### Creating A User:
 When creating a user, the `USER_INVITE_KEY` from the config file (`./config/.env`) must be provided to verify that the user being created is a part of your organization.
 1. Run `python3 indicator_search.py` and choose the option to create a user.
 2. Enter username and password. It will use the user invite code from the config to verify user creation is expected.
@@ -37,7 +37,7 @@ Indicator Search has feedlists for seeding configured in the `config/feedlist_ex
 2. Enter your `api_key`.
 
 
-### Docker
+### Docker:
 If you build a docker container, run it with the following command. 
 More docker options will soon be built into the menu.
 ```
