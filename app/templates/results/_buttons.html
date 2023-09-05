@@ -8,8 +8,8 @@
   {# Display the related indicators if any #}
   <div class="column" style="padding-left: 0px">
     {% if indicator.ioc_id %}
-    <button class="ui green fluid button" onclick="window.location.href='/iocs/delete/results/{{ indicator.id }}'">
-      Remove {{indicator.indicator_type}} [ID-{{indicator.ioc_id}}] as an IOC 
+    <button class="ui blue fluid button" onclick="window.location.href='/iocs/delete/results/{{ indicator.id }}'">
+      Remove Indicator As An IOC [ID-{{indicator.ioc_id}}]
     </button>
     {% else %}
     <button class="ui red fluid button" onclick="window.location.href='/iocs/mark_ioc/{{ indicator.id }}'">

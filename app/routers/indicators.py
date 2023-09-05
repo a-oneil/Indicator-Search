@@ -230,3 +230,36 @@ def delete_indicator(
         db.delete(indicator)
         db.commit()
     return RedirectResponse(url=router.url_path_for("home"))
+
+
+# fmt: off
+@router.get("/search/delete/{indicator_id}",  response_class=HTMLResponse)
+# fmt: on
+def delete_indicator_from_search(
+    request: Request,
+    indicator_id: int,
+    db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
+):
+    user = frontend_auth_required(access_token, db)
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
+    indicator = Indicators.get_indicator_by_id(indicator_id, db)
+    if indicator:
+        ioc = Iocs.get_ioc_by_id(indicator.ioc_id, db)
+        if ioc:
+            ioc.indicator_id = None
+            db.add(ioc)
+            db.commit()
+
+        db.delete(indicator)
+        db.commit()
+    return RedirectResponse(url=router.url_path_for("search_for_indicator"))

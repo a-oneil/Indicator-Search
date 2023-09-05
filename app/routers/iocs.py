@@ -118,7 +118,7 @@ def delete(
             },
         )
     Iocs.remove_ioc(ioc_id, db)
-    return RedirectResponse(url=router.url_path_for("search"))
+    return RedirectResponse(url=router.url_path_for("search_iocs"))
 
 
 # fmt: off
@@ -157,4 +157,4 @@ def delete_from_results(
             },
         )
     except:
-        return RedirectResponse(url=router.url_path_for("search"))
+        return RedirectResponse(url=f"/indicator/results/{indicator_id}")
