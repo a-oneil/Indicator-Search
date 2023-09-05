@@ -30,7 +30,7 @@
     {% else %}
     <div class="ui segment">
       <p class="ui small header">
-        <i class="fa-solid fa-circle-check"></i> {{site.site}} <button class="mini green ui button" style="float: right;" onclick='CopyTextToClipboard("{{site.results}}")'>Copy JSON</button>
+        <i class="fa-solid fa-circle-check"></i> {{site.site}} <button class="mini blue ui button" style="float: right;" onclick='CopyTextToClipboard("{{site.results}}")'>Copy JSON</button>
       </p>
       <div class="ui two column grid">
         {% for key,value in site.results.items() %}

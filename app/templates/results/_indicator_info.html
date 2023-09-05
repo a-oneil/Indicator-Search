@@ -3,33 +3,37 @@
     <a class="ui small header" href="/indicator/results/{{ indicator.id }}"
     >{{ indicator.indicator }}</a>
   </p>
-
-
-
-  <div class="ui two column grid">
-    <div class="column">
-      <div class="ui fluid raised card">
-        <div class="content">
-          <h4 class="ui header">Details:</h4>
-          <div class="ui labels" style="padding: 3px;">
-            {{ render_partial("shared/_indicator_details.html", indicator=indicator) }}
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    {% if indicator.tags %}
-      <div class="column" style="padding-left: 0px">
+  {% if indicator.complete %}
+    <div class="ui two column grid">
+      <div class="column">
         <div class="ui fluid raised card">
           <div class="content">
-            <h4 class="ui header">Tags:</h4>
+            <h4 class="ui header">Details:</h4>
             <div class="ui labels" style="padding: 3px;">
-              {{ render_partial("shared/_indicator_tags.html", indicator=indicator) }}
+              {{ render_partial("shared/_indicator_details.html", indicator=indicator) }}
             </div>
           </div>
         </div>
       </div>
-    {% endif %}
-  </div>
-
+      
+      {% if indicator.tags %}
+        <div class="column" style="padding-left: 0px">
+          <div class="ui fluid raised card">
+            <div class="content">
+              <h4 class="ui header">Tags:</h4>
+              <div class="ui labels" style="padding: 3px;">
+                {{ render_partial("shared/_indicator_tags.html", indicator=indicator) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  {% else %}
+      <br>
+      <br>
+      <div class="ui text active loader" style="height:fit-content">Searching...</div>
+      <br>
+      <br>
+  {% endif %}
 </div>

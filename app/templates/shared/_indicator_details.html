@@ -1,15 +1,38 @@
-<a class="ui label">
+<script>
+    function CopyTextToClipboard(text) {
+      // Create a temporary textarea element to hold the text
+      var tempTextarea = document.createElement("textarea");
+      tempTextarea.value = text;
+  
+      // Append the textarea to the document
+      document.body.appendChild(tempTextarea);
+  
+      // Select the text in the textarea
+      tempTextarea.select();
+  
+      // Copy the selected text to the clipboard
+      document.execCommand("copy");
+  
+      // Remove the temporary textarea
+      document.body.removeChild(tempTextarea);
+    }
+</script>
+
+<a class="ui label" href="/indicator/results/{{ indicator.id }}">
     ID: {{ indicator.id }}
 </a>
-<a class="ui label">
+<a class="ui label" href="/search?indicator_id=&indicator_name=&indicator_type={{ indicator.indicator_type }}&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=">
     {{ indicator.indicator_type }}
 </a>
-<a class="ui label">
+<a class="ui label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=&created_by={{ indicator.username }}">
     Created by: {{ indicator.username }}
 </a>
 <a class="ui label">
     Created: {{ indicator.time_created }}
 </a>
 <a class="ui label">
-    Completed: {{ indicator.time_updated }}
+    Last Updated: {{ indicator.time_updated }}
+</a>
+<a class="ui label" onclick='CopyTextToClipboard("{{indicator.indicator}}")'>
+    Copy Name
 </a>

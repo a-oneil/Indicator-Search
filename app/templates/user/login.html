@@ -1,10 +1,31 @@
 {% extends "base.html" %} {% block content %} 
 {{ render_partial("shared/_logo.html") }}
 
-<div style="margin-top: 10px; margin-bottom: 30px;" class="ui container">
-  {{ render_partial("shared/_divider.html", text="Login", icon="fa-solid fa-user") }}
-  {{ render_partial("user/_buttons.html") }}
-  <br>
-  {{ render_partial("user/_login_form.html", _message_header=_message_header, _message_color=_message_color, _message=_message) }}
-</div>
+{% if user %}
+  <div style="margin-top: 10px; margin-bottom: 30px;" class="ui container">
+    {{ render_partial("shared/_divider.html", text="Welcome, " + user.username, icon="fa-solid fa-user") }}
+    <div class="ui segment">
+      <ul>
+        <li><b>API Key:</b> {{user.api_key}}</li>
+        <li><b>Time Created:</b> {{user.time_created}}</li>
+        <li><b>Count of submitted indicators:</b> {{user.indicators | length}}</li>
+      </ul>
+    </div>
+    <button class="ui red button" onclick="window.location.href='/user/logout'">
+      Logout
+    </button>
+    <button class="ui red button" style="float: right;" onclick="window.location.href='/user/delete/{{user.api_key}}'">
+      Delete User
+    </button>
+  </div>
+{% else %}
+  <div style="margin-top: 10px; margin-bottom: 30px;" class="ui container">
+    {{ render_partial("shared/_divider.html", text="Login", icon="fa-solid fa-right-to-bracket") }}
+    <button class="ui blue fluid button" onclick="window.location.href='/user/signup'">
+      Create User
+    </button>
+    <br>
+    {{ render_partial("user/_login_form.html", _message_header=_message_header, _message_color=_message_color, _message=_message) }}
+  </div>
+{% endif %}
 {% endblock %}

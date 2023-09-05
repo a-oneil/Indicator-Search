@@ -1,16 +1,16 @@
 <div style="margin-top: 10px; margin-bottom: 30px;" class="ui container">
     <form class="ui form" action="/feeds/add" method="post">
         <div class="field">
-            <input type="text" required name="name" value="Feed list name"><br>
+            <input type="text" required name="name" placeholder="Feed list name"><br>
         </div>
         <div class="field">
-            <input type="text" required name="url" value="URL where the feed list is hosted"><br>
+            <input type="text" required name="url" placeholder="URL where the feed list is hosted"><br>
         </div>
         <div class="field">
-            <input type="text" name="description" value="Description of this list (Optional)"><br>
+            <input type="text" name="description" placeholder="Description of this list (Optional)"><br>
         </div>
         <div class="field">
-            <input type="text" required name="category" value="Category (Malware, Spam, C2)"><br>
+            <input type="text" required name="category" placeholder="Category (Malware, Spam, C2)"><br>
         </div>
         <div class="field">
             <div class="field">
@@ -24,7 +24,7 @@
         </div>
 
         <div class="field">
-            <input type="text" name="list_type" value="How often does this list refresh (Optional)"><br>
+            <input type="text" name="list_type" placeholder="How often does this list refresh (Optional)"><br>
         </div>
         <button class="ui red button" type="submit">Add</button>
     </form>
