@@ -1246,7 +1246,10 @@ def maltiverse(indicator):
             raise Exception("Invalid indicator type for Maltiverse")
 
         if not result:
-            raise Exception("No results found")
+            raise no_results_found("Maltiverse")
+
+        if not result.get("classification", ""):
+            return no_results_found("Maltiverse")
 
         return (
             # fmt: off
