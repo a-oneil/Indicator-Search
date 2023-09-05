@@ -168,7 +168,7 @@ def new_user(
         new_user = User_Accounts(
             username=username,
             password_hash=bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()),
-            api_key=secrets.token_urlsafe(32),
+            api_key=secrets.token_urlsafe(24),
         )
         db.add(new_user)
         db.commit()
