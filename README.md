@@ -21,16 +21,28 @@ This project runs on Fastapi (Python3), you will need:
 3. Configure `./config/.env`. If you don't have the api keys, leave the value blank.
 4. Run `python3 indicator_search.py` again and choose an option from the menu.
 
-#### Docker
-If you build a docker container, run it with the following command. More docker options will soon be built into the menu.
-```
-docker run -p 8000:8000 -v /path/to/config/.env:/code/config/.env indicator-search:latest
-```
+### Creating a user:
+When creating a user, the `USER_INVITE_KEY` from the config file (`./config/.env`) must be provided to verify that the user being created is a part of your organization.
+1. Run `python3 indicator_search.py` and choose the option to create a user.
+2. Enter username and password. It will use the user invite code from the config to verify user creation is expected.
 
-## Todos:
-* Docker compose files with preconfigured HTTPs traefik / postgres are a work in progress.
-* Front end user registration page, login, and login required (JWT) page actions (The API is currently enforcing user/api authentication but the webapp is wide open).
-* When adding a new indicator to search, capture the user and save to the indicator.
+### Seeding Indicators:
+The Indicator Search menu provides 8 example indicators to quickly test that all the API tools are working as expected.
+1. Run `python3 indicator_search.py` and choose the option to seed indicators.
+2. Enter your `api_key`.
+
+### Seeding Feedlists:
+Indicator Search has feedlists for seeding configured in the `config/feedlist_examples` folder. When you choose to seed the feedlists, it will iterate through all feeds in the json files. If the URL is already added, it will the server will reject the feedlist addition.
+1. Run `python3 indicator_search.py` and choose the option to seed feedlists.
+2. Enter your `api_key`.
+
+
+### Docker
+If you build a docker container, run it with the following command. 
+More docker options will soon be built into the menu.
+```
+docker run -p 8000:8000 indicator-search:latest
+```
 
 ## Types Of Indicators:
 * IPv4
@@ -50,7 +62,8 @@ docker run -p 8000:8000 -v /path/to/config/.env:/code/config/.env indicator-sear
 |Public Feedlists|IP, Hash, FQDN|No, publicly available feedlists|
 |Virus Total|IPv4, IPv6, Hash, FQDN, URL|Yes|
 |Inquest Labs|IPv4, IPv6, Hash, FQDN, URL, Email|No|
-|Tweetfeed|IPv4, FQDN, Hash, URL|No|
+|Tweetfeed|IPv4, Hash, FQDN, URL|No|
+|Maltiverse|IPv4, Hash, FQDN, URL|Yes|
 |Stop Forum Spam|IPv4, IPv6, Email|No|
 |IPInfoio|IPv4, IPv6|No|
 |Abuse IPDB|IPv4, IPv6|Yes|
@@ -61,7 +74,7 @@ docker run -p 8000:8000 -v /path/to/config/.env:/code/config/.env indicator-sear
 |Shodan|IPv4|Yes|
 |URLVoid (APIVoid)|URL, FQDN, Email|Yes|
 |Checkphish|URL, FQDN|Yes|
-|URLScan.io|URL, FQDN|No|
+|URLScan|URL, FQDN|No|
 |Breach Directory|Email|Yes|
 |Circl lu|Hash|No|
 |Echo Trail|Hash|Yes|
@@ -73,7 +86,8 @@ docker run -p 8000:8000 -v /path/to/config/.env:/code/config/.env indicator-sear
 ![Search Results](images/results1.png)
 ---
 ![Search Results](images/results2.png)
-
+---
+![Search Results](images/results3.png)
 
 ## Results JSON example
 ```
