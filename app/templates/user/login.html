@@ -1,37 +1,82 @@
 {% extends "base.html" %} {% block content %} 
-{{ render_partial("shared/_logo.html") }}
-
+{{ render_partial("shared/_logo.html") }} 
 {% if user %}
-  <div style="margin-top: 10px; margin-bottom: 30px;" class="ui container">
-    {{ render_partial("shared/_divider.html", text="Welcome, " + user.username, icon="fa-solid fa-user") }}
-    <button class="ui blue fluid button" onclick="window.location.href='/'">
-      Start Searching <i class="fa-solid fa-magnifying-glass"></i>
-    </button>
-    <div class="ui segment">
-      <ul>
-        <li><b>API Key:</b> {{user.api_key}}</li>
-        <li><b>Time Created:</b> {{user.time_created}}</li>
-        <li><b>Number of submitted indicators:</b> <a href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=&created_by={{ user.username }}">{{user.indicators | length}}</a></li>
-      </ul>
+<script>
+  function CopyTextToClipboard(text) {
+    // Create a temporary textarea element to hold the text
+    var tempTextarea = document.createElement("textarea");
+    tempTextarea.value = text;
+
+    // Append the textarea to the document
+    document.body.appendChild(tempTextarea);
+
+    // Select the text in the textarea
+    tempTextarea.select();
+
+    // Copy the selected text to the clipboard
+    document.execCommand("copy");
+
+    // Remove the temporary textarea
+    document.body.removeChild(tempTextarea);
+  }
+</script>
+<div style="margin-top: 10px; margin-bottom: 30px" class="ui container">
+  {{ render_partial("shared/_divider.html", text="Welcome, " + user.username, icon="fa-solid fa-user") }}
+  <button class="ui blue fluid button" onclick="window.location.href='/'">
+    Start Searching <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+  <div class="ui segment">
+    <div class="ui three column centered grid">
+      <div class="column">
+        <div class="ui raised fluid card">
+          <div class="content">
+            <p class="header">
+              API Key
+              <button class="mini ui icon button" style="float: right" onclick='CopyTextToClipboard("{{user.api_key}}")'>
+                <i class="fa-solid fa-copy"></i>
+              </button>
+            </p>
+            <p style="word-wrap: break-word">{{user.api_key}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="column" style="padding-left: 0px">
+        <div class="ui raised fluid card">
+          <div class="content">
+            <p class="header">Time Created</p>
+            <p style="word-wrap: break-word">{{user.time_created}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="column" style="padding-left: 0px">
+        <div class="ui raised fluid card">
+          <div class="content">
+            <p class="header">Number Of Submitted Indicators</p>
+            <a href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=&created_by={{ user.username }}" style="word-wrap: break-word">
+              {{user.indicators | length}}
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
-    <button class="ui red button" onclick="window.location.href='/user/logout'">
-      Logout
-    </button>
-    <button class="ui blue button" style="float: auto;" onclick="window.location.href='/user/edit'">
-      Edit User
-    </button>
-    <button class="ui red button" style="float: right;" onclick="window.location.href='/user/delete/{{user.api_key}}'">
-      Delete User
-    </button>
   </div>
+  <button class="ui red button" onclick="window.location.href='/user/logout'">
+    Logout
+  </button>
+  <button class="ui blue button" style="float: auto" onclick="window.location.href='/user/edit'">
+    Edit User
+  </button>
+  <button class="ui red button" style="float: right" onclick="window.location.href='/user/delete/{{user.api_key}}'">
+    Delete User
+  </button>
+</div>
 {% else %}
-  <div style="margin-top: 10px; margin-bottom: 30px;" class="ui container">
-    {{ render_partial("shared/_divider.html", text="Login", icon="fa-solid fa-right-to-bracket") }}
-    <button class="ui blue fluid button" onclick="window.location.href='/user/signup'">
-      Create User
-    </button>
-    <br>
-    {{ render_partial("user/_login_form.html", _message_header=_message_header, _message_color=_message_color, _message=_message) }}
-  </div>
-{% endif %}
-{% endblock %}
+<div style="margin-top: 10px; margin-bottom: 30px" class="ui container">
+  {{ render_partial("shared/_divider.html", text="Login", icon="fa-solid fa-right-to-bracket") }}
+  <button class="ui blue fluid button" onclick="window.location.href='/user/signup'">
+    Create User
+  </button>
+  <br />
+  {{ render_partial("user/_login_form.html", _message_header=_message_header, _message_color=_message_color, _message=_message) }}
+</div>
+{% endif %} {% endblock %}
