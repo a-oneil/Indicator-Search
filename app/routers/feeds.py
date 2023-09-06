@@ -2,9 +2,8 @@ from .. import templates
 from ..database import get_db
 from ..models import FeedLists
 from ..authentication import frontend_auth_required
-from fastapi import APIRouter, Cookie
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends, status, Request, Form
+from fastapi import APIRouter, Depends, status, Request, Form, Cookie
 from starlette.responses import RedirectResponse, HTMLResponse
 from typing import Optional
 
@@ -31,35 +30,47 @@ def create_feedlist(
     db: Session = Depends(get_db),
     access_token: Optional[str] = Cookie(None),
 ):
-    user = frontend_auth_required(access_token, db)
-    if not user:
+    try:
+        user = frontend_auth_required(access_token, db)
+        if not user:
+            return templates.TemplateResponse(
+                "user/login.html",
+                {
+                    "request": request,
+                    "_message_header": "",
+                    "_message_color": "red",
+                    "_message": "Please log in!",
+                },
+            )
+        url_already_in_feedlists = FeedLists.get_feedlist_by_url(url, db)
+        if url_already_in_feedlists:
+            raise Exception("URL already in feedlists")
+
+        new_feedlist = FeedLists(
+            name=name,
+            category=category,
+            list_type=list_type.lower(),
+            list_period=list_period,
+            url=url,
+            description=description,
+            active=True,
+        )
+        db.add(new_feedlist)
+        db.commit()
+        return RedirectResponse(
+            url=router.url_path_for("feeds"), status_code=status.HTTP_303_SEE_OTHER
+        )
+    except Exception as e:
         return templates.TemplateResponse(
-            "user/login.html",
+            "feeds/feeds.html",
             {
                 "request": request,
-                "_message_header": "",
+                "feed_lists": FeedLists.get_feedlists(db),
+                "_message_header": "Error!",
                 "_message_color": "red",
-                "_message": "Please log in!",
+                "_message": str(e),
             },
         )
-    url_already_in_feedlists = FeedLists.get_feedlist_by_url(url, db)
-    if url_already_in_feedlists:
-        raise Exception(f"{url} already exists in database.")
-
-    new_feedlist = FeedLists(
-        name=name,
-        category=category,
-        list_type=list_type.lower(),
-        list_period=list_period,
-        url=url,
-        description=description,
-        active=True,
-    )
-    db.add(new_feedlist)
-    db.commit()
-    return RedirectResponse(
-        url=router.url_path_for("feeds"), status_code=status.HTTP_303_SEE_OTHER
-    )
 
 
 @router.get("/delete/{feedlists_id}", response_class=HTMLResponse)
@@ -97,22 +108,33 @@ def disable_feedlist(
     db: Session = Depends(get_db),
     access_token: Optional[str] = Cookie(None),
 ):
-    user = frontend_auth_required(access_token, db)
-    if not user:
-        return templates.TemplateResponse(
-            "user/login.html",
-            {
-                "request": request,
-                "_message_header": "",
-                "_message_color": "red",
-                "_message": "Please log in!",
-            },
-        )
-    feedlist = FeedLists.get_feedlist_by_id(feedlists_id, db)
-    url = router.url_path_for("feeds")
-    if feedlist:
+    try:
+        user = frontend_auth_required(access_token, db)
+        if not user:
+            return templates.TemplateResponse(
+                "user/login.html",
+                {
+                    "request": request,
+                    "_message_header": "",
+                    "_message_color": "red",
+                    "_message": "Please log in!",
+                },
+            )
+        feedlist = FeedLists.get_feedlist_by_id(feedlists_id, db)
+        url = router.url_path_for("feeds")
+        if not feedlist:
+            raise Exception("Feedlist not found")
         feedlist.active = not feedlist.active
         db.commit()
         return RedirectResponse(url=url, status_code=status.HTTP_302_FOUND)
-    else:
-        return RedirectResponse(url=url, status_code=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return templates.TemplateResponse(
+            "feeds/feeds.html",
+            {
+                "request": request,
+                "feed_lists": FeedLists.get_feedlists(db),
+                "_message_header": "Error!",
+                "_message_color": "red",
+                "_message": str(e),
+            },
+        )

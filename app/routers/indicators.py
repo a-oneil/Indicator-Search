@@ -4,7 +4,6 @@ from fastapi import (
     Request,
     Form,
     BackgroundTasks,
-    HTTPException,
     Cookie,
 )
 from .. import templates
@@ -141,9 +140,7 @@ async def create_indicator(
         )
 
 
-# fmt: off
-@router.get("/indicator/results/{indicator_id}",  response_class=HTMLResponse)
-# fmt: on
+@router.get("/indicator/results/{indicator_id}", response_class=HTMLResponse)
 def get_indicator_results(
     indicator_id: int,
     request: Request,
@@ -161,12 +158,21 @@ def get_indicator_results(
             },
         )
     else:
-        raise HTTPException(404)
+        return templates.TemplateResponse(
+            "home/home.html",
+            {
+                "request": request,
+                "recent_indicators": Indicators.get_recent_scans(db),
+                "_message_header": "Error!",
+                "_message_color": "red",
+                "_message": "Indicator not found!",
+                "count_of_successful_scans": Indicators.successful_scans(db),
+                "count_of_failed_scans": Indicators.failed_scans(db),
+            },
+        )
 
 
-# fmt: off
-@router.post("/indicator/notes/{indicator_id}",  response_class=HTMLResponse)
-# fmt: on
+@router.post("/indicator/notes/{indicator_id}", response_class=HTMLResponse)
 def add_indicator_notes(
     request: Request,
     indicator_id: int,
@@ -196,12 +202,21 @@ def add_indicator_notes(
             },
         )
     else:
-        raise HTTPException(404)
+        return templates.TemplateResponse(
+            "results/results.html",
+            {
+                "request": request,
+                "indicator": indicator,
+                "related_indicators": Indicators.get_related_indicators(indicator, db),
+                "ioc": Iocs.get_ioc_by_id(indicator.ioc_id, db),
+                "_message_header": "Error!",
+                "_message_color": "red",
+                "_message": "Something went wrong with saving the notes.",
+            },
+        )
 
 
-# fmt: off
-@router.get("/indicator/delete/{indicator_id}",  response_class=HTMLResponse)
-# fmt: on
+@router.get("/indicator/delete/{indicator_id}", response_class=HTMLResponse)
 def delete_indicator(
     request: Request,
     indicator_id: int,
@@ -220,21 +235,32 @@ def delete_indicator(
             },
         )
     indicator = Indicators.get_indicator_by_id(indicator_id, db)
-    if indicator:
-        ioc = Iocs.get_ioc_by_id(indicator.ioc_id, db)
-        if ioc:
-            ioc.indicator_id = None
-            db.add(ioc)
-            db.commit()
+    if not indicator:
+        return templates.TemplateResponse(
+            "home/home.html",
+            {
+                "request": request,
+                "recent_indicators": Indicators.get_recent_scans(db),
+                "_message_header": "Error!",
+                "_message_color": "red",
+                "_message": "Indicator not found!",
+                "count_of_successful_scans": Indicators.successful_scans(db),
+                "count_of_failed_scans": Indicators.failed_scans(db),
+            },
+        )
 
-        db.delete(indicator)
+    ioc = Iocs.get_ioc_by_id(indicator.ioc_id, db)
+    if ioc:
+        ioc.indicator_id = None
+        db.add(ioc)
         db.commit()
+
+    db.delete(indicator)
+    db.commit()
     return RedirectResponse(url=router.url_path_for("home"))
 
 
-# fmt: off
-@router.get("/search/delete/{indicator_id}",  response_class=HTMLResponse)
-# fmt: on
+@router.get("/search/delete/{indicator_id}", response_class=HTMLResponse)
 def delete_indicator_from_search(
     request: Request,
     indicator_id: int,
@@ -253,13 +279,26 @@ def delete_indicator_from_search(
             },
         )
     indicator = Indicators.get_indicator_by_id(indicator_id, db)
-    if indicator:
-        ioc = Iocs.get_ioc_by_id(indicator.ioc_id, db)
-        if ioc:
-            ioc.indicator_id = None
-            db.add(ioc)
-            db.commit()
+    if not indicator:
+        return templates.TemplateResponse(
+            "home/home.html",
+            {
+                "request": request,
+                "recent_indicators": Indicators.get_recent_scans(db),
+                "_message_header": "Error!",
+                "_message_color": "red",
+                "_message": "Indicator not found!",
+                "count_of_successful_scans": Indicators.successful_scans(db),
+                "count_of_failed_scans": Indicators.failed_scans(db),
+            },
+        )
 
-        db.delete(indicator)
+    ioc = Iocs.get_ioc_by_id(indicator.ioc_id, db)
+    if ioc:
+        ioc.indicator_id = None
+        db.add(ioc)
         db.commit()
+
+    db.delete(indicator)
+    db.commit()
     return RedirectResponse(url=router.url_path_for("search_for_indicator"))

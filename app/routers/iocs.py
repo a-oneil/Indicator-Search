@@ -121,9 +121,7 @@ def delete(
     return RedirectResponse(url=router.url_path_for("search_iocs"))
 
 
-# fmt: off
-@router.get("/delete/results/{indicator_id}",response_class=HTMLResponse)
-# fmt: on
+@router.get("/delete/results/{indicator_id}", response_class=HTMLResponse)
 def delete_from_results(
     request: Request,
     indicator_id: int,
@@ -156,5 +154,15 @@ def delete_from_results(
                 "_message": f"Removed {indicator.indicator} as an IOC",
             },
         )
-    except:
-        return RedirectResponse(url=f"/indicator/results/{indicator_id}")
+    except Exception as e:
+        return templates.TemplateResponse(
+            "results/results.html",
+            {
+                "request": request,
+                "indicator": indicator,
+                "related_indicators": Indicators.get_related_indicators(indicator, db),
+                "_message_color": "red",
+                "_message_header": "Error!",
+                "_message": str(e),
+            },
+        )
