@@ -107,7 +107,7 @@ class Iocs(Base):
             for indicator in related_indicators:
                 indicator.ioc_id = new_ioc.id
                 tags_dict = indicator.tags if indicator.tags else {}
-                tags_dict.update({"IOC": new_ioc.id})
+                tags_dict.update({"ioc": new_ioc.id})
                 indicator.tags = tags_dict
                 flag_modified(indicator, "tags")
                 db.add(indicator)
@@ -138,7 +138,7 @@ class Iocs(Base):
             for indicator in iocd_indicators:
                 indicator.ioc_id = None
                 tags_dict = indicator.tags if indicator.tags else {}
-                tags_dict.pop("IOC", None)
+                tags_dict.pop("ioc", None)
                 indicator.tags = tags_dict
                 flag_modified(indicator, "tags")
                 db.add(indicator)
@@ -146,7 +146,7 @@ class Iocs(Base):
 
         db.delete(ioc)
         db.commit()
-        return {"Success": "IOC removed"}
+        return {"success": "IOC removed"}
 
     @classmethod
     def search_for_ioc(cls, indicator, db: Session):
@@ -155,7 +155,7 @@ class Iocs(Base):
         if ioc:
             input_indicator.ioc_id = ioc.id
             tags_dict = input_indicator.tags if input_indicator.tags else {}
-            tags_dict.update({"IOC": ioc.id})
+            tags_dict.update({"ioc": ioc.id})
             input_indicator.tags = tags_dict
             flag_modified(input_indicator, "tags")
             db.add(input_indicator)
@@ -173,6 +173,6 @@ class Iocs(Base):
         if iocs:
             for ioc in iocs:
                 cls.remove_ioc(ioc.id, db)
-            return {"Success": f"{len(iocs)} IOCs aged out"}
+            return {"success": f"{len(iocs)} IOCs aged out"}
         else:
             raise Exception("No IOCs to age out")
