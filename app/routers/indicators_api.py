@@ -33,9 +33,7 @@ def create_indicator(
     db.add(new_indicator)
     db.commit()
     db.refresh(new_indicator)
-    background_tasks.add_task(
-        background_tasks, new_indicator_handler, new_indicator, user, db
-    )
+    background_tasks.add_task(new_indicator_handler, new_indicator, user, db)
     return new_indicator
 
 
