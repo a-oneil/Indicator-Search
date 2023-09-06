@@ -1,13 +1,16 @@
 # Indicator Search
 ![Home](images/home.png)
 
-#### About:
+## About:
 Indicator Search is a web application and API designed for rapid scanning of indicators (observables found during a security incident) against multiple OSINT sites, based on the input indicator type. Inspired by Intelowl, this project aims to provide a similar tool while utilizing the FastAPI framework. Indicator search could deployed among a shared server between security engineers to aid in quick observable lookups as it enables analysts to gather information from various sources in a streamlined manner.
 
-#### Contributing:
+### Contributing:
 If you're interested in contributing to Indicator Search, feel free to fork this repository, make your improvements, and submit a pull request. I welcome any enhancements or bug fixes that can make this tool even more valuable for the security community.
-#### Disclaimer:
+### Disclaimer:
 Indicator Search is a tool designed for informational purposes and should be used responsibly and ethically. It relies on APIs and public threat feeds. Please ensure that you comply with the terms of use of the data sources accessed by this tool prior to its usage.
+
+### Demo:
+Discover the app's features and capabilities through a live demonstration at [indicatorsearch.app](https://indicatorsearch.app).
 
 ## Setup:
 For now, Indicator Search can either be ran locally, served over port 8000 or via docker container. The instructions below should get you started.
@@ -35,7 +38,6 @@ The Indicator Search menu provides 8 example indicators to quickly test that all
 Indicator Search has feedlists for seeding configured in the `config/feedlist_examples` folder. When you choose to seed the feedlists, it will iterate through all feeds in the json files. If the URL is already added, it will the server will reject the feedlist addition.
 1. Run `python3 indicator_search.py` and choose the option to seed feedlists.
 2. Enter your `api_key`.
-
 
 ### Docker:
 If you build a docker container, run it with the following command. 
@@ -92,7 +94,7 @@ docker run -p 8000:8000 indicator-search:latest
 ## Results JSON example
 ```
 {
-  "time_created": "2023-08-18T06:36:54",
+  "time_created": "2023-09-06T17:  "time_created": "2023-08-18T06:36:54",
   "username": null,
   "indicator_type": "hash.md5",
   "feedlist_results": null,
@@ -249,6 +251,215 @@ docker run -p 8000:8000 indicator-search:latest
     "Hybrid Analysis": "https://www.hybrid-analysis.com/search?query=a3cb3b02a683275f7e0a0f8a9a5c9e07",
     "Joes Sandbox": "https://www.joesandbox.com/search?q=a3cb3b02a683275f7e0a0f8a9a5c9e07",
     "JSON": "http://127.0.0.1:8000/api/indicator/16"
+  },
+  "notes": null,
+  "complete": true
+}04:29",
+  "username": "aoneil",
+  "indicator_type": "hash.md5",
+  "feedlist_results": null,
+  "tags": {
+    "signature": "trojan.mimikatz/hacktoolx",
+    "category": "trojan",
+    "vt_hits": "53/65",
+    "malicious": true
+  },
+  "enrichments": null,
+  "ioc_id": null,
+  "time_updated": "2023-09-06T17:04:38",
+  "id": 9,
+  "indicator": "a3cb3b02a683275f7e0a0f8a9a5c9e07",
+  "results": [
+    {
+      "site": "circl.lu",
+      "results": {
+        "error": "No results found"
+      }
+    },
+    {
+      "site": "echo_trail",
+      "results": {
+        "error": "No results found"
+      }
+    },
+    {
+      "site": "tweetfeed.live",
+      "results": {
+        "error": "No results found"
+      }
+    },
+    {
+      "site": "virustotal_hash",
+      "results": {
+        "malicious": 53,
+        "undetected": 12,
+        "suggested_threat_label": "trojan.mimikatz/hacktoolx",
+        "popular_threat_category": "trojan",
+        "community_votes": {
+          "harmless": 1,
+          "malicious": 8
+        },
+        "names": [
+          "output.256963751.txt",
+          "mimikatz",
+          "mimikatz.exe",
+          "output.256962353.txt",
+          "mimikatz-2-2.exe",
+          "mimimikotiki.exe",
+          "kittenz.exe",
+          "mimimikotiki.ex_",
+          "Cobaltbghdbghich21_browsingExe.exe",
+          "mim64.exe",
+          "flag5{c5237169a63c259944d3b8fe59db0ab8}.exe",
+          "mimikatz.pdf",
+          "._cache__CACHE~2.EXE",
+          "output.213384677.txt",
+          "mimik.exe",
+          "itrackBr_6da58a5f-2b81-452c-b5eb-7f28a21d33d3.jpg",
+          "31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc.exe",
+          "output.193444480.txt",
+          "go-memexec-706618059.exe",
+          "._cache__CACHE~1.EXE",
+          "_CACHE~2.EXE",
+          "ben4585.tmp.exe",
+          "_CACHE~1.EXE",
+          "._cache_file.exe",
+          "google.exe"
+        ],
+        "type": "PE32+ executable (console) x86-64, for MS Windows",
+        "type_tag": "peexe",
+        "tags": [
+          "peexe",
+          "assembly",
+          "overlay",
+          "runtime-modules",
+          "signed",
+          "detect-debug-environment",
+          "idle",
+          "long-sleeps",
+          "direct-cpu-clock-access",
+          "64bits",
+          "checks-disk-space"
+        ],
+        "times_submitted": 67,
+        "product": "mimikatz",
+        "product_description": "mimikatz for Windows",
+        "signed": "Signed",
+        "signing_date": "05:19 PM 09/18/2020",
+        "md5": "a3cb3b02a683275f7e0a0f8a9a5c9e07",
+        "sha1": "d241df7b9d2ec0b8194751cd5ce153e27cc40fa4",
+        "sha256": "31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc"
+      }
+    },
+    {
+      "site": "hybrid_analysis",
+      "results": {
+        "file_name": "mimkatz",
+        "type": "PE32+ executable (console) x86-64, for MS Windows",
+        "job_environment": "Windows 10 64 bit",
+        "av_detect": 78,
+        "vx_family": "HackTool.Mimikatz",
+        "verdict": "malicious",
+        "threat_score": 100,
+        "sha1": "d241df7b9d2ec0b8194751cd5ce153e27cc40fa4",
+        "sha256": "31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc",
+        "sha512": "95a99fd1686bd5b01d3eb5b055d3cab900e6480d4e2360595b64d57c80e74daa4c14753fa2e0e224ea5c72735af3339fb72f7d9455f4feeb3e237e6c20866d96",
+        "classification": [
+          "banker",
+          "emotet",
+          "hacktool",
+          "infostealer",
+          "netwire",
+          "qakbot",
+          "ransomware",
+          "rat"
+        ],
+        "tags": [
+          "tag",
+          "banker",
+          "emotet",
+          "hacktool",
+          "infostealer",
+          "netwire",
+          "qakbot",
+          "ransomware",
+          "rat"
+        ]
+      }
+    },
+    {
+      "site": "malware_bazzar",
+      "results": {
+        "file_type": "exe",
+        "signature": "MimiKatz",
+        "file_name": "31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc"
+      }
+    },
+    {
+      "site": "inquest_labs",
+      "results": {
+        "error": "No results found"
+      }
+    },
+    {
+      "site": "maltiverse",
+      "results": {
+        "classification": "malicious",
+        "blacklist": [
+          {
+            "count": 1,
+            "description": "Common Raven",
+            "first_seen": "2023-02-05 04:18:59",
+            "labels": [
+              "malicious-activity"
+            ],
+            "last_seen": "2023-02-06 02:06:31",
+            "source": "Maltiverse"
+          },
+          {
+            "count": 1,
+            "description": "Generic Malware",
+            "first_seen": "2023-01-31 07:45:03",
+            "last_seen": "2023-01-31 07:45:03",
+            "source": "Hybrid-Analysis"
+          },
+          {
+            "count": 1,
+            "description": "MimiKatz",
+            "first_seen": "2022-06-21 10:53:09",
+            "labels": [
+              "malicious-activity"
+            ],
+            "last_seen": "2022-06-21 10:53:09",
+            "source": "MalwareBazaar Abuse.ch"
+          },
+          {
+            "count": 1,
+            "description": "Gen:Heur.Mimikatz",
+            "first_seen": "2020-09-23 08:16:05",
+            "last_seen": "2020-09-23 08:16:05",
+            "source": "Hybrid-Analysis"
+          }
+        ],
+        "tags": [
+          "apt",
+          "banker",
+          "emotet",
+          "hacktool",
+          "infostealer",
+          "netwire",
+          "qakbot",
+          "ransomware",
+          "rat"
+        ]
+      }
+    }
+  ],
+  "external_links": {
+    "virustotal": "https://www.virustotal.com/gui/file/a3cb3b02a683275f7e0a0f8a9a5c9e07",
+    "hybrid_analysis": "https://www.hybrid-analysis.com/search?query=a3cb3b02a683275f7e0a0f8a9a5c9e07",
+    "joes_sandbox": "https://www.joesandbox.com/search?q=a3cb3b02a683275f7e0a0f8a9a5c9e07",
+    "json": "https://indicatorsearch.app/api/indicator/9"
   },
   "notes": null,
   "complete": true
