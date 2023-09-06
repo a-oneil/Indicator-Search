@@ -67,7 +67,7 @@ def no_results_found(tool_name):
     return (
         {
             "site": tool_name,
-            "results": {"Error": "No results found"},
+            "results": {"error": "No results found"},
         },
     )
 
@@ -76,7 +76,7 @@ def failed_to_run(tool_name, error):
     return (
         {
             "site": tool_name,
-            "results": {"Error": f"{tool_name} failed to run: {str(error)}"},
+            "results": {"error": f"{tool_name} failed to run: {str(error)}"},
         },
     )
 
@@ -85,7 +85,7 @@ def status_code_error(tool_name, status_code, reason):
     return (
         {
             "site": tool_name,
-            "results": {"Error": f"{tool_name} failed to run: {status_code} {reason}"},
+            "results": {"error": f"{tool_name} failed to run: {status_code} {reason}"},
         },
     )
 

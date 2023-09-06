@@ -26,7 +26,13 @@ def time_created_strftime(value):
     return value.strftime("%m/%d/%Y (%H:%M:%S UTC)")
 
 
+def snakecase_to_title(value):
+    value = value.replace("_", " ")
+    return value.title()
+
+
 templates.env.filters["time_created_strftime"] = time_created_strftime
+templates.env.filters["snakecase_to_title"] = snakecase_to_title
 
 
 @router.get("/", response_class=HTMLResponse)

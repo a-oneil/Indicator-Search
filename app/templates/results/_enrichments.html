@@ -1,13 +1,13 @@
 {% if indicator.enrichments %}
   {% for key,value in indicator.enrichments.items() %}
-  {% if key == "Last Scan Screenshot" %}
+  {% if key == "last_scan_screenshot" %}
   <div class="ui segment">
     <p class="ui small header">
       <i class="fa-solid fa-camera"></i> URLScan.io Screenshot</p>
     <img src="{{value}}" style="width: 100%" />
   </div>
 
-  {% elif key == "Geo Data" %}
+  {% elif key == "geo_data" %}
   <div class="ui segment">
     <p class="ui small header"><i class="fa-solid fa-map"></i> IPinfo.io Mapping</p>
     <iframe
