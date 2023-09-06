@@ -105,9 +105,17 @@ def new_indicator_handler(indicator, user, db: Session):
         # fmt: on
 
         for each in indicator.results:
+            keys_to_remove = []
             for key, value in each["results"].items():
-                if key == "Error" and "is not set in .env file." in value:
+                if key == "error" and "is not set in .env file." in value:
                     indicator.results.remove(each)
+                if not value:
+                    keys_to_remove.append(key)
+            for key in keys_to_remove:
+                del each["results"][key]
+
+            if not each["results"]:
+                each["results"] = {"error": "No results found"}
 
         notifications.console_output(
             "OSINT Scan complete",
