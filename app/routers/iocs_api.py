@@ -1,11 +1,9 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, HTTPException
 from .. import schemas
 from ..models import Iocs
 from ..database import get_db
 from ..authentication import auth_api_key
 from sqlalchemy.orm import Session
-
-from fastapi import APIRouter, Depends, Request
 
 router = APIRouter(prefix="/api")
 
@@ -19,7 +17,7 @@ def get_all(db: Session = Depends(get_db)):
 def get(ioc_id: int, db: Session = Depends(get_db)):
     ioc = Iocs.get_ioc_by_id(ioc_id, db)
     if ioc is None:
-        return {"Error": "IOC not found"}
+        raise HTTPException(404, "IOC not found")
     return ioc
 
 
@@ -29,7 +27,7 @@ def delete(request: schemas.DeleteIOC, db: Session = Depends(get_db)):
         auth_api_key(request, db)
         return Iocs.remove_ioc(request.ioc_id, db)
     except Exception as e:
-        return {"Error": str(e)}
+        return HTTPException(400, str(e))
 
 
 @router.post("/iocs/search", name="Search for Iocs", tags=["IOCs"])
@@ -42,8 +40,8 @@ def search_iocs(request: schemas.SearchIocs, db: Session = Depends(get_db)):
             request.ioc_type,
             request.indicator_id,
         )
-    except Exception:
-        return {"Error": "No results found"}
+    except Exception as e:
+        return HTTPException(400, str(e))
 
 
 @router.post("/iocs/ageout", name="Ageout IOCs", tags=["IOCs"])
@@ -51,4 +49,4 @@ def ageout(db: Session = Depends(get_db)):
     try:
         return Iocs.ageout_iocs(db)
     except Exception as e:
-        return {"Error": str(e)}
+        return HTTPException(400, str(e))
