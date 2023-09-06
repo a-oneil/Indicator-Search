@@ -15,42 +15,40 @@ from fastapi import (
 
 router = APIRouter(prefix="/api")
 
-# fmt: off
-@router.get( "/user", response_model=schemas.UserDetails, name="Get user details", tags=["Users"])
+
+@router.get(
+    "/user", response_model=schemas.UserDetails, name="Get user details", tags=["Users"]
+)
 def get_user(api_key: str, db: Session = Depends(get_db)):
-# fmt: on
     user = User_Accounts.get_user_by_api_key(api_key, db)
+    if not user:
+        raise HTTPException(400, "User not found")
     return user
 
-@router.delete( "/user", name="Delete a user by their API key", tags=["Users"])
+
+@router.delete("/user", name="Delete a user by their API key", tags=["Users"])
 def delete_user(api_key: str, db: Session = Depends(get_db)):
     user = User_Accounts.get_user_by_api_key(api_key, db)
-    if user:
-        db.delete(user)
-        db.commit()
-        return {"Success": f"User {user.username} deleted"}
-    else:
-        return {"Error": "User not found"}
+    if not user:
+        raise HTTPException(400, "User not found")
+    db.delete(user)
+    db.commit()
+    return HTTPException(200, f"User {user.username} deleted")
 
-# fmt: off
-@router.post("/user", name="Create a user",tags=["Users"], response_model=schemas.GetUser)
-def create_user(request:schemas.CreateUser, db: Session = Depends(get_db)):
-# fmt: on
+
+@router.post(
+    "/user", name="Create a user", tags=["Users"], response_model=schemas.GetUser
+)
+def create_user(request: schemas.CreateUser, db: Session = Depends(get_db)):
     if User_Accounts.get_user_by_username(request.username, db):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username is taken",
-        )
+        raise HTTPException(400, "Username already taken")
 
     if request.invite_key != config["USER_INVITE_KEY"]:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid invite key"
-        )
+        raise HTTPException(401, "Invalid invite key")
 
     new_user = User_Accounts(
         username=request.username,
-        password_hash=bcrypt.hashpw(request.password.encode('utf-8'), bcrypt.gensalt()),
+        password_hash=bcrypt.hashpw(request.password.encode("utf-8"), bcrypt.gensalt()),
         api_key=secrets.token_urlsafe(32),
     )
     db.add(new_user)
