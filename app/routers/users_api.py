@@ -21,7 +21,7 @@ router = APIRouter(prefix="/api")
 def get_user(api_key: str, db: Session = Depends(get_db)):
     user = User_Accounts.get_user_by_api_key(api_key, db)
     if not user:
-        raise HTTPException(400, "User not found")
+        raise HTTPException(404, "User not found")
     return user
 
 
@@ -29,7 +29,7 @@ def get_user(api_key: str, db: Session = Depends(get_db)):
 def delete_user(api_key: str, db: Session = Depends(get_db)):
     user = User_Accounts.get_user_by_api_key(api_key, db)
     if not user:
-        raise HTTPException(400, "User not found")
+        raise HTTPException(404, "User not found")
     db.delete(user)
     db.commit()
     return HTTPException(200, f"User {user.username} deleted")

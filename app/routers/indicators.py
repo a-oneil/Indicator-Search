@@ -4,7 +4,6 @@ from fastapi import (
     Request,
     Form,
     BackgroundTasks,
-    HTTPException,
     Cookie,
 )
 from .. import templates
