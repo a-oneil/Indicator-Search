@@ -20,17 +20,17 @@
 
 {%for site in indicator.results %}
 
-    {% if "is not set in .env file" in site.results.Error %} 
+    {% if "is not set in .env file" in site.results.error %} 
     
-    {% elif "No results found" in site.results.Error %}
+    {% elif "No results found" in site.results.error %}
     <div class="ui segment">
-      <p class="ui small header"><i class="fa-solid fa-circle-xmark"></i> {{site.site}}: No results found</p>
+      <p class="ui small header"><i class="fa-solid fa-circle-xmark"></i> {{site.site|snakecase_to_title}}: No results found</p>
     </div>
     
     {% else %}
     <div class="ui segment">
       <p class="ui small header">
-        <i class="fa-solid fa-circle-check"></i> {{site.site}} <button class="mini blue ui button" style="float: right;" onclick='CopyTextToClipboard("{{site.results}}")'>Copy JSON</button>
+        <i class="fa-solid fa-circle-check"></i> {{site.site|snakecase_to_title}} <button class="mini blue ui button" style="float: right;" onclick='CopyTextToClipboard("{{site.results}}")'>Copy JSON</button>
       </p>
       <div class="ui two column grid">
         {% for key,value in site.results.items() %}
@@ -40,7 +40,7 @@
               <button class="small ui icon button" style='float: right;' onclick='CopyTextToClipboard("{{value}}")'><i class="fa-solid fa-copy"></i></button>
               <br>
               {# Display the key as the header #}
-              <a class="header">{{key}}</a>
+              <p class="header">{{key|snakecase_to_title}}</p>
               {# If the value is a list, display it as a bulleted list #} {% if
               value is iterable and (value is not string and value is not
               mapping) %}

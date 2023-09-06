@@ -98,25 +98,25 @@ def ipinfoio(indicator):
         response = requests.get(f"https://ipinfo.io/{indicator.indicator}")
 
         if response.status_code != 200:
-            return status_code_error("IPinfo.io", response.status_code, response.reason)
+            return status_code_error("ipinfo.io", response.status_code, response.reason)
 
         return (
             # fmt: off
             {
-                "site": "IPinfo.io",
+                "site": "ipinfo.io",
                 "results": {
-                    "City": response.json().get("city"),
-                    "Region": response.json().get("region"),
-                    "GeoLocation": response.json().get("loc"),
-                    "Organization": response.json().get("org"),
-                    "Postal": response.json().get("postal"),
-                    "Timezone": response.json().get("timezone"),
+                    "city": response.json().get("city"),
+                    "region": response.json().get("region"),
+                    "geolocation": response.json().get("loc"),
+                    "organization": response.json().get("org"),
+                    "postal_code": response.json().get("postal"),
+                    "timezone": response.json().get("timezone"),
                 },
             },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("IPinfo.io", e)
+        return failed_to_run("ipinfo.io", e)
 
 
 def search_ipwhois(indicator):
@@ -124,26 +124,26 @@ def search_ipwhois(indicator):
         obj = ipwhois.IPWhois(indicator.indicator)
         return (
             {
-                "site": "IP Whois",
+                "site": "ip_whois",
                 "results": {
-                    "ASN Number": obj.lookup_rws().get("asn"),
-                    "ASN Registry": obj.lookup_rws().get("asn_registry"),
-                    "ASN Date": obj.lookup_rws().get("asn_date"),
-                    "CIDR": obj.lookup_rws().get("nets")[0].get("cidr"),
-                    "Description": obj.lookup_rws().get("nets")[0].get("description"),
-                    "Country": obj.lookup_rws().get("nets")[0].get("country"),
-                    "State": obj.lookup_rws().get("nets")[0].get("state"),
-                    "City": obj.lookup_rws().get("nets")[0].get("city"),
-                    "Address": obj.lookup_rws().get("nets")[0].get("address"),
-                    "Postal Code": obj.lookup_rws().get("nets")[0].get("postal_code"),
-                    "Abuse Emails": obj.lookup_rws().get("nets")[0].get("emails"),
-                    "Tech Emails": obj.lookup_rws().get("nets")[0].get("tech_emails"),
+                    "asn_number": obj.lookup_rws().get("asn"),
+                    "asn_registry": obj.lookup_rws().get("asn_registry"),
+                    "asn_date": obj.lookup_rws().get("asn_date"),
+                    "cidr": obj.lookup_rws().get("nets")[0].get("cidr"),
+                    "description": obj.lookup_rws().get("nets")[0].get("description"),
+                    "country": obj.lookup_rws().get("nets")[0].get("country"),
+                    "state": obj.lookup_rws().get("nets")[0].get("state"),
+                    "city": obj.lookup_rws().get("nets")[0].get("city"),
+                    "address": obj.lookup_rws().get("nets")[0].get("address"),
+                    "postal_code": obj.lookup_rws().get("nets")[0].get("postal_code"),
+                    "abuse_emails": obj.lookup_rws().get("nets")[0].get("emails"),
+                    "tech_emails": obj.lookup_rws().get("nets")[0].get("tech_emails"),
                 },
             },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("IP Whois", e)
+        return failed_to_run("ip_whois", e)
 
 
 def ipqualityscore(indicator):
@@ -157,36 +157,36 @@ def ipqualityscore(indicator):
 
         if response.status_code != 200:
             return status_code_error(
-                "IP Quality Score", response.status_code, response.reason
+                "ip_quality_score", response.status_code, response.reason
             )
 
         return (
             # fmt: off
                 {
-                    "site": "IP Quality Score",
+                    "site": "ip_quality_score",
                     "results": {
-                        "ISP": response.json().get("ISP", ""),
-                        "Organization": response.json().get("organization", ""),
-                        "Country": response.json().get("country_code", ""),
-                        "City": response.json().get("city", ""),
-                        "Mobile": response.json().get("mobile", ""),
-                        "Is Crawler": response.json().get("is_crawler", ""),
-                        "Connection Type": response.json().get("connection_type", ""),
-                        "Recent Abuse": response.json().get("recent_abuse", ""),
-                        "Bot Status": response.json().get("bot_status", ""),
-                        "VPN": response.json().get("vpn", ""),
-                        "Active VPN": response.json().get("active_vpn", ""),
-                        "TOR": response.json().get("tor", ""),
-                        "Active Tor": response.json().get("active_tor", ""),
-                        "Fraud Score": response.json().get("fraud_score", ""),
-                        "Abuse Velocity": response.json().get("abuse_velocity", ""),
+                        "isp": response.json().get("ISP", ""),
+                        "organization": response.json().get("organization", ""),
+                        "country": response.json().get("country_code", ""),
+                        "city": response.json().get("city", ""),
+                        "mobile": response.json().get("mobile", ""),
+                        "is_crawler": response.json().get("is_crawler", ""),
+                        "connection_type": response.json().get("connection_type", ""),
+                        "recent_abuse": response.json().get("recent_abuse", ""),
+                        "bot_status": response.json().get("bot_status", ""),
+                        "vpn": response.json().get("vpn", ""),
+                        "active_vpn": response.json().get("active_vpn", ""),
+                        "tor": response.json().get("tor", ""),
+                        "active_tor": response.json().get("active_tor", ""),
+                        "fraud_score": response.json().get("fraud_score", ""),
+                        "abuse_velocity": response.json().get("abuse_velocity", ""),
                         
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("IP Quality Score", e)
+        return failed_to_run("ip_quality_score", e)
 
 
 def virustotal_ip(indicator):
@@ -202,31 +202,31 @@ def virustotal_ip(indicator):
         )
 
         if response.json().get("error", {}).get("code"):
-            return no_results_found("VirusTotal IP")
+            return no_results_found("virustotal_ip")
 
         if response.status_code != 200:
             return status_code_error(
-                "VirusTotal IP", response.status_code, response.reason
+                "virustotal_ip", response.status_code, response.reason
             )
 
         return (
             # fmt: off
                 {
-                    "site": "VirusTotal IP",
+                    "site": "virustotal_ip",
                     "results": {
-                        "Last Analysis Date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("last_analysis_date")).strftime('%c') if response.json().get("data").get("attributes").get("last_analysis_date") else "",
-                        "Harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
-                        "Malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
-                        "Suspicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("suspicious"),
-                        "Undetected": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("undetected"),
-                        "Reputation": response.json().get("data").get("attributes").get("reputation"),
-                        "Tags": response.json().get("data").get("attributes").get("tags"),
+                        "last analysis date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("last_analysis_date")).strftime('%c') if response.json().get("data").get("attributes").get("last_analysis_date") else "",
+                        "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
+                        "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
+                        "suspicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("suspicious"),
+                        "undetected": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("undetected"),
+                        "reputation": response.json().get("data").get("attributes").get("reputation"),
+                        "tags": response.json().get("data").get("attributes").get("tags"),
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("VirusTotal IP", e)
+        return failed_to_run("virustotal_ip", e)
 
 
 def virustotal_domain(indicator):
@@ -250,37 +250,37 @@ def virustotal_domain(indicator):
         )
 
         if response.json().get("error", {}).get("code"):
-            return no_results_found("VirusTotal Domain")
+            return no_results_found("virustotal_domain")
 
         if response.status_code != 200:
             return status_code_error(
-                "VirusTotal Domain", response.status_code, response.reason
+                "virustotal_domain", response.status_code, response.reason
             )
 
         return (
             # fmt: off
                 {
-                    "site": "VirusTotal Domain",
+                    "site": "virustotal_domain",
                     "results": {
-                        "Whois": response.json().get("data").get("attributes").get("whois"),
-                        "Creation Date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("creation_date")).strftime('%c') if response.json().get("data").get("attributes").get("creation_date") else "",
-                        "Whois Date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("whois_date")).strftime('%c') if response.json().get("data").get("attributes").get("whois_date") else "",
-                        "Harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
-                        "Malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
-                        "Suspicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("suspicious"),
-                        "Undetected": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("undetected"),
-                        "Categories": response.json().get("data").get("attributes").get("categories"),
-                        "TLD": response.json().get("data").get("attributes").get("tld"),
-                        "Tags": response.json().get("data").get("attributes").get("tags"),
-                        "Community Votes": response.json().get("data").get("attributes").get("total_votes"),
-                        "Categories": response.json().get("data").get("attributes").get("categories"),
-                        "Last Analysis": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("last_analysis_date")).strftime('%c') if response.json().get("data").get("attributes").get("last_analysis_date") else ""
+                        "whois": response.json().get("data").get("attributes").get("whois"),
+                        "creation_date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("creation_date")).strftime('%c') if response.json().get("data").get("attributes").get("creation_date") else "",
+                        "whois_date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("whois_date")).strftime('%c') if response.json().get("data").get("attributes").get("whois_date") else "",
+                        "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
+                        "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
+                        "suspicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("suspicious"),
+                        "undetected": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("undetected"),
+                        "categories": response.json().get("data").get("attributes").get("categories"),
+                        "tld": response.json().get("data").get("attributes").get("tld"),
+                        "tags": response.json().get("data").get("attributes").get("tags"),
+                        "community_votes": response.json().get("data").get("attributes").get("total_votes"),
+                        "categories": response.json().get("data").get("attributes").get("categories"),
+                        "last_analysis": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("last_analysis_date")).strftime('%c') if response.json().get("data").get("attributes").get("last_analysis_date") else ""
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("VirusTotal Domain", e)
+        return failed_to_run("virustotal_domain", e)
 
 
 def virustotal_url(indicator):
@@ -312,38 +312,38 @@ def virustotal_url(indicator):
         )
 
         if response.json().get("error", {}).get("code"):
-            return no_results_found("VirusTotal URL")
+            return no_results_found("virustotal_url")
 
         if response.status_code != 200:
             return status_code_error(
-                "VirusTotal URL", response.status_code, response.reason
+                "virustotal_url", response.status_code, response.reason
             )
 
         return (
             # fmt: off
                 {
-                    "site": "VirusTotal URL",
+                    "site": "virustotal_url",
                     "results": {
-                        "Harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
-                        "Malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
-                        "Suspicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("suspicious"),
-                        "Undetected": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("undetected"),
-                        "URL": response.json().get("data").get("attributes").get("url"),
-                        "Final URL": response.json().get("data").get("attributes").get("final_url"),
-                        "Last Response Code": response.json().get("data").get("attributes").get("last_http_response_code"),
-                        "Redirection Chain": response.json().get("data").get("attributes").get("redirection_chain"),
-                        "TLD": response.json().get("data").get("attributes").get("tld"),
-                        "Threat Names": response.json().get("data").get("attributes").get("threat_names"),
-                        "Tags": response.json().get("data").get("attributes").get("tags"),
-                        "Community Votes": response.json().get("data").get("attributes").get("total_votes"),
-                        "Categories": response.json().get("data").get("attributes").get("categories"),
+                        "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
+                        "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
+                        "suspicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("suspicious"),
+                        "undetected": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("undetected"),
+                        "url": response.json().get("data").get("attributes").get("url"),
+                        "final_url": response.json().get("data").get("attributes").get("final_url"),
+                        "last_response_code": response.json().get("data").get("attributes").get("last_http_response_code"),
+                        "redirection_chain": response.json().get("data").get("attributes").get("redirection_chain"),
+                        "tld": response.json().get("data").get("attributes").get("tld"),
+                        "threat_names": response.json().get("data").get("attributes").get("threat_names"),
+                        "tags": response.json().get("data").get("attributes").get("tags"),
+                        "community_votes": response.json().get("data").get("attributes").get("total_votes"),
+                        "categories": response.json().get("data").get("attributes").get("categories"),
                     },
                 },
             # fmt: on
         )
 
     except Exception as e:
-        return failed_to_run("VirusTotal URL", e)
+        return failed_to_run("virustotal_url", e)
 
 
 def virustotal_hash(indicator):
@@ -360,44 +360,44 @@ def virustotal_hash(indicator):
         )
 
         if response.json().get("error", {}).get("code"):
-            return no_results_found("VirusTotal Hash")
+            return no_results_found("virustotal_hash")
 
         if response.status_code != 200:
             return status_code_error(
-                "VirusTotal Hash", response.status_code, response.reason
+                "virustotal_hash", response.status_code, response.reason
             )
 
         return (
             # fmt: off
                 {
-                    "site": "VirusTotal Hash",
+                    "site": "virustotal_hash",
                     "results": {
-                        "Harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
-                        "Malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
-                        "Suspicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("suspicious"),
-                        "Undetected": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("undetected"),
-                        "Suggested Threat Label": response.json().get("data").get("attributes").get("popular_threat_classification", {}).get("suggested_threat_label"),
-                        "Popular Threat Category": response.json().get("data").get("attributes").get("popular_threat_classification").get("popular_threat_category")[0].get("value") if response.json().get("data").get("attributes").get("popular_threat_classification", {}).get("popular_threat_category", []) else None,
-                        "Community Votes": response.json().get("data").get("attributes").get("total_votes"),
-                        "Name": response.json().get("data").get("attributes").get("meaningful_names"),
-                        "Names": response.json().get("data").get("attributes").get("names"),
-                        "Type": response.json().get("data").get("attributes").get("magic"),
-                        "Type Tag": response.json().get("data").get("attributes").get("type_tag"),
-                        "Tags": response.json().get("data").get("attributes").get("tags"),
-                        "Times Submitted": response.json().get("data").get("attributes").get("times_submitted"),
-                        "Product": response.json().get("data").get("attributes").get("signature_info", {}).get("product"),
-                        "Product Description": response.json().get("data").get("attributes").get("signature_info", {}).get("description"),
-                        "Signed": response.json().get("data").get("attributes").get("signature_info", {}).get("verified"),
-                        "Signing Date": response.json().get("data").get("attributes").get("signature_info", {}).get("signing date"),
-                        "MD5": response.json().get("data").get("attributes").get("md5"),
-                        "SHA1": response.json().get("data").get("attributes").get("sha1"),
-                        "SHA256": response.json().get("data").get("attributes").get("sha256"),
+                        "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
+                        "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
+                        "suspicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("suspicious"),
+                        "undetected": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("undetected"),
+                        "suggested_threat_label": response.json().get("data").get("attributes").get("popular_threat_classification", {}).get("suggested_threat_label"),
+                        "popular_threat_category": response.json().get("data").get("attributes").get("popular_threat_classification").get("popular_threat_category")[0].get("value") if response.json().get("data").get("attributes").get("popular_threat_classification", {}).get("popular_threat_category", []) else None,
+                        "community_votes": response.json().get("data").get("attributes").get("total_votes"),
+                        "name": response.json().get("data").get("attributes").get("meaningful_names"),
+                        "names": response.json().get("data").get("attributes").get("names"),
+                        "type": response.json().get("data").get("attributes").get("magic"),
+                        "type_tag": response.json().get("data").get("attributes").get("type_tag"),
+                        "tags": response.json().get("data").get("attributes").get("tags"),
+                        "times_submitted": response.json().get("data").get("attributes").get("times_submitted"),
+                        "product": response.json().get("data").get("attributes").get("signature_info", {}).get("product"),
+                        "product_description": response.json().get("data").get("attributes").get("signature_info", {}).get("description"),
+                        "signed": response.json().get("data").get("attributes").get("signature_info", {}).get("verified"),
+                        "signing_date": response.json().get("data").get("attributes").get("signature_info", {}).get("signing date"),
+                        "md5": response.json().get("data").get("attributes").get("md5"),
+                        "sha1": response.json().get("data").get("attributes").get("sha1"),
+                        "sha256": response.json().get("data").get("attributes").get("sha256"),
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("VirusTotal Hash", e)
+        return failed_to_run("virustotal_hash", e)
 
 
 def greynoise_community(indicator):
@@ -411,29 +411,29 @@ def greynoise_community(indicator):
         )
 
         if "IP not observed" in response.json().get("message"):
-            return no_results_found("Greynoise Community")
+            return no_results_found("greynoise_community")
 
         if response.status_code != 200:
             return status_code_error(
-                "Greynoise Community", response.status_code, response.reason
+                "greynoise_community", response.status_code, response.reason
             )
 
         return (
             # fmt: off
                 {
-                    "site": "Greynoise Community",
+                    "site": "greynoise_community",
                     "results": {
-                        "Classification": response.json().get("classification"),
-                        "Noise": response.json().get("noise"),
-                        "Riot": response.json().get("riot"),
-                        "Name": response.json().get("name"),
-                        "Last Seen": response.json().get("last_seen"),
+                        "classification": response.json().get("classification"),
+                        "noise": response.json().get("noise"),
+                        "riot": response.json().get("riot"),
+                        "name": response.json().get("name"),
+                        "last_seen": response.json().get("last_seen"),
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("Greynoise Community", e)
+        return failed_to_run("greynoise_community", e)
 
 
 def hacked_ip_threatlist(indicator):
@@ -443,7 +443,7 @@ def hacked_ip_threatlist(indicator):
         )
 
         if response.status_code != 200:
-            return status_code_error("Hacked IP", response.status_code, response.reason)
+            return status_code_error("hacked_ip", response.status_code, response.reason)
 
         results_list = []
         for item in response.json():
@@ -453,20 +453,20 @@ def hacked_ip_threatlist(indicator):
                 results_list.append(x)
 
         if not results_list:
-            return no_results_found("Hacked IP")
+            return no_results_found("hacked_ip")
 
         return (
             # fmt: off
                 {
-                    "site": "Hacked IP",
+                    "site": "hacked_ip",
                     "results": {
-                        "Active Threatlists": results_list
+                        "active_threatlists": results_list
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("Hacked IP", e)
+        return failed_to_run("hacked_ip", e)
 
 
 def urlvoid(indicator):
@@ -493,7 +493,7 @@ def urlvoid(indicator):
             raise Exception("Invalid indicator type for URLVoid")
 
         if response.status_code != 200:
-            return status_code_error("URL Void", response.status_code, response.reason)
+            return status_code_error("url_void", response.status_code, response.reason)
 
         blacklists = (
             response.json()
@@ -520,23 +520,23 @@ def urlvoid(indicator):
             return (
                 # fmt: off
                     {
-                        "site": "URL Void",
+                        "site": "url_void",
                         "results": {
-                            "DNS Records": response.json().get("data", {}).get("report", {}).get("dns_records", {}).get("mx", {}).get("records", []),
-                            "Detections": response.json().get("data", {}).get("report", {}).get("domain_blacklist", {}).get("detections"),
-                            "Scanners Detected": blacklists_list,
-                            "Security Checks": security_checks_list,
-                            "Risk Score": response.json().get("data", {}).get("report", {}).get("risk_score", "").get("result"),
-                            "Redirection": response.json().get("data", {}).get("report", {}).get("redirection", {}),
+                            "dns_records": response.json().get("data", {}).get("report", {}).get("dns_records", {}).get("mx", {}).get("records", []),
+                            "detections": response.json().get("data", {}).get("report", {}).get("domain_blacklist", {}).get("detections"),
+                            "scanners_detected": blacklists_list,
+                            "security_checks": security_checks_list,
+                            "risk_score": response.json().get("data", {}).get("report", {}).get("risk_score", "").get("result"),
+                            "redirection": response.json().get("data", {}).get("report", {}).get("redirection", {}),
                         },
                     },
                 # fmt: on
             )
         else:
-            return no_results_found("URL Void")
+            return no_results_found("url_void")
 
     except Exception as e:
-        return failed_to_run("URL Void", e)
+        return failed_to_run("url_void", e)
 
 
 def macvendors(indicator):
@@ -545,19 +545,19 @@ def macvendors(indicator):
 
         if response.status_code != 200:
             return status_code_error(
-                "MAC Vendors", response.status_code, response.reason
+                "mac_vendors", response.status_code, response.reason
             )
 
         return (
             {
-                "site": "MAC Vendors",
+                "site": "mac_vendors",
                 "results": {
-                    "Manufacturer": response.text,
+                    "manufacturer": response.text,
                 },
             },
         )
     except Exception as e:
-        return failed_to_run("MAC Vendors", e)
+        return failed_to_run("mac_vendors", e)
 
 
 def stopforumspam_email(indicator):
@@ -569,22 +569,22 @@ def stopforumspam_email(indicator):
 
         if response.status_code != 200:
             return status_code_error(
-                "Stop Forum Spam IP", response.status_code, response.reason
+                "stop_forum_spam_email", response.status_code, response.reason
             )
 
         return (
             # fmt: off
                 {
-                    "site": "Stop Forum Spam Email",
+                    "site": "stop_forum_spam_email",
                     "results":{
-                        "Appears": results.get("response", {}).get("appears"),
-                        "Frequency": results.get("response", {}).get("frequency")
+                        "appears": results.get("response", {}).get("appears"),
+                        "frequency": results.get("response", {}).get("frequency")
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("Stop Forum Spam Email", e)
+        return failed_to_run("stop_forum_spam_email", e)
 
 
 def stopforumspam_ip(indicator):
@@ -596,22 +596,22 @@ def stopforumspam_ip(indicator):
 
         if response.status_code != 200:
             return status_code_error(
-                "Stop Forum Spam IP", response.status_code, response.reason
+                "stop_forum_spam_ip", response.status_code, response.reason
             )
 
         return (
             # fmt: off
                 {
-                    "site": "Stop Forum Spam IP",
+                    "site": "stop_forum_spam_ip",
                     "results":{
-                        "Appears": results.get("response", {}).get("appears"),
-                        "Frequency": results.get("response", {}).get("frequency")
+                        "appears": results.get("response", {}).get("appears"),
+                        "frequency": results.get("response", {}).get("frequency")
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("Stop Forum Spam IP", e)
+        return failed_to_run("stop_forum_spam_ip", e)
 
 
 def abuse_ipdb(indicator):
@@ -630,23 +630,23 @@ def abuse_ipdb(indicator):
         )
 
         if response.status_code != 200:
-            return status_code_error("AbuseIPDB", response.status_code, response.reason)
+            return status_code_error("abuseipdb", response.status_code, response.reason)
 
         # fmt: off
         return (
             {
-                "site": "AbuseIPDB",
+                "site": "abuseipdb",
                 "results": {
-                    "Reports": response.json().get("data", {}).get("totalReports"),
-                    "Abuse Score": response.json().get("data", {}).get("abuseConfidenceScore"),
-                    "Last Report": response.json().get("data", {}).get("lastReportedAt"),
+                    "reports": response.json().get("data", {}).get("totalReports"),
+                    "abuse_score": response.json().get("data", {}).get("abuseConfidenceScore"),
+                    "last_report": response.json().get("data", {}).get("lastReportedAt"),
                 },
             },
         )
         # fmt: on
 
     except Exception as e:
-        return failed_to_run("AbuseIPDB", e)
+        return failed_to_run("abuseipdb", e)
 
 
 def emailrepio(indicator):
@@ -661,47 +661,47 @@ def emailrepio(indicator):
 
         if response.status_code != 200:
             return status_code_error(
-                "Emailrep.io", response.status_code, response.reason
+                "emailrep.io", response.status_code, response.reason
             )
 
         return (
             # fmt: off
                 {
-                    "site": "Emailrep.io",
+                    "site": "emailrep.io",
                     "results": {
-                        "Reputation": response.json().get("reputation"),
-                        "Suspicious": response.json().get("suspicious"),
-                        "References": response.json().get("references"),
-                        "Blacklisted": response.json().get("details",{}).get("blacklisted"),
-                        "Malicious Activity": response.json().get("details",{}).get("malicious_activity"),
-                        "Malicious Activity Recent": response.json().get("details",{}).get("malicious_activity_recent"),
-                        "Credential Leaked": response.json().get("details",{}).get("credentials_leaked"),
-                        "Credentials Leaked Recent": response.json().get("details",{}).get("credentials_leaked_recent"),
-                        "Data Breach": response.json().get("details",{}).get("data_breach"),
-                        "First Seen": response.json().get("details",{}).get("first_seen"),
-                        "Last Seen": response.json().get("details",{}).get("last_seen"),
-                        "Domain Exists": response.json().get("details",{}).get("domain_exists"),
-                        "Domain Reputation": response.json().get("details",{}).get("domain_reputation"),
-                        "New Domain": response.json().get("details",{}).get("new_domain"),
-                        "Days Since Domain Creation": response.json().get("details",{}).get("days_since_domain_creation"),
-                        "Suspicious TLD": response.json().get("details",{}).get("suspicious_tld"),
-                        "Spam": response.json().get("details",{}).get("spam"),
-                        "Free Provider": response.json().get("details",{}).get("free_provider"),
-                        "Disposable": response.json().get("details",{}).get("disposable"),
-                        "Deliverable": response.json().get("details",{}).get("deliverable"),
-                        "Accept All": response.json().get("details",{}).get("accept_all"),
-                        "Valid MX": response.json().get("details",{}).get("valid_mx"),
-                        "Primary MX": response.json().get("details",{}).get("primary_mx"),
-                        "Spoofable": response.json().get("details",{}).get("spoofable"),
-                        "SPF Strict": response.json().get("details",{}).get("spf_strict"),
-                        "DMARC Enforced": response.json().get("details",{}).get("dmarc_enforced"),
-                        "Profiles": response.json().get("details",{}).get("profiles",[]),
+                        "reputation": response.json().get("reputation"),
+                        "suspicious": response.json().get("suspicious"),
+                        "references": response.json().get("references"),
+                        "blacklisted": response.json().get("details",{}).get("blacklisted"),
+                        "malicious_activity": response.json().get("details",{}).get("malicious_activity"),
+                        "malicious_activity_recent": response.json().get("details",{}).get("malicious_activity_recent"),
+                        "credential_leaked": response.json().get("details",{}).get("credentials_leaked"),
+                        "credentials_leaked_recent": response.json().get("details",{}).get("credentials_leaked_recent"),
+                        "data_breach": response.json().get("details",{}).get("data_breach"),
+                        "first_seen": response.json().get("details",{}).get("first_seen"),
+                        "last_seen": response.json().get("details",{}).get("last_seen"),
+                        "domain_exists": response.json().get("details",{}).get("domain_exists"),
+                        "domain_reputation": response.json().get("details",{}).get("domain_reputation"),
+                        "new_domain": response.json().get("details",{}).get("new_domain"),
+                        "days_since_domain_creation": response.json().get("details",{}).get("days_since_domain_creation"),
+                        "suspicious_tld": response.json().get("details",{}).get("suspicious_tld"),
+                        "spam": response.json().get("details",{}).get("spam"),
+                        "free_provider": response.json().get("details",{}).get("free_provider"),
+                        "disposable": response.json().get("details",{}).get("disposable"),
+                        "deliverable": response.json().get("details",{}).get("deliverable"),
+                        "accept_all": response.json().get("details",{}).get("accept_all"),
+                        "valid_mx": response.json().get("details",{}).get("valid_mx"),
+                        "primary_mx": response.json().get("details",{}).get("primary_mx"),
+                        "spoofable": response.json().get("details",{}).get("spoofable"),
+                        "spf_strict": response.json().get("details",{}).get("spf_strict"),
+                        "dmar_enforced": response.json().get("details",{}).get("dmarc_enforced"),
+                        "profiles": response.json().get("details",{}).get("profiles",[]),
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("Emailrep.io", e)
+        return failed_to_run("emailrep.io", e)
 
 
 def tweetfeed_live(indicator):
@@ -729,7 +729,7 @@ def tweetfeed_live(indicator):
 
         if response.status_code != 200:
             return status_code_error(
-                "Tweetfeed.live", response.status_code, response.reason
+                "tweetfeed.live", response.status_code, response.reason
             )
 
         if response.json():
@@ -738,16 +738,16 @@ def tweetfeed_live(indicator):
                     results.update(each)
 
         if not results:
-            return no_results_found("Tweetfeed.live")
+            return no_results_found("tweetfeed.live")
 
         return (
             {
-                "site": "Tweetfeed.live",
+                "site": "tweetfeed.live",
                 "results": results,
             },
         )
     except Exception as e:
-        return failed_to_run("Tweetfeed.live", e)
+        return failed_to_run("tweetfeed.live", e)
 
 
 def urlscanio(indicator):
@@ -763,11 +763,11 @@ def urlscanio(indicator):
 
         if response.status_code != 200:
             return status_code_error(
-                "URLScan.io", response.status_code, response.reason
+                "urlscan.io", response.status_code, response.reason
             )
 
         if not response.json().get("results"):
-            return no_results_found("URLScan.io")
+            return no_results_found("urlscan.io")
 
         last_scan_response = {}
         for scan in response.json().get("results"):
@@ -778,27 +778,27 @@ def urlscanio(indicator):
                 break
 
         if not last_scan_response:
-            return no_results_found("URLScan.io")
+            return no_results_found("urlscan.io")
 
         return (
             # fmt: off
                 {
-                    "site": "URLScan.io",
+                    "site": "urlscan.io",
                     "results": {
-                        "Last Scan GUID": last_scan_response.json().get("task").get("uuid"),
-                        "Last Scan URL": last_scan_response.json().get("task").get("reportURL"),
-                        "Last Scan Time": last_scan_response.json().get("task").get("time"),
-                        "Last Scan score": last_scan_response.json().get("verdicts").get("overall").get("score"),
-                        "Categories": last_scan_response.json().get("verdicts").get("overall").get("categories"),
-                        "Malicious": last_scan_response.json().get("verdicts").get("overall").get("malicious"),
-                        "Tags": last_scan_response.json().get("verdicts").get("overall").get("tags"),
-                        "Last Scan Screenshot": last_scan_response.json().get("task").get("screenshotURL"),
+                        "last_scan_guid": last_scan_response.json().get("task").get("uuid"),
+                        "last_scan_url": last_scan_response.json().get("task").get("reportURL"),
+                        "last_scan_time": last_scan_response.json().get("task").get("time"),
+                        "last_scan_score": last_scan_response.json().get("verdicts").get("overall").get("score"),
+                        "categories": last_scan_response.json().get("verdicts").get("overall").get("categories"),
+                        "malicious": last_scan_response.json().get("verdicts").get("overall").get("malicious"),
+                        "tags": last_scan_response.json().get("verdicts").get("overall").get("tags"),
+                        "last_scan_screenshot": last_scan_response.json().get("task").get("screenshotURL"),
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("URLScan.io", e)
+        return failed_to_run("urlscan.io", e)
 
 
 def circl_lu(indicator):
@@ -817,27 +817,27 @@ def circl_lu(indicator):
             )
 
         if "Non existing" in response.json().get("message", ""):
-            return no_results_found("Circl.lu")
+            return no_results_found("circl.lu")
 
         if response.status_code != 200:
-            return status_code_error("Circl.lu", response.status_code, response.reason)
+            return status_code_error("circl.lu", response.status_code, response.reason)
 
         return (
             # fmt: off
                 {
-                    "site": "Circl.lu",
+                    "site": "circl.lu",
                     "results": {
-                        "File Name": response.json().get("FileName"),
-                        "File Size (KB)": response.json().get("FileSize"),
-                        "Product Code": response.json().get("ProductCode"),
-                        "Mimetype": response.json().get("mimetype"),
-                        "Source": response.json().get("source"),
+                        "file_name": response.json().get("FileName"),
+                        "file_size_kb": response.json().get("FileSize"),
+                        "product_code": response.json().get("ProductCode"),
+                        "mimetype": response.json().get("mimetype"),
+                        "source": response.json().get("source"),
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("Circl.lu", e)
+        return failed_to_run("circl.lu", e)
 
 
 def project_honeypot(indicator):
@@ -850,23 +850,23 @@ def project_honeypot(indicator):
         response = bl.query(indicator.indicator)
 
         if not (response.get("days_since_last_activity") and response.get("type")):
-            return no_results_found("Project Honeypot")
+            return no_results_found("project_honeypot")
 
         return (
             # fmt: off
                 {
-                    "site": "Project Honeypot",
+                    "site": "project_honeypot",
                     "results": {
-                        "Days Since Last Activity": response.get("days_since_last_activity"),
-                        "Name": response.get("name"),
-                        "Threat Score": response.get("threat_score"),
-                        "Type": (", ".join([httpbl.DESCRIPTIONS[t] for t in response["type"]])) if response.get("type") else "",
+                        "days_since_last_activity": response.get("days_since_last_activity"),
+                        "name": response.get("name"),
+                        "threat_score": response.get("threat_score"),
+                        "type": (", ".join([httpbl.DESCRIPTIONS[t] for t in response["type"]])) if response.get("type") else "",
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("Project Honeypot", e)
+        return failed_to_run("project_honeypot", e)
 
 
 def echo_trail(indicator):
@@ -884,28 +884,28 @@ def echo_trail(indicator):
 
         if response.status_code != 200:
             return status_code_error(
-                "Echo Trail", response.status_code, response.reason
+                "echo_trail", response.status_code, response.reason
             )
 
         if "EchoTrail has never observed" in response.json().get("message", ""):
-            return no_results_found("Echo Trail")
+            return no_results_found("echo_trail")
 
         return (
             # fmt: off
                 {
-                    "site": "Echo Trail",
+                    "site": "echo_trail",
                     "results": {
-                        "File Name": response.json().get("filenames"),
-                        "Description": response.json().get("description"),
-                        "Intel": response.json().get("intel"),
-                        "Parents": response.json().get("parents"),
-                        "Children": response.json().get("children"),
+                        "file_name": response.json().get("filenames"),
+                        "description": response.json().get("description"),
+                        "intel": response.json().get("intel"),
+                        "parents": response.json().get("parents"),
+                        "children": response.json().get("children"),
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("Echo Trail", e)
+        return failed_to_run("echo_trail", e)
 
 
 def hybrid_analysis(indicator):
@@ -927,36 +927,36 @@ def hybrid_analysis(indicator):
 
         if response.status_code != 200:
             return status_code_error(
-                "Hybrid Analysis", response.status_code, response.reason
+                "hybrid_analysis", response.status_code, response.reason
             )
 
         if not response.json():
-            return no_results_found("Hybrid Analysis")
+            return no_results_found("hybrid_analysis")
 
         response = response.json()[0]
         return (
             # fmt: off
                 {
-                    "site": "Hybrid Analysis",
+                    "site": "hybrid_analysis",
                     "results": {
-                        "File Name": response.get("submissions")[0].get("filename"),
-                        "Type": response.get("type"),
-                        "Job Environment": response.get("environment_description"),
-                        "AV Detect": response.get("av_detect"),
-                        "VX Family": response.get("vx_family"),
-                        "Verdict": response.get("verdict"),
-                        "Threat Score": response.get("threat_score"),
-                        "SHA1": response.get("sha1"),
-                        "SHA256": response.get("sha256"),
-                        "SHA512": response.get("sha512"),
-                        "Classification": response.get("classification_tags"),
-                        "Tags": response.get("tags"),
+                        "file_name": response.get("submissions")[0].get("filename"),
+                        "type": response.get("type"),
+                        "job_environment": response.get("environment_description"),
+                        "av_detect": response.get("av_detect"),
+                        "vx_family": response.get("vx_family"),
+                        "verdict": response.get("verdict"),
+                        "threat_score": response.get("threat_score"),
+                        "sha1": response.get("sha1"),
+                        "sha256": response.get("sha256"),
+                        "sha512": response.get("sha512"),
+                        "classification": response.get("classification_tags"),
+                        "tags": response.get("tags"),
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("Hybrid Analysis", e)
+        return failed_to_run("hybrid_analysis", e)
 
 
 def breach_directory(indicator):
@@ -975,25 +975,25 @@ def breach_directory(indicator):
 
         if response.status_code != 200:
             return status_code_error(
-                "Breach Directory", response.status_code, response.reason
+                "breach_directory", response.status_code, response.reason
             )
 
         if not response.json().get("result", []):
-            return no_results_found("Breach Directory")
+            return no_results_found("breach_directory")
 
         return (
             # fmt: off
                 {
-                    "site": "Breach Directory",
+                    "site": "breach_directory",
                     "results":{
-                        "Found": response.json().get("found", {}),
-                        "Frequency": response.json().get("result", [])
+                        "found": response.json().get("found", {}),
+                        "frequency": response.json().get("result", [])
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("Breach Directory", e)
+        return failed_to_run("breach_directory", e)
 
 
 def shodan(indicator):
@@ -1005,32 +1005,32 @@ def shodan(indicator):
             api = Shodan(config["SHODAN_API_KEY"])
             host = api.host(indicator.indicator)
         except Exception:
-            return no_results_found("Shodan")
+            return no_results_found("shodan")
 
         return (
             # fmt: off
                 {
-                    "site": "Shodan",
+                    "site": "shodan",
                     "results":{
-                        "Hostnames": host.get("hostnames"),
-                        "Domains": host.get("domains"),
-                        "Tags": host.get("tags"),
-                        "Last Update": host.get("last_update"),
-                        "City": host.get("city"),
-                        "ASN": host.get("asn"),
-                        "ISP": host.get("isp"),
-                        "Country": host.get("country_name"),
-                        "Region": host.get("region_code"),
-                        "OS": host.get("os"),
-                        "Ports": host.get("ports"),
-                        "Vulns": host.get("vulns"),
-                        "URL": f"https://www.shodan.io/host/{indicator.indicator}",
+                        "hostnames": host.get("hostnames"),
+                        "domains": host.get("domains"),
+                        "tags": host.get("tags"),
+                        "last_update": host.get("last_update"),
+                        "city": host.get("city"),
+                        "asn": host.get("asn"),
+                        "isp": host.get("isp"),
+                        "country": host.get("country_name"),
+                        "region": host.get("region_code"),
+                        "os": host.get("os"),
+                        "ports": host.get("ports"),
+                        "vulns": host.get("vulns"),
+                        "url": f"https://www.shodan.io/host/{indicator.indicator}",
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("Shodan", e)
+        return failed_to_run("shodan", e)
 
 
 def checkphish(indicator):
@@ -1060,18 +1060,18 @@ def checkphish(indicator):
                 },
             )
         else:
-            raise Exception("Invalid indicator type for CheckPhish")
+            raise Exception("Invalid indicator type for check_phish")
 
         if start_job.status_code != 200:
             return status_code_error(
-                "CheckPhish", start_job.status_code, start_job.reason
+                "check_phish", start_job.status_code, start_job.reason
             )
 
         status = None
         retry_count = 0
         while status != "DONE":
             if retry_count > 5:
-                return failed_to_run("CheckPhish", "Job took too long to complete.")
+                return failed_to_run("check_phish", "Job took too long to complete.")
             time.sleep(5)
             response = requests.post(
                 "https://developers.checkphish.ai/api/neo/scan/status",
@@ -1087,28 +1087,28 @@ def checkphish(indicator):
 
         if response.status_code != 200:
             return status_code_error(
-                "CheckPhish", response.status_code, response.reason
+                "check_phish", response.status_code, response.reason
             )
 
         if not response.json().get("error") == False:
-            return no_results_found("CheckPhish")
+            return no_results_found("check_phish")
 
         return (
             # fmt: off
                 {
-                    "site": "CheckPhish",
+                    "site": "check_phish",
                     "results":{
-                        "Disposition": response.json().get("disposition"),
-                        "URL SHA256": response.json().get("url_sha256"),
-                        "Insights": response.json().get("insights"),
-                        "Screenshot": response.json().get("screenshot_path"),
-                        "Scan Error": response.json().get("error"),
+                        "disposition": response.json().get("disposition"),
+                        "url_sha256": response.json().get("url_sha256"),
+                        "insights": response.json().get("insights"),
+                        "screenshot": response.json().get("screenshot_path"),
+                        "scan_error": response.json().get("error"),
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("CheckPhish", e)
+        return failed_to_run("check_phish", e)
 
 
 def malware_bazzar(indicator):
@@ -1120,28 +1120,28 @@ def malware_bazzar(indicator):
 
         if response.status_code != 200:
             return status_code_error(
-                "Malware Bazzar", response.status_code, response.reason
+                "malware_bazzar", response.status_code, response.reason
             )
 
         if not response.json().get("query_status") == "ok":
-            return no_results_found("Malware Bazzar")
+            return no_results_found("malware_bazzar")
 
         return (
             # fmt: off
                 {
-                    "site": "Malware Bazzar",
+                    "site": "malware_bazzar",
                     "results":{
-                        "File Type": response.json().get("data")[0].get("file_type"),
-                        "Signature": response.json().get("data")[0].get("signature"),
-                        "File Name": response.json().get("data")[0].get("file_name"),
-                        "Delivery Method": response.json().get("delivery_method"),
-                        "Tags": response.json().get("tags"),
+                        "file_type": response.json().get("data")[0].get("file_type"),
+                        "signature": response.json().get("data")[0].get("signature"),
+                        "file_name": response.json().get("data")[0].get("file_name"),
+                        "delivery_method": response.json().get("delivery_method"),
+                        "tags": response.json().get("tags"),
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("Malware Bazzar", e)
+        return failed_to_run("malware_bazzar", e)
 
 
 def inquestlabs(indicator):
@@ -1180,38 +1180,38 @@ def inquestlabs(indicator):
             )
 
         else:
-            raise Exception("Invalid indicator type for InQuestLabs")
+            raise Exception("Invalid indicator type for inquest_labs")
 
         if response.status_code != 200:
             return status_code_error(
-                "InQuestLabs", response.status_code, response.reason
+                "inquest_labs", response.status_code, response.reason
             )
 
         if response.json().get("success") is False:
-            return no_results_found("InQuestLabs")
+            return no_results_found("inquest_labs")
 
         if not response.json().get("data"):
-            return no_results_found("InQuestLabs")
+            return no_results_found("inquest_labs")
 
         return (
             # fmt: off
                 {
-                    "site": "InQuestLabs",
+                    "site": "inquest_labs",
                     "results": {
-                        "Classification": response.json().get("data", [])[0].get("classification"),
-                        "File Type": response.json().get("data", [])[0].get("file_type"),
-                        "First Seen": response.json().get("data", [])[0].get("first_seen"),
-                        "Inquest Alerts": response.json().get("data", [])[0].get("inquest_alerts"),
-                        "Mime Type": response.json().get("data", [])[0].get("mime_type"),
-                        "Subcategory": response.json().get("data", [])[0].get("subcategory"),
-                        "Subcategory URL": response.json().get("data", [])[0].get("subcategory_url"),
-                        "Tags": response.json().get("data", [])[0].get("tags"),
+                        "classification": response.json().get("data", [])[0].get("classification"),
+                        "file_type": response.json().get("data", [])[0].get("file_type"),
+                        "first_seen": response.json().get("data", [])[0].get("first_seen"),
+                        "inquest_alerts": response.json().get("data", [])[0].get("inquest_alerts"),
+                        "mime_type": response.json().get("data", [])[0].get("mime_type"),
+                        "subcategory": response.json().get("data", [])[0].get("subcategory"),
+                        "subcategory_url": response.json().get("data", [])[0].get("subcategory_url"),
+                        "tags": response.json().get("data", [])[0].get("tags"),
                     },
                 },
             # fmt: on
         )
     except Exception as e:
-        return failed_to_run("InQuestLabs", e)
+        return failed_to_run("inquest_labs", e)
 
 
 def maltiverse(indicator):
@@ -1243,22 +1243,22 @@ def maltiverse(indicator):
             result = maltiverse.url_get(indicator.indicator)
 
         else:
-            raise Exception("Invalid indicator type for Maltiverse")
+            raise Exception("Invalid indicator type for maltiverse")
 
         if not result:
-            raise no_results_found("Maltiverse")
+            raise no_results_found("maltiverse")
 
         if not result.get("classification", ""):
-            return no_results_found("Maltiverse")
+            return no_results_found("maltiverse")
 
         return (
             # fmt: off
                 {
-                    "site": "Maltiverse",
+                    "site": "maltiverse",
                     "results": {
-                        "Classification": result.get("classification", ""),
-                        "Blacklist": result.get("blacklist", []),
-                        "Tags": result.get("tag", []),
+                        "classification": result.get("classification", ""),
+                        "blacklist": result.get("blacklist", []),
+                        "tags": result.get("tag", []),
 
                         },
                 },

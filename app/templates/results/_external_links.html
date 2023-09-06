@@ -11,7 +11,7 @@
               class="fluid ui blue button"
               onclick="window.open('{{value}}', '_blank')"
             >
-              {{key}}
+              {{key|snakecase_to_title}}
             </button>
           </div>
         </div>

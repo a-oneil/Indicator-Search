@@ -40,20 +40,20 @@ def enrichments_handler(indicator):
 def geo_data(indicator):
     results = {}
     for site in indicator.results if indicator.results else []:
-        if site.get("site") == "IPinfo.io":
-            if site.get("results").get("GeoLocation"):
-                geo = site.get("results").get("GeoLocation")
+        if site.get("site") == "ipinfo.io":
+            if site.get("results").get("geolocation"):
+                geo = site.get("results").get("geolocation")
                 geo = geo.split(",")
-                results.update({"Geo Data": [geo[0], geo[1]]})
+                results.update({"geo_data": [geo[0], geo[1]]})
     return results
 
 
 def urlscan(indicator):
     results = {}
     for site in indicator.results if indicator.results else []:
-        if site.get("site") == "URLScan.io":
-            if site.get("results").get("Last Scan Screenshot"):
+        if site.get("site") == "urlscan.io":
+            if site.get("results").get("last_scan_screenshot"):
                 # fmt: off
-                results.update({"Last Scan Screenshot": site.get("results").get("Last Scan Screenshot")})
+                results.update({"last_scan_screenshot": site.get("results").get("last_scan_screenshot")})
                 # fmt: on
     return results

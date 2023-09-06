@@ -127,7 +127,7 @@ docker run -p 8000:8000 indicator-search:latest
       }
     },
     {
-      "site": "VirusTotal Hash",
+      "site": "virustotal_hash",
       "results": {
         "Harmless": 0,
         "Malicious": 59,
