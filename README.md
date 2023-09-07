@@ -1,18 +1,18 @@
 # Indicator Search
 ![Home](images/home.png)
 
-## About:
+## About
 Indicator Search is a web application and API designed for rapid scanning of indicators (observables found during a security incident) against multiple OSINT sites, based on the input indicator type. Inspired by Intelowl, this project aims to provide a similar tool while utilizing the FastAPI framework. Indicator search could deployed among a shared server between security engineers to aid in quick observable lookups as it enables analysts to gather information from various sources in a streamlined manner.
 
-### Contributing:
+### Contributing
 If you're interested in contributing to Indicator Search, feel free to fork this repository, make your improvements, and submit a pull request. I welcome any enhancements or bug fixes that can make this tool even more valuable for the security community.
-### Disclaimer:
+### Disclaimer
 Indicator Search is a tool designed for informational purposes and should be used responsibly and ethically. It relies on APIs and public threat feeds. Please ensure that you comply with the terms of use of the data sources accessed by this tool prior to its usage.
 
-### Demo:
+### Demo
 Discover the app's features and capabilities through a live demonstration at [indicatorsearch.app](https://indicatorsearch.app).
 
-## Setup:
+## Setup
 For now, Indicator Search can either be ran locally, served over port 8000 or via docker container. The instructions below should get you started.
 
 This project runs on Fastapi (Python3), you will need:
@@ -21,32 +21,58 @@ This project runs on Fastapi (Python3), you will need:
 
 1. Git clone the repo and cd into it.
 2. Run `python3 indicator_search.py` to install dependencies.
-3. Configure `./config/.env`. If you don't have the api keys, leave the value blank.
+3. Configure `./config/.env`.
 4. Run `python3 indicator_search.py` again and choose an option from the menu.
 
-### Creating A User:
-When creating a user, the `USER_INVITE_KEY` from the config file (`./config/.env`) must be provided to verify that the user being created is a part of your organization.
-1. Run `python3 indicator_search.py` and choose the option to create a user.
-2. Enter username and password. It will use the user invite code from the config to verify user creation is expected.
+### Env File
+The env file located at `./config/.env` is used to configure the applications api keys and tweakable settings. 
 
-### Seeding Indicators:
-The Indicator Search menu provides 8 example indicators to quickly test that all the API tools are working as expected.
-1. Run `python3 indicator_search.py` and choose the option to seed indicators.
-2. Enter your `api_key`.
+On inital run of the app, it will clone the `.env.example` file also located in the config folder and then print a message asking you to configure it.
 
-### Seeding Feedlists:
-Indicator Search has feedlists for seeding configured in the `config/feedlist_examples` folder. When you choose to seed the feedlists, it will iterate through all feeds in the json files. If the URL is already added, it will the server will reject the feedlist addition.
+`SERVER_ADDRESS`: Used for seeding API calls and slack notifications
+`HOSTNAME`: Required for docker https proxy
+`USER_INVITE_KEY`: Required for user signup
+`ENABLE_SLACK`: True/False
+`SLACK_BOT_TOKEN`: Slack bot token with message permissions
+`SLACK_CHANNEL`: Channel to post slack updates to
+
+### Tool API Keys
+If you don't have an api key, leave the value as `"API_KEY": ""`
+The tool will be omitted from the results when running an OSINT search an indicator.
+
+### Docker
+Menu `option 2` will create a self-signed https cert and build the docker container / traefik reverse proxy.
+After you run this, going forward the docker containers should always restart but if you need to start or stop the app, you can use either
+* `docker-compose up -d`
+* `docker-compose down`
+
+
+Menu `option 5` will just build the docker container and tag the image as `indicator-search:latest`.
+Afterwards you can run the container with the following command: 
+`docker run -p 8000:8000 -v "./path/to/db.sqlite:/code/db.sqlite" indicator-search:latest`
+
+### Local instances
+Menu `option 3` runs uvicorn directly and the app is reachable at `http://127.0.0.1:8000`
+Menu `option 4` also runs uvicorn directly but the app is listening on all interfaces at `http://0.0.0.0:80`
+
+
+## Seeding
+### Seeding Feedlists
+Menu `option 7` uses the json files located in `config/feedlist_examples` to auto-create new feeds. When you choose to seed the feedlists, it will iterate through all feeds in the files. If the URL is already added, the server will reject the feedlist addition.
 1. Run `python3 indicator_search.py` and choose the option to seed feedlists.
 2. Enter your `api_key`.
 
-### Docker:
-If you build a docker container, run it with the following command. 
-More docker options will soon be built into the menu.
-```
-docker run -p 8000:8000 indicator-search:latest
-```
+### Seeding Indicators
+Menu `option 8` provides 8 example indicators to quickly test that all the API tools are working as expected.
+1. Run `python3 indicator_search.py` and choose the option to seed indicators.
+2. Enter your `api_key`.
 
-## Types Of Indicators:
+### Creating A User
+Menu `option 9` will use the `USER_INVITE_KEY` from the config file to create a new user.
+1. Run `python3 indicator_search.py` and choose the option to create a user.
+2. Enter username and password. It will use the user invite code from the config to verify user creation is expected.
+
+## Types Of Supported Indicators
 * IPv4
 * IPv6
 * Hash.MD5
@@ -58,7 +84,7 @@ docker run -p 8000:8000 indicator-search:latest
 * Email
 * MAC Address
 
-## Tools:
+## Tools
 | Tool | Indicator Type | API Key Required? |
 |------|----------------|-------------------|
 |Public Feedlists|IP, Hash, FQDN|No, publicly available feedlists|
@@ -84,7 +110,9 @@ docker run -p 8000:8000 indicator-search:latest
 |Malware Bazzar|Hash|No|
 |MAC Vendors|MAC Address|No|
 
-## Screenshots:
+## Screenshots
+![Menu](images/menu.png)
+---
 ![Search Results](images/results1.png)
 ---
 ![Search Results](images/results2.png)

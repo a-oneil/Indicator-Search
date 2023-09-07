@@ -10,7 +10,6 @@ bcrypt
 python-jose
 fastapi-pagination
 strictyaml
-psycopg2
 ipwhois==0.10.3
 httpbl
 jinja_partials
