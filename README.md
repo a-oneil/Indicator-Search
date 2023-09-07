@@ -78,7 +78,7 @@ Menu `option 9` will use the `USER_INVITE_KEY` from the config file to create a 
 1. Run `python3 indicator_search.py` and choose the option to create a user.
 2. Enter username and password. It will use the user invite code from the config to verify user creation is expected.
 
-## Types Of Supported Indicators
+## Supported Indicators
 * IPv4
 * IPv6
 * Hash.MD5
