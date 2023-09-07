@@ -33,13 +33,15 @@ def menu():
     print("")
     print(f"{color.RED}{'='*16} Indicator Search {'='*16}{color.ENDCOLOR}")
     print(f"{color.BLUE}1.{color.ENDCOLOR}  Setup enviroment")
-    print(f"{color.BLUE}2.{color.ENDCOLOR}  Run docker with self-signed https proxy")
-    print(f"{color.YELLOW}{'-'*22} Dev {'-'*23}{color.ENDCOLOR}")
+    print(f"{color.BLUE}2.{color.ENDCOLOR}  Build Docker-compose and run")
+    print(f"{color.YELLOW} 2a.{color.ENDCOLOR}  Docker compose up")
+    print(f"{color.YELLOW} 2b.{color.ENDCOLOR}  Docker compose down")
+    print(f"{color.YELLOW}{'='*22} Dev {'='*23}{color.ENDCOLOR}")
     print(f"{color.BLUE}3.{color.ENDCOLOR}  Run local instance (127.0.0.1:8000)")
     print(f"{color.BLUE}4.{color.ENDCOLOR}  Run local instance (0.0.0.0:80)")
     print(f"{color.BLUE}5.{color.ENDCOLOR}  Build docker image")
     print(f"{color.BLUE}6.{color.ENDCOLOR}  Delete local sqlite database")
-    print(f"{color.YELLOW}{'-'*22} API {'-'*23}{color.ENDCOLOR}")
+    print(f"{color.YELLOW}{'='*22} API {'='*23}{color.ENDCOLOR}")
     print(f"{color.BLUE}7.{color.ENDCOLOR}  Seed feedlists database")
     print(f"{color.BLUE}8.{color.ENDCOLOR}  Seed indicators")
     print(f"{color.BLUE}9.{color.ENDCOLOR}  Create user")
@@ -54,7 +56,14 @@ def menu_switch(choice):
         menu()
     elif choice == "2":
         create_self_signed_cert()
+        docker_compose_build()
         docker_compose_up()
+        menu()
+    elif choice == "2a":
+        docker_compose_up()
+        menu()
+    elif choice == "2b":
+        docker_compose_down()
         menu()
     elif choice == "3":
         run_local()
@@ -341,7 +350,7 @@ def create_self_signed_cert():
         print(f"{color.BLUE}Existing certificate found{color.ENDCOLOR}")
 
 
-def docker_compose_up():
+def docker_compose_build():
     if not os.path.exists("./db.sqlite"):
         os.close(os.open("./db.sqlite", os.O_CREAT))
 
@@ -359,11 +368,32 @@ def docker_compose_up():
         check=True,
     )
 
+
+def docker_compose_up():
+    env = {
+        **os.environ,
+        "HOSTNAME": config["HOSTNAME"],
+    }
     subprocess.run(
         [
             "docker-compose",
             "up",
             "-d",
+        ],
+        env=env,
+        check=True,
+    )
+
+
+def docker_compose_down():
+    env = {
+        **os.environ,
+        "HOSTNAME": config["HOSTNAME"],
+    }
+    subprocess.run(
+        [
+            "docker-compose",
+            "down",
         ],
         env=env,
         check=True,
