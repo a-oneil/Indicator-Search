@@ -1,0 +1,41 @@
+{% if indicator.complete %}
+  <div class="ui segment">
+      <a class="ui icon label" style="float:right; margin:auto; color:white; background-color:rgba(0,0,0,.87)" onclick='CopyTextToClipboard("{{indicator.indicator}}")'>
+        <i class="fa-solid fa-copy"></i>
+       </a>
+    <p class="ui header">
+      <a class="ui medium header" style="word-wrap: break-word; vertical-align: text-top; display:inline-block;" href="/indicator/results/{{ indicator.id }}">
+        {{ indicator.indicator }}
+      </a>
+    </p>
+    <div class="ui two column grid">
+      <div class="column">
+        <div class="ui fluid raised card">
+          <div class="content">
+            <h4 class="ui header">Details:</h4>
+            <div class="ui labels" style="padding: 3px">
+              {{ render_partial("shared/_indicator_details.html",
+              indicator=indicator) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% if indicator.tags %}
+        <div class="column" style="padding-left: 0px">
+          <div class="ui fluid raised card">
+            <div class="content">
+              <h4 class="ui header">Tags:</h4>
+              <div class="ui labels" style="padding: 3px">
+                {{ render_partial("shared/_indicator_tags.html",
+                indicator=indicator) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% else %} 
+  {{ render_partial("shared/_loading.html", indicator=indicator) }}
+{%endif %}

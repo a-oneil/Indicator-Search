@@ -18,13 +18,10 @@
     }
 </script>
 
-<a class="ui label" href="/indicator/results/{{ indicator.id }}">
-    ID: {{ indicator.id }}
-</a>
-<a class="ui label" href="/search?indicator_id=&indicator_name=&indicator_type={{ indicator.indicator_type }}&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=">
+<a class="ui label" href="/searches?indicator_id=&indicator_name=&indicator_type={{ indicator.indicator_type }}&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=">
     {{ indicator.indicator_type }}
 </a>
-<a class="ui label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=&created_by={{ indicator.username }}">
+<a class="ui label" href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=&created_by={{ indicator.username }}">
     Created by: {{ indicator.username }}
 </a>
 <a class="ui label">
@@ -32,7 +29,4 @@
 </a>
 <a class="ui label">
     Last Updated: {{ indicator.time_updated }}
-</a>
-<a class="ui label" onclick='CopyTextToClipboard("{{indicator.indicator}}")'>
-    Copy Name
 </a>

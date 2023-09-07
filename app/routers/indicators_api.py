@@ -49,7 +49,9 @@ def get_indicator_results(indicator_id: int, db: Session = Depends(get_db)):
     return indicator
 
 
-@router.post("/indicator/search", name="Search for indicators", tags=["Indicators"])
+@router.post(
+    "/indicator/searches", name="Search for scanned indicators", tags=["Indicators"]
+)
 def search_for_indicator(
     request: schemas.SearchIndicators, db: Session = Depends(get_db)
 ):

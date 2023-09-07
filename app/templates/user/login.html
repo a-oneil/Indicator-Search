@@ -67,7 +67,7 @@ render_partial("shared/_logo.html") }} {% if user %}
         <div class="ui raised fluid card">
           <div class="content">
             <p class="header">Number Of Submitted Indicators</p>
-            <a href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=&created_by={{ user.username }}" style="word-wrap: break-word">
+            <a href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=&created_by={{ user.username }}" style="word-wrap: break-word">
               {{user.indicators | length}}
             </a>
           </div>

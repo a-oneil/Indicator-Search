@@ -48,7 +48,7 @@ def home(request: Request, db: Session = Depends(get_db)):
     )
 
 
-@router.get("/search", response_class=HTMLResponse)
+@router.get("/searches", response_class=HTMLResponse)
 def search_for_indicator(
     request: Request,
     db: Session = Depends(get_db),
@@ -75,7 +75,7 @@ def search_for_indicator(
         )
 
         return templates.TemplateResponse(
-            "search/search.html",
+            "searches/searches.html",
             {
                 "request": request,
                 "search_results": results,
@@ -83,7 +83,7 @@ def search_for_indicator(
         )
     except Exception as e:
         return templates.TemplateResponse(
-            "search/search.html",
+            "searches/searches.html",
             {
                 "request": request,
                 "search_results": Indicators.get_all_indicators(db),
@@ -266,7 +266,7 @@ def delete_indicator(
     return RedirectResponse(url=router.url_path_for("home"))
 
 
-@router.get("/search/delete/{indicator_id}", response_class=HTMLResponse)
+@router.get("/searches/delete/{indicator_id}", response_class=HTMLResponse)
 def delete_indicator_from_search(
     request: Request,
     indicator_id: int,

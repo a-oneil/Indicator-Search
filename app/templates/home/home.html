@@ -6,7 +6,7 @@ render_partial("shared/_add_indicator_form.html", _message_color=_message_color,
   {{render_partial("shared/_refresh_button.html")}}
   {% if recent_indicators %}
     {% for indicator in recent_indicators %}
-      {{render_partial("results/_indicator_info.html", indicator=indicator)}}
+      {{render_partial("shared/_indicator_info.html", indicator=indicator)}}
     {% endfor %}
   {% endif %}
 </div>

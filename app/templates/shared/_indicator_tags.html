@@ -1,50 +1,40 @@
 
 {% if indicator.tags %}
   {% for key,value in indicator.tags.items() %} 
-    {% if key == "malicious" %}
-      <a class="ui red label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
+    {% if key == "ioc" %}
+        <a class="ui red label" href="/api/iocs/{{value}}">
+            {{key|snakecase_to_title}}
+        </a>
+
+    {% elif key in ["malicious", "error"] %}
+      <a class="ui red label" href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
           {{key|snakecase_to_title}}
       </a>
 
-    {% elif key == "ioc" %}
-      <a class="ui red label" href="/api/iocs/{{value}}">
-          {{key|snakecase_to_title}}
-      </a>
+    {% elif key in ["suspicious","feedlist_match", "tweetfeed_match",  "newly_created_domain",] %}
+        <a class="ui yellow label" href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
+            {{key|snakecase_to_title}}
+        </a>
 
-      {% elif key == "suspicious" %}
-      <a class="ui yellow label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
-          {{key|snakecase_to_title}}
-      </a>
+    {% elif key == "known_binary" %}
+        <a class="ui green label" href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
+            {{key|snakecase_to_title}}
+        </a>
 
-      {% elif key == "feedlist_match" %}
-      <a class="ui yellow label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
-          {{key|snakecase_to_title}}
-      </a>
+    {% elif key in ["tor", "mobile", "proxy"] %}
+        <a class="ui label" href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
+            {{key|snakecase_to_title}} IP Address
+        </a>
+    
+    {% elif key == "connection_type" and value in ["Mobile", "Residential", "Proxy", "Tor", "Datacenter"]%}
+        <a class="ui label" href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
+            {{value}} IP Address
+        </a>
 
-      {% elif key == "tweetfeed_match" %}
-      <a class="ui yellow label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
-          {{key|snakecase_to_title}}
-      </a>
-
-      {% elif key == "known_binary" %}
-      <a class="ui green label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
-          {{key|snakecase_to_title}}
-      </a>
-
-      {% elif key == "newly_created_domain" %}
-      <a class="ui yellow label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
-          {{key|snakecase_to_title}}
-      </a>
-      
-      {% elif key == "error" %}
-      <a class="ui red label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
-          {{key|snakecase_to_title}}
-      </a>
-
-      {% else %}
-      <a class="ui label" href="/search?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{value}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
-          {{key|snakecase_to_title}}: {{value}}
-      </a>
+    {% else %}
+        <a class="ui label" href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{value}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
+            {{key|snakecase_to_title}}: {{value}}
+        </a>
     {% endif %}
   {% endfor %} 
 {% endif %}
