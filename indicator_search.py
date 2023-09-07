@@ -33,7 +33,7 @@ def menu():
     print("")
     print(f"{color.RED}{'='*16} Indicator Search {'='*16}{color.ENDCOLOR}")
     print(f"{color.BLUE}1.{color.ENDCOLOR}  Setup enviroment")
-    print(f"{color.BLUE}2.{color.ENDCOLOR}  Build Docker-compose and run")
+    print(f"{color.BLUE}2.{color.ENDCOLOR}  Build docker-compose and run")
     print(f"{color.YELLOW} 2a.{color.ENDCOLOR}  Docker compose up")
     print(f"{color.YELLOW} 2b.{color.ENDCOLOR}  Docker compose down")
     print(f"{color.YELLOW}{'='*22} Dev {'='*23}{color.ENDCOLOR}")
@@ -272,7 +272,8 @@ def seed_indicators():
         "124.89.118.9",
         "193.151.24.186",
         "https://injective.claims",
-        "projectdept@kanzalshamsprojectmgt.com" "e8ac867e5f51bdcf5ab7b06a8bced131",
+        "projectdept@kanzalshamsprojectmgt.com",
+        "e8ac867e5f51bdcf5ab7b06a8bced131",
         "fb028dd937a8378bc76a35c805a76cb367b4ccccf64b942807522325bae81621",
         "7490cb2192170167731093ed47a4c256532c5f28dacb1c264d5ffb9be9e6f909",
         "00sms.xyz",
