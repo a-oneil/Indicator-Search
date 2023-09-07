@@ -1,21 +1,39 @@
 {% if indicator.complete %}
+  <script>
+    function CopyTextToClipboard(text) {
+      // Create a temporary textarea element to hold the text
+      var tempTextarea = document.createElement("textarea");
+      tempTextarea.value = text;
+
+      // Append the textarea to the document
+      document.body.appendChild(tempTextarea);
+
+      // Select the text in the textarea
+      tempTextarea.select();
+
+      // Copy the selected text to the clipboard
+      document.execCommand("copy");
+
+      // Remove the temporary textarea
+      document.body.removeChild(tempTextarea);
+    }
+  </script>
   <div class="ui segment">
-      <a class="ui icon label" style="float:right; margin:auto; color:white; background-color:rgba(0,0,0,.87)" onclick='CopyTextToClipboard("{{indicator.indicator}}")'>
-        <i class="fa-solid fa-copy"></i>
-       </a>
-    <p class="ui header">
-      <a class="ui medium header" style="word-wrap: break-word; vertical-align: text-top; display:inline-block;" href="/indicator/results/{{ indicator.id }}">
-        {{ indicator.indicator }}
-      </a>
-    </p>
+    <h3 class="ui header">
+      <img src="/static/images/copy-solid.svg" style="width: 13px; vertical-align:top;" onclick='CopyTextToClipboard("{{indicator.indicator}}")'>
+      <div class="content">
+        <a class="ui small header" style="word-wrap: break-word; float:left; margin-left:-10px" href="/indicator/results/{{ indicator.id }}">
+          {{ indicator.indicator }}
+        </a>
+      </div>
+    </h3>
     <div class="ui two column grid">
       <div class="column">
         <div class="ui fluid raised card">
           <div class="content">
             <h4 class="ui header">Details:</h4>
             <div class="ui labels" style="padding: 3px">
-              {{ render_partial("shared/_indicator_details.html",
-              indicator=indicator) }}
+              {{ render_partial("shared/_indicator_details.html", indicator=indicator) }}
             </div>
           </div>
         </div>
@@ -27,8 +45,7 @@
             <div class="content">
               <h4 class="ui header">Tags:</h4>
               <div class="ui labels" style="padding: 3px">
-                {{ render_partial("shared/_indicator_tags.html",
-                indicator=indicator) }}
+                {{ render_partial("shared/_indicator_tags.html", indicator=indicator) }}
               </div>
             </div>
           </div>

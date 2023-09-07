@@ -1,23 +1,3 @@
-<script>
-    function CopyTextToClipboard(text) {
-      // Create a temporary textarea element to hold the text
-      var tempTextarea = document.createElement("textarea");
-      tempTextarea.value = text;
-  
-      // Append the textarea to the document
-      document.body.appendChild(tempTextarea);
-  
-      // Select the text in the textarea
-      tempTextarea.select();
-  
-      // Copy the selected text to the clipboard
-      document.execCommand("copy");
-  
-      // Remove the temporary textarea
-      document.body.removeChild(tempTextarea);
-    }
-</script>
-
 <a class="ui label" href="/searches?indicator_id=&indicator_name=&indicator_type={{ indicator.indicator_type }}&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=">
     {{ indicator.indicator_type }}
 </a>
