@@ -29,46 +29,20 @@ def load_config():
         exit(1)
 
 
-def toggle_env_value(new_env=None):
-    try:
-        with open("./config/.env", "r") as f:
-            config = json.load(f)
-        current_env = config.get("ENV", "DEV")
-        if new_env is None:
-            new_env = "PROD" if current_env == "DEV" else "DEV"
-        config["ENV"] = new_env
-
-        with open("./config/.env", "w") as f:
-            json.dump(config, f, indent=4)
-    except Exception as e:
-        print(
-            f"{color.RED}Error occurred while updating the file:{color.ENDCOLOR} {str(e)}"
-        )
-
-
-def check_env_status():
-    try:
-        current_env = config.get("ENV", "DEV")
-        print(f"{color.BLUE}Current ENV status:{color.ENDCOLOR} {current_env}")
-    except Exception as e:
-        print(
-            f"{color.RED}Error occurred while reading the file:{color.ENDCOLOR} {str(e)}"
-        )
-
-
 def menu():
     print("")
-    print(f"{color.RED}===== Indicator Search ====={color.ENDCOLOR}")
-    check_env_status()
-    print(f"{color.BLUE}1.{color.ENDCOLOR}  Re-setup enviroment")
-    print(f"{color.BLUE}2.{color.ENDCOLOR}  Toggle environment")
+    print(f"{color.RED}{'='*16} Indicator Search {'='*16}{color.ENDCOLOR}")
+    print(f"{color.BLUE}1.{color.ENDCOLOR}  Setup enviroment")
+    print(f"{color.BLUE}2.{color.ENDCOLOR}  Run docker with self-signed https proxy")
+    print(f"{color.YELLOW}{'-'*22} Dev {'-'*23}{color.ENDCOLOR}")
     print(f"{color.BLUE}3.{color.ENDCOLOR}  Run local instance (127.0.0.1:8000)")
-    print(f"{color.BLUE}4.{color.ENDCOLOR}  Run local instance (0.0.0.0:8000)")
+    print(f"{color.BLUE}4.{color.ENDCOLOR}  Run local instance (0.0.0.0:80)")
     print(f"{color.BLUE}5.{color.ENDCOLOR}  Build docker image")
-    print(f"{color.BLUE}6.{color.ENDCOLOR}  Seed feedlists database (API)")
-    print(f"{color.BLUE}7.{color.ENDCOLOR}  Seed indicators (API)")
-    print(f"{color.BLUE}8.{color.ENDCOLOR}  Create user (API)")
-    print(f"{color.BLUE}9.{color.ENDCOLOR}  Delete local sqlite database")
+    print(f"{color.BLUE}6.{color.ENDCOLOR}  Delete local sqlite database")
+    print(f"{color.YELLOW}{'-'*22} API {'-'*23}{color.ENDCOLOR}")
+    print(f"{color.BLUE}7.{color.ENDCOLOR}  Seed feedlists database")
+    print(f"{color.BLUE}8.{color.ENDCOLOR}  Seed indicators")
+    print(f"{color.BLUE}9.{color.ENDCOLOR}  Create user")
     print(f"{color.BLUE}10.{color.ENDCOLOR} Exit")
     menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
 
@@ -79,7 +53,8 @@ def menu_switch(choice):
         reconfig()
         menu()
     elif choice == "2":
-        toggle_env_value()
+        create_self_signed_cert()
+        docker_compose_up()
         menu()
     elif choice == "3":
         run_local()
@@ -89,16 +64,17 @@ def menu_switch(choice):
         build_docker_image()
         menu()
     elif choice == "6":
-        seed_feedlists()
+        delete_sqlite()
         menu()
     elif choice == "7":
-        seed_indicators()
+        seed_feedlists()
         menu()
     elif choice == "8":
-        create_user()
+        seed_indicators()
         menu()
     elif choice == "9":
-        delete_sqlite()
+        create_user()
+        menu()
     elif choice == "10":
         exit(0)
     else:
@@ -138,13 +114,13 @@ def reinstall_packages():
         distro = platform.uname().release.lower()
         if "debian" in distro or "ubuntu" in distro:
             subprocess.run(
-                ["sudo", "apt", "install", "libpq-dev", "python3-dev", "python3-venv"],
+                ["sudo", "apt", "install", "python3-dev", "python3-venv"],
                 check=True,
             )
 
         elif "manjaro" in distro or "arch" in distro:
             subprocess.run(
-                ["sudo", "pacman", "-S", "postgresql-libs", "python3"],
+                ["sudo", "pacman", "-S", "python3"],
                 check=True,
             )
         else:
@@ -153,7 +129,7 @@ def reinstall_packages():
 
     elif system.lower() == "darwin":
         subprocess.run(
-            ["brew", "install", "libpq", "virtualenv"],
+            ["brew", "install", "virtualenv"],
             check=True,
         )
 
@@ -176,7 +152,6 @@ def reconfig():
         shutil.rmtree("./venv")
     print(f"{color.YELLOW}Installing dependencies{color.ENDCOLOR}")
 
-    # Setup environment
     subprocess.run(["python3", "-m", "venv", "venv"], check=True)
     subprocess.run(
         [
@@ -199,8 +174,8 @@ def run_local():
             "./venv/bin/uvicorn",
             "app.main:app",
             "--reload",
-            f"--host=127.0.0.1",
-            f"--port=8000",
+            "--host=127.0.0.1",
+            "--port=8000",
         ],
         check=True,
     )
@@ -213,8 +188,8 @@ def run_local_global():
         [
             "./venv/bin/uvicorn",
             "app.main:app",
-            f"--host=0.0.0.0",
-            f"--port=8000",
+            "--host=0.0.0.0",
+            "--port=80",
         ],
         check=True,
     )
@@ -284,14 +259,14 @@ def seed_indicators():
     import requests
 
     indicator_list = [
-        "ahash.com",
-        "78.71.29.183",
+        "a3cb3b02a683275f7e0a0f8a9a5c9e07",
+        "124.89.118.9",
         "193.151.24.186",
-        "1c1760ed4d19cdbecb2398216922628b",
-        "7df848031f95ec2061e83e519e0fae57c0506cacafd2f0e3b1970640d1188304",
+        "https://injective.claims",
+        "projectdept@kanzalshamsprojectmgt.com" "e8ac867e5f51bdcf5ab7b06a8bced131",
         "fb028dd937a8378bc76a35c805a76cb367b4ccccf64b942807522325bae81621",
         "7490cb2192170167731093ed47a4c256532c5f28dacb1c264d5ffb9be9e6f909",
-        "loginnjbehgqwege.click",
+        "00sms.xyz",
     ]
     api_key = str(input(f"{color.YELLOW}Enter API Key: {color.ENDCOLOR}")).strip()
     for indicator in indicator_list:
@@ -334,9 +309,65 @@ def create_user():
 def delete_sqlite():
     if os.path.exists("./db.sqlite"):
         os.remove("./db.sqlite")
+        os.close(os.open("./db.sqlite", os.O_CREAT))
         print(f"{color.BLUE}Successfully deleted local database{color.ENDCOLOR}")
     else:
         print(f"{color.RED}Local database does not exist{color.ENDCOLOR}")
+
+
+def create_self_signed_cert():
+    if not os.path.exists("./config/traefik.key") or not os.path.exists(
+        "./config/traefik.crt"
+    ):
+        print(f"{color.YELLOW}Creating self-signed certificate{color.ENDCOLOR}")
+        subprocess.run(
+            [
+                "openssl",
+                "req",
+                "-newkey",
+                "rsa:2048",
+                "-nodes",
+                "-keyout",
+                "./config/traefik.key",
+                "-x509",
+                "-days",
+                "365",
+                "-out",
+                "./config/traefik.crt",
+            ],
+            check=True,
+        )
+    else:
+        print(f"{color.BLUE}Existing certificate found{color.ENDCOLOR}")
+
+
+def docker_compose_up():
+    if not os.path.exists("./db.sqlite"):
+        os.close(os.open("./db.sqlite", os.O_CREAT))
+
+    env = {
+        **os.environ,
+        "HOSTNAME": config["HOSTNAME"],
+    }
+
+    subprocess.run(
+        [
+            "docker-compose",
+            "build",
+        ],
+        env=env,
+        check=True,
+    )
+
+    subprocess.run(
+        [
+            "docker-compose",
+            "up",
+            "-d",
+        ],
+        env=env,
+        check=True,
+    )
 
 
 if __name__ == "__main__":

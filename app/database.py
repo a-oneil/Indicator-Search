@@ -1,16 +1,10 @@
-from . import color, config
+from . import color
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-if config["ENV"] == "DEV":
-    SQLALCHEMY_DATABASE_URL = "sqlite:///./db.sqlite"
-elif config["ENV"] == "PROD":
-    SQLALCHEMY_DATABASE_URL = f"postgresql://{config['POSTGRES_USER']}:{config['POSTGRES_PASSWORD']}@postgres/{config['POSTGRES_DB']}"
-else:
-    raise Exception("Invalid environment!")
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine("sqlite:///./db.sqlite")
 
 SessionLocal = sessionmaker(
     bind=engine,

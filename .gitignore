@@ -6,3 +6,6 @@ __pycache__
 db.sqlite
 config/.env
 push_to_docker_repo.sh
+.gitignore
+config/traefik.key
+config/traefik.crt
