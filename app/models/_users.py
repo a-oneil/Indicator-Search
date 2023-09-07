@@ -13,7 +13,7 @@ from ..database import Base
 class User_Accounts(Base):
     __tablename__ = "user_accounts"
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String)
+    username = Column(String, unique=True)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     api_key = Column(String)
     password_hash = Column(String)
