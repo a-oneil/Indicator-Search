@@ -38,6 +38,7 @@ On inital run of the app, it will clone the `.env.example` file also located in 
 
 ### Tool API Keys
 If you don't have an api key, leave the value as `"API_KEY": ""`
+
 The tool will be omitted from the results when running an OSINT search an indicator.
 
 ### Docker
@@ -51,11 +52,13 @@ Re-running `option 2` will rebuild your containers but the database volume is pe
 
 
 Menu `option 5` will just build the docker container and tag the image as `indicator-search:latest`.
-Afterwards you can run the container with the following command: 
+Afterwards you can run the container with the following command:
+
 `docker run -p 8000:8000 -v "./path/to/db.sqlite:/code/db.sqlite" indicator-search:latest`
 
 ### Local instances
 Menu `option 3` runs uvicorn directly and the app is reachable at `http://127.0.0.1:8000`
+
 Menu `option 4` also runs uvicorn directly but the app is listening on all interfaces at `http://0.0.0.0:80`
 
 
