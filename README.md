@@ -29,12 +29,12 @@ The env file located at `./config/.env` is used to configure the applications ap
 
 On inital run of the app, it will clone the `.env.example` file also located in the config folder and then print a message asking you to configure it.
 
-`SERVER_ADDRESS`: Used for seeding API calls and slack notifications
-`HOSTNAME`: Required for docker https proxy
-`USER_INVITE_KEY`: Required for user signup
-`ENABLE_SLACK`: True/False
-`SLACK_BOT_TOKEN`: Slack bot token with message permissions
-`SLACK_CHANNEL`: Channel to post slack updates to
+* `SERVER_ADDRESS`: Used for seeding API calls and slack notifications
+* `HOSTNAME`: Required for docker https proxy
+* `USER_INVITE_KEY`: Required for user signup
+* `ENABLE_SLACK`: True/False
+* `SLACK_BOT_TOKEN`: Slack bot token with message permissions
+* `SLACK_CHANNEL`: Channel to post slack updates to
 
 ### Tool API Keys
 If you don't have an api key, leave the value as `"API_KEY": ""`
@@ -42,9 +42,12 @@ The tool will be omitted from the results when running an OSINT search an indica
 
 ### Docker
 Menu `option 2` will create a self-signed https cert and build the docker container / traefik reverse proxy.
-After you run this, going forward the docker containers should always restart but if you need to start or stop the app, you can use either
-* `docker-compose up -d`
-* `docker-compose down`
+
+Once the app has been built, the docker containers should always restart but if you need to start or stop the app, you can use:
+* Menu `option 2a` Docker compose up
+* Menu `option 2b` Docker compose down
+
+Re-running `option 2` will rebuild your containers but the database volume is persistant between rebuilds.
 
 
 Menu `option 5` will just build the docker container and tag the image as `indicator-search:latest`.
