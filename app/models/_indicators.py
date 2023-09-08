@@ -112,7 +112,7 @@ class Indicators(Base):
 
     @classmethod
     def failed_scans(cls, db: Session):
-        return db.query(cls).filter(cls.tags.contains("Error")).count()
+        return db.query(cls).filter(cls.tags.contains("error")).count()
 
     @classmethod
     def get_indicator_by_id(cls, indicator_id: int, db: Session):
