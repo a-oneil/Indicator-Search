@@ -180,10 +180,10 @@ def new_indicator_handler(indicator, user, db: Session):
         indicator.results = (
             {
                 "site": "Error",
-                "results": {"Error": str(e)},
+                "results": {"error": str(e)},
             },
         )
-        indicator.tags = {"Error": True}
+        indicator.tags = {"error": True}
         db.add(indicator)
         db.commit()
         notifications.console_output(
