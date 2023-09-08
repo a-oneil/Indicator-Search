@@ -31,7 +31,7 @@ On inital run of the app, it will clone the `.env.example` file also located in 
 
 * `SERVER_ADDRESS`: Used for seeding API calls and slack notifications
 * `HOSTNAME`: Required for docker https proxy
-* `ADMIN_API_KEY`: A user's api key for the ageout ioc automation that is ran every hour. 
+* `ADMIN_API_KEY`: A user's api key for the ageout ioc automation that is ran every hour
 * `USER_INVITE_KEY`: Required for user signup
 * `ENABLE_SLACK`: True/False
 * `SLACK_BOT_TOKEN`: Slack bot token with message permissions
@@ -40,7 +40,7 @@ On inital run of the app, it will clone the `.env.example` file also located in 
 ### Tool API Keys
 If you don't have an api key, leave the value as `"API_KEY": ""`
 
-The tool will be omitted from the results when running an OSINT search an indicator.
+The tool will be omitted from the indicators results.
 
 ### Docker
 Menu `option 2` will create a self-signed https cert and build the docker container / traefik reverse proxy.
