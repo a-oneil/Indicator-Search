@@ -172,14 +172,10 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator,
             "BLUE",
         )
-        notifications.send_message_to_slack(
-            indicator, notifications.successful_scan(indicator)
-        )
+
+        notifications.slack_indicator_complete(indicator, "success")
 
     except Exception as e:
-        notifications.console_output(
-            f"Error: {traceback.format_exc()}", indicator, "RED"
-        )
         indicator.complete = True
         indicator.results = (
             {
@@ -190,3 +186,7 @@ def new_indicator_handler(indicator, user, db: Session):
         indicator.tags = {"Error": True}
         db.add(indicator)
         db.commit()
+        notifications.console_output(
+            f"Error: {traceback.format_exc()}", indicator, "RED"
+        )
+        notifications.slack_indicator_complete(indicator, "failure")
