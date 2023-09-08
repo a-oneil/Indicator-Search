@@ -119,6 +119,8 @@ Menu `option 9` will use the `USER_INVITE_KEY` from the config file to create a 
 ## Screenshots
 ![Menu](images/menu.png)
 ---
+![Slack Notifications](images/slack_notifications.png)
+---
 ![Search Results](images/results1.png)
 ---
 ![Search Results](images/results2.png)
