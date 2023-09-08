@@ -12,4 +12,4 @@ from ._feedlists import (
     DisableFeedlist,
     DeleteAllFeedlists,
 )
-from ._users import CreateUser, GetUser, Login, TokenData, UserDetails
+from ._users import CreateUser, GetUser, Login, TokenData, UserDetails, ApiKey

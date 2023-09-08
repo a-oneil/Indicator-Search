@@ -42,8 +42,9 @@ def search_iocs(request: schemas.SearchIocs, db: Session = Depends(get_db)):
 
 
 @router.post("/iocs/ageout", name="Ageout IOCs", tags=["IOCs"])
-def ageout(db: Session = Depends(get_db)):
+def ageout(request: schemas.ApiKey, db: Session = Depends(get_db)):
     try:
+        auth_api_key(request, db)
         return Iocs.ageout_iocs(db)
     except Exception as e:
         return HTTPException(400, str(e))

@@ -45,6 +45,7 @@ def menu():
     print(f"{color.BLUE}7.{color.ENDCOLOR}  Seed feedlists database")
     print(f"{color.BLUE}8.{color.ENDCOLOR}  Seed indicators")
     print(f"{color.BLUE}9.{color.ENDCOLOR}  Create user")
+    print(f"{color.YELLOW}  9a.{color.ENDCOLOR} Create admin user")
     print(f"{color.BLUE}10.{color.ENDCOLOR} Exit")
     menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
 
@@ -84,6 +85,9 @@ def menu_switch(choice):
     elif choice == "9":
         create_user()
         menu()
+    elif choice == "9a":
+        create_admin_user()
+        menu()
     elif choice == "10":
         exit(0)
     else:
@@ -92,6 +96,13 @@ def menu_switch(choice):
 
 def ioc_ageout_automation():
     import requests
+
+    api_key = config["ADMIN_API_KEY"]
+    if not api_key:
+        print(
+            f"{color.RED}IOC Ageout automation failed to run due to no ADMIN_API_KEY being set in the env file.\nPlease either create a user from the menu or use an existing user's api key.{color.ENDCOLOR}"
+        )
+        return False
 
     first_run = True
     while True:
@@ -102,6 +113,7 @@ def ioc_ageout_automation():
                     "Content-Type": "application/json",
                     "Accept": "application/json",
                 },
+                json={"api_key": api_key},
             )
             for value in response.json().values():
                 print(f"{color.YELLOW}IOC Automation: {color.ENDCOLOR}{value}")
@@ -313,6 +325,28 @@ def create_user():
     else:
         print(
             f"{color.BLUE}Successfully created user, log into the user on the webapp to view the API Key{color.ENDCOLOR}"
+        )
+
+
+def create_admin_user():
+    import requests
+
+    password = str(input(f"{color.YELLOW}Enter password: {color.ENDCOLOR}")).strip()
+
+    response = requests.post(
+        f"{config['SERVER_ADDRESS']}/api/user",
+        headers={"Content-Type": "application/json", "Accept": "application/json"},
+        json={
+            "username": "Admin",
+            "password": password,
+            "invite_key": config["USER_INVITE_KEY"],
+        },
+    )
+    if response.status_code != 200:
+        print(color.RED + response.text + color.ENDCOLOR)
+    else:
+        print(
+            f"{color.BLUE}Successfully created admin user.{color.ENDCOLOR}\nUsername: Admin\nPassword: {password}\nAPI Key: {response.json().get('api_key')}"
         )
 
 

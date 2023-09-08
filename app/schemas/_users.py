@@ -29,3 +29,7 @@ class Login(BaseModel):
 
 class TokenData(BaseModel):
     username: str | None = None
+
+
+class ApiKey(BaseModel):
+    api_key: str

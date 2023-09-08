@@ -31,6 +31,7 @@ On inital run of the app, it will clone the `.env.example` file also located in 
 
 * `SERVER_ADDRESS`: Used for seeding API calls and slack notifications
 * `HOSTNAME`: Required for docker https proxy
+* `ADMIN_API_KEY`: A user's api key for the ageout ioc automation that is ran every hour. 
 * `USER_INVITE_KEY`: Required for user signup
 * `ENABLE_SLACK`: True/False
 * `SLACK_BOT_TOKEN`: Slack bot token with message permissions
