@@ -1,5 +1,5 @@
 # Indicator Search
-![Home](images/home.png)
+![Home](app/static/images/logo.png)
 
 ## About
 Indicator Search is a web application and API designed for rapid scanning of indicators (observables found during a security incident) against multiple OSINT sites, based on the input indicator type. Inspired by Intelowl, this project aims to provide a similar tool while utilizing the FastAPI framework. Indicator search could deployed among a shared server between security engineers to aid in quick observable lookups as it enables analysts to gather information from various sources in a streamlined manner.
@@ -11,6 +11,8 @@ Indicator Search is a tool designed for informational purposes and should be use
 
 ### Demo
 Discover the app's features and capabilities through a live demonstration at [indicatorsearch.app](https://indicatorsearch.app).
+
+![Home](images/home.png)
 
 ## Setup
 For now, Indicator Search can either be ran locally, served over port 8000 or via docker container. The instructions below should get you started.
@@ -118,15 +120,15 @@ Menu `option 9` will use the `USER_INVITE_KEY` from the config file to create a 
 |MAC Vendors|MAC Address|No|
 
 ## Screenshots
-![Menu](images/menu.png)
----
-![Slack Notifications](images/slack_notifications.png)
----
 ![Search Results](images/results1.png)
 ---
 ![Search Results](images/results2.png)
 ---
 ![Search Results](images/results3.png)
+---
+![Menu](images/menu.png)
+---
+![Slack Notifications](images/slack_notifications.png)
 
 ## Results JSON example
 ```
