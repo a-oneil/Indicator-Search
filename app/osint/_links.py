@@ -9,6 +9,7 @@ def links_handler(indicator):
                 "virustotal": f"https://www.virustotal.com/gui/ip-address/{indicator.indicator}",
                 "abuseipdb": f"https://www.abuseipdb.com/check/{indicator.indicator}",
                 "greynoise": f"https://viz.greynoise.io/ip/{indicator.indicator}",
+                "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "json": f"/api/indicator/{indicator.id}",
             },
         )
@@ -16,6 +17,7 @@ def links_handler(indicator):
         links.update(
             {
                 "abuseipdb": f"https://www.abuseipdb.com/check/{indicator.indicator}",
+                "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "json": f"/api/indicator/{indicator.id}",
             },
         )
@@ -30,6 +32,7 @@ def links_handler(indicator):
                 "virustotal": f"https://www.virustotal.com/gui/file/{indicator.indicator}",
                 "hybrid_analysis": f"https://www.hybrid-analysis.com/search?query={indicator.indicator}",
                 "joes_sandbox": f"https://www.joesandbox.com/search?q={indicator.indicator}",
+                "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "json": f"/api/indicator/{indicator.id}",
             },
         )
@@ -39,6 +42,7 @@ def links_handler(indicator):
                 "virustotal": f"https://www.virustotal.com/gui/domain/{indicator.indicator}",
                 "mx_toolbox": f"https://mxtoolbox.com/SuperTool.aspx?action=mx%3a{indicator.indicator}&run=toolpage",
                 "urlscan.io": f"https://urlscan.io/search/#{indicator.indicator.replace('https://', '').replace('http://', '')}",
+                "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "json": f"/api/indicator/{indicator.id}",
             },
         )
@@ -48,6 +52,7 @@ def links_handler(indicator):
                 "virustotal": f"https://www.virustotal.com/gui/domain/{indicator.indicator}",
                 "mx_toolbox": f"https://mxtoolbox.com/SuperTool.aspx?action=mx%3a{indicator.indicator}&run=toolpage",
                 "urlscan.io": f"https://urlscan.io/search/#{indicator.indicator.replace('https://', '').replace('http://', '')}",
+                "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "json": f"/api/indicator/{indicator.id}",
             },
         )
@@ -56,6 +61,7 @@ def links_handler(indicator):
             {
                 "emailrep.io": f"https://emailrep.io/{indicator.indicator}",
                 "mx_toolbox": f"https://mxtoolbox.com/SuperTool.aspx?action=mx%3a{indicator.indicator.split('@')[1]}&run=toolpage",
+                "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "json": f"/api/indicator/{indicator.id}",
             },
         )
@@ -63,6 +69,7 @@ def links_handler(indicator):
         links.update(
             {
                 "mac_vendor_lookup": f"https://api.macvendors.com/{indicator.indicator}",
+                "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "json": f"/api/indicator/{indicator.id}",
             },
         )
