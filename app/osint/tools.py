@@ -1251,6 +1251,9 @@ def maltiverse(indicator):
         if not result.get("classification", ""):
             return no_results_found("maltiverse")
 
+        if result.get("classification", "") == "neutral" and not result.get("blacklist", []) and not result.get("tag", []):
+            return no_results_found("maltiverse")
+        
         return (
             # fmt: off
                 {
