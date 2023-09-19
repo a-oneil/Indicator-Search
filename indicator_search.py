@@ -132,7 +132,7 @@ def reinstall_packages():
     )
     system = platform.system()
     if system.lower() == "linux":
-        distro = platform.uname().release.lower()
+        distro = platform.uname()
         if "debian" in distro or "ubuntu" in distro:
             subprocess.run(
                 ["sudo", "apt", "install", "python3-dev", "python3-venv"],
@@ -145,7 +145,7 @@ def reinstall_packages():
                 check=True,
             )
         else:
-            print(f"{color.RED}Unsupported Linux Distro{color.ENDCOLOR}")
+            print(f"{color.RED}Unsupported Linux Distro{color.ENDCOLOR} - {distro}")
             exit(1)
 
     elif system.lower() == "darwin":
