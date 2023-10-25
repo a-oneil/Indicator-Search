@@ -73,5 +73,13 @@ def links_handler(indicator):
                 "json": f"/api/indicator/{indicator.id}",
             },
         )
+    elif indicator.indicator_type == "phone":
+        links.update(
+            {
+                "IP Quality Score": f"https://www.ipqualityscore.com/free-phone-number-lookup",
+                "google": f"https://www.google.com/search?q={indicator.indicator}",
+                "json": f"/api/indicator/{indicator.id}",
+            },
+        )
 
     return links

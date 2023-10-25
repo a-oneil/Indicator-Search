@@ -91,6 +91,7 @@ Menu `option 9` will use the `USER_INVITE_KEY` from the config file to create a 
 * FQDN
 * URL
 * Email
+* Phone Number
 * MAC Address
 
 ## Tools
@@ -104,7 +105,7 @@ Menu `option 9` will use the `USER_INVITE_KEY` from the config file to create a 
 |Stop Forum Spam|IPv4, IPv6, Email|No|
 |IPInfoio|IPv4, IPv6|No|
 |Abuse IPDB|IPv4, IPv6|Yes|
-|IP Quality Score|IPv4, IPv6|Yes|
+|IP Quality Score|IPv4, IPv6, Phone|Yes|
 |Greynoise Community|IPv4|Yes|
 |Project Honeypot|IPv4|Yes|
 |Hacked IP Threatlist|IPv4|No|
@@ -117,6 +118,7 @@ Menu `option 9` will use the `USER_INVITE_KEY` from the config file to create a 
 |Echo Trail|Hash|Yes|
 |Hybrid Analysis|Hash|Yes|
 |Malware Bazzar|Hash|No|
+|Numverify|Phone|Yes|
 |MAC Vendors|MAC Address|No|
 
 ## Screenshots

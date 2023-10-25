@@ -102,6 +102,11 @@ def new_indicator_handler(indicator, user, db: Session):
 
         elif indicator.indicator_type == "mac":
             indicator.results += tools.macvendors(indicator)
+
+        elif indicator.indicator_type == "phone":
+            indicator.results += tools.numverify(indicator)
+            indicator.results += tools.ipqualityscore_phone(indicator)
+            
         # fmt: on
 
         for each in indicator.results:

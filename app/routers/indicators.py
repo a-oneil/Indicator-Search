@@ -139,7 +139,7 @@ async def create_indicator(
                 "recent_indicators": Indicators.get_recent_scans(db),
                 "_message_header": "Error!",
                 "_message_color": "red",
-                "_message": "Must be a valid: IPv4 Address, IPv6 Address, Hash, FQDN, URL, Email, or MAC Address",
+                "_message": "Must be a valid: IPv4 Address, IPv6 Address, Hash, FQDN, URL, Email, Phone Number, or MAC Address",
                 "count_of_successful_scans": Indicators.successful_scans(db),
                 "count_of_failed_scans": Indicators.failed_scans(db),
             },
