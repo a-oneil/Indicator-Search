@@ -133,13 +133,14 @@ def reinstall_packages():
     system = platform.system()
     if system.lower() == "linux":
         distro = platform.uname()
-        if "debian" in distro or "ubuntu" in distro:
+        
+        if any(match in distro for match in ['debian', 'ubuntu', 'kali']):
             subprocess.run(
                 ["sudo", "apt", "install", "python3-dev", "python3-venv"],
                 check=True,
             )
 
-        elif "manjaro" in distro or "arch" in distro:
+        elif any(match in distro for match in ['arch', 'manjaro']):
             subprocess.run(
                 ["sudo", "pacman", "-S", "python3"],
                 check=True,
