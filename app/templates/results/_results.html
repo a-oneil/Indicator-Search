@@ -18,6 +18,32 @@
   }
 </script>
 
+<script>
+  function createIndicator(indicatorValue) {
+    const url = '/indicator/create';
+    const formData = new FormData();
+    formData.append('indicator', indicatorValue);
+    const options = {
+      method: 'POST',
+      body: formData
+    };
+
+    fetch(url, options)
+      .then(response => {
+        if (response.ok) {
+          console.log('Indicator created successfully.');
+          const queryParams = `indicator_id=&indicator_name=${indicatorValue}&indicator_type=&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=&created_by=`;
+          window.location = `/searches?${queryParams}`;
+        } else {
+          console.error('Failed to create the indicator.');
+        }
+      })
+      .catch(error => {
+        console.error('An error occurred:', error);
+      });
+  }
+</script>
+
 {%for site in indicator.results %}
 
 {% if "is not set in .env file" in site.results.error %}
@@ -42,6 +68,11 @@
           <button class="small ui icon button" style='float: right;' onclick='CopyTextToClipboard("{{value}}")'><i
               class="fa-solid fa-copy"></i></button>
           {% if value is string %}
+          {% if value|searchable %}
+          <button class="small ui icon red button" style='float: right;' onclick="createIndicator('{{value}}')">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+          {% endif %}
           {% if "http://" in value or "https://" in value %}
           <button class="small ui icon blue button" style='float: right;'
             onclick=" window.open('{{value}}','_blank')"><i class="fa-solid fa-link"></i></button>
