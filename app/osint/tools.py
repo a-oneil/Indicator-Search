@@ -179,8 +179,7 @@ def ipqualityscore(indicator):
                         "tor": response.json().get("tor", ""),
                         "active_tor": response.json().get("active_tor", ""),
                         "fraud_score": response.json().get("fraud_score", ""),
-                        "abuse_velocity": response.json().get("abuse_velocity", ""),
-                        
+                        "abuse_velocity": response.json().get("abuse_velocity", ""), 
                     },
                 },
             # fmt: on
@@ -1269,3 +1268,56 @@ def maltiverse(indicator):
         )
     except Exception as e:
         return failed_to_run("Maltiverse", e)
+
+
+def numverify(indicator):
+    try:
+        if config["NUMVERIFY_API_KEY"] == "":
+            raise Exception("NUMVERIFY_API_KEY is not set in .env file.")
+        
+        response = requests.get(
+            f"http://apilayer.net/api/validate?access_key={config['NUMVERIFY_API_KEY']}&number={indicator.indicator}&format=1"
+        )
+
+        if response.status_code != 200:
+            return status_code_error(
+                "numverify", response.status_code, response.reason
+            )
+        
+        return (
+            # fmt: off
+                {
+                    "site": "numverify",
+                    "results": response.json()
+                },
+            # fmt: on
+        )
+    
+    except Exception as e:
+        return failed_to_run("Numverify", e)
+    
+
+def ipqualityscore_phone(indicator):
+    try:
+        if config["IPQS_API_KEY"] == "":
+            raise Exception("IPQS_API_KEY is not set in .env file.")
+
+        response = requests.get(
+            f"https://us.ipqualityscore.com/api/json/phone/{config['IPQS_API_KEY']}/{indicator.indicator}",
+        )
+
+        if response.status_code != 200:
+            return status_code_error(
+                "ip_quality_score_phone", response.status_code, response.reason
+            )
+
+        return (
+            # fmt: off
+                {
+                    "site": "ip_quality_score_phone",
+                    "results": response.json()
+                },
+            # fmt: on
+        )
+    except Exception as e:
+        return failed_to_run("ip_quality_score_phone", e)
