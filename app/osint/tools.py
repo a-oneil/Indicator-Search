@@ -1321,3 +1321,39 @@ def ipqualityscore_phone(indicator):
         )
     except Exception as e:
         return failed_to_run("ip_quality_score_phone", e)
+
+def wayback_machine(indicator):
+    try:
+        if indicator.indicator_type == "fqdn":
+            response = requests.get(
+                f"http://archive.org/wayback/available?url={indicator.indicator}",
+            )
+        elif indicator.indicator_type == "email":
+            response = requests.get(
+                f"http://archive.org/wayback/available?url={convert_email_to_fqdn(indicator.indicator)}"
+            )
+        elif indicator.indicator_type == "url":
+            response = requests.get(
+                f"http://archive.org/wayback/available?url={convert_url_to_fqdn(indicator.indicator)}"
+            )
+        else:
+            raise Exception("Invalid indicator type for wayback")
+        
+        if response.status_code != 200:
+            return status_code_error(
+                "wayback_machine", response.status_code, response.reason
+            )
+
+        if not response.json().get("archived_snapshots"):
+            return no_results_found("wayback_machine")
+
+        return (
+            # fmt: off
+                {
+                    "site": "wayback_machine",
+                    "results": response.json().get("archived_snapshots", {}).get("closest")
+                },
+            # fmt: on
+        )
+    except Exception as e:
+        return failed_to_run("wayback_machine", e)
