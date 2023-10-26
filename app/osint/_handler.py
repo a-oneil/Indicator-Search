@@ -49,6 +49,7 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.inquestlabs(indicator)
             indicator.results += tools.maltiverse(indicator)
             indicator.results += tools.wayback_machine(indicator)
+            indicator.results += tools.kickbox_disposible_email(indicator)
 
         elif indicator.indicator_type == "url":
             indicator.results += tools.tweetfeed_live(indicator)
@@ -69,6 +70,7 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.urlvoid(indicator)
             indicator.results += tools.inquestlabs(indicator)
             indicator.results += tools.wayback_machine(indicator)
+            indicator.results += tools.kickbox_disposible_email(indicator)
 
         elif indicator.indicator_type == "hash.md5":
             indicator.results += tools.circl_lu(indicator)
@@ -109,7 +111,7 @@ def new_indicator_handler(indicator, user, db: Session):
         elif indicator.indicator_type == "phone":
             indicator.results += tools.numverify(indicator)
             indicator.results += tools.ipqualityscore_phone(indicator)
-            
+
         # fmt: on
 
         for each in indicator.results:

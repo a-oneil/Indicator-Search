@@ -61,7 +61,8 @@ def get_type(indicator):
     ):
         return "fqdn"
     # Phone number
-    elif re.match("^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$",
+    elif re.match(
+        "^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$",
         indicator,
         re.I,
     ):
