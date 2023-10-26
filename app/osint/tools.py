@@ -1250,9 +1250,13 @@ def maltiverse(indicator):
         if not result.get("classification", ""):
             return no_results_found("maltiverse")
 
-        if result.get("classification", "") == "neutral" and not result.get("blacklist", []) and not result.get("tag", []):
+        if (
+            result.get("classification", "") == "neutral"
+            and not result.get("blacklist", [])
+            and not result.get("tag", [])
+        ):
             return no_results_found("maltiverse")
-        
+
         return (
             # fmt: off
                 {
@@ -1274,16 +1278,14 @@ def numverify(indicator):
     try:
         if config["NUMVERIFY_API_KEY"] == "":
             raise Exception("NUMVERIFY_API_KEY is not set in .env file.")
-        
+
         response = requests.get(
             f"http://apilayer.net/api/validate?access_key={config['NUMVERIFY_API_KEY']}&number={indicator.indicator}&format=1"
         )
 
         if response.status_code != 200:
-            return status_code_error(
-                "numverify", response.status_code, response.reason
-            )
-        
+            return status_code_error("numverify", response.status_code, response.reason)
+
         return (
             # fmt: off
                 {
@@ -1292,10 +1294,10 @@ def numverify(indicator):
                 },
             # fmt: on
         )
-    
+
     except Exception as e:
         return failed_to_run("Numverify", e)
-    
+
 
 def ipqualityscore_phone(indicator):
     try:
@@ -1322,6 +1324,7 @@ def ipqualityscore_phone(indicator):
     except Exception as e:
         return failed_to_run("ip_quality_score_phone", e)
 
+
 def wayback_machine(indicator):
     try:
         if indicator.indicator_type == "fqdn":
@@ -1338,7 +1341,7 @@ def wayback_machine(indicator):
             )
         else:
             raise Exception("Invalid indicator type for wayback")
-        
+
         if response.status_code != 200:
             return status_code_error(
                 "wayback_machine", response.status_code, response.reason
@@ -1357,3 +1360,30 @@ def wayback_machine(indicator):
         )
     except Exception as e:
         return failed_to_run("wayback_machine", e)
+
+
+def kickbox_disposible_email(indicator):
+    try:
+        response = requests.get(
+            f"https://open.kickbox.com/v1/disposable/{indicator.indicator}",
+        )
+        print(response)
+        print(response.json())
+        if response.status_code != 200:
+            return status_code_error(
+                "kickbox_disposible_email", response.status_code, response.reason
+            )
+
+        if not response.json().get("disposable"):
+            return no_results_found("kickbox_disposible_email")
+
+        return (
+            # fmt: off
+                {
+                    "site": "kickbox_disposible_email",
+                    "results": response.json().get("disposable", {})
+                },
+            # fmt: on
+        )
+    except Exception as e:
+        return failed_to_run("kickbox_disposible_email", e)
