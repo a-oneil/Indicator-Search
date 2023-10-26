@@ -1367,8 +1367,7 @@ def kickbox_disposible_email(indicator):
         response = requests.get(
             f"https://open.kickbox.com/v1/disposable/{indicator.indicator}",
         )
-        print(response)
-        print(response.json())
+
         if response.status_code != 200:
             return status_code_error(
                 "kickbox_disposible_email", response.status_code, response.reason
