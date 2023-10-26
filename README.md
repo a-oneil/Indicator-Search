@@ -114,6 +114,7 @@ Menu `option 9` will use the `USER_INVITE_KEY` from the config file to create a 
 |Checkphish|URL, FQDN|Yes|
 |URLScan|URL, FQDN|No|
 |Breach Directory|Email|Yes|
+|Kickbox Disposable|Email|No|
 |Circl lu|Hash|No|
 |Echo Trail|Hash|Yes|
 |Hybrid Analysis|Hash|Yes|
