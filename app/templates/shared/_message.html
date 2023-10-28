@@ -1,0 +1,16 @@
+{% if _message %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('.message .close').addEventListener('click', () => {
+            document.querySelector('.message').style.display = 'none';
+        });
+    });
+</script>
+<div class="ui {{_message_color}} message">
+    <i class="close icon"></i>
+    <div class="header">
+        {{_message_header}}
+    </div>
+    <p>{{ _message }}</p>
+</div>
+{% endif %}

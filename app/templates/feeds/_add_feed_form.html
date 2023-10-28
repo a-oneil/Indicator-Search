@@ -15,10 +15,10 @@
         <div class="field">
             <div class="field">
                 <select class="ui search dropdown">
-                <option value="">List Type</option>
-                <option value="ipv4">ip</option>
-                <option value="hash">hash</option>
-                <option value="fqdn">fqdn</option>
+                    <option value="">List Type</option>
+                    <option value="ipv4">ip</option>
+                    <option value="hash">hash</option>
+                    <option value="fqdn">fqdn</option>
                 </select>
             </div>
         </div>
@@ -29,21 +29,6 @@
         <button class="ui red button" type="submit">Add</button>
     </form>
 
-    {% if _message %}
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelector('.message .close').addEventListener('click', () => {
-                document.querySelector('.message').style.display = 'none';
-            });
-        });
-    </script>
-    <div class="ui {{_message_color}} message">
-        <i class="close icon"></i>
-        <div class="header">
-            {{_message_header}}
-        </div>
-        <p>{{ _message }}</p>
-    </div>
-    <br />
-    {% endif %}
+    {{render_partial("shared/_message.html", _message=_message,
+    _message_header=_message_header, _message_color=_message_color)}}
 </div>

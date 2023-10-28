@@ -2,7 +2,7 @@
 
 <div style="margin-top: 10px; margin-bottom: 30px" class="ui container">
 
-  <div class="form-container" style="display: flex;justify-content: center;align-items: center;" >
+  <div class="form-container" style="display: flex;justify-content: center;align-items: center;">
     <form class="ui form" action="/iocs" method="get">
       <div class="fields">
         <div class="field">
@@ -20,28 +20,14 @@
       </div>
       <center>
         <div class="ui buttons">
-          <button class="ui blue button" type="submit">Filter <i class="fa-solid fa-filter"></i></button>
+          <button class="ui red button" type="submit">Filter <i class="fa-solid fa-filter"></i></button>
           <div class="or"></div>
-          <button class="ui red button" onclick="location.href='/iocs';">Clear <i class="fa-solid fa-filter-circle-xmark"></i></button>
+          <button class="ui blue button" onclick="location.href='/iocs';">Clear <i
+              class="fa-solid fa-filter-circle-xmark"></i></button>
         </div>
       </center>
     </form>
   </div>
-  {% if _message %}
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      document
-        .querySelector(".message .close")
-        .addEventListener("click", () => {
-          document.querySelector(".message").style.display = "none";
-        });
-    });
-  </script>
-  <div class="ui {{_message_color}} message">
-    <i class="close icon"></i>
-    <div class="header">{{_message_header}}</div>
-    <p>{{ _message }}</p>
-  </div>
-  <br />
-  {% endif %}
+  {{render_partial("shared/_message.html", _message=_message,
+  _message_header=_message_header, _message_color=_message_color)}}
 </div>

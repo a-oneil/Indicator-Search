@@ -24,22 +24,8 @@ render_partial("shared/_logo.html") }} {% if user %}
   <button class="ui blue fluid button" onclick="window.location.href='/'">
     Start Searching <i class="fa-solid fa-magnifying-glass"></i>
   </button>
-  {% if _message %}
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      document
-        .querySelector(".message .close")
-        .addEventListener("click", () => {
-          document.querySelector(".message").style.display = "none";
-        });
-    });
-  </script>
-  <div class="ui {{_message_color}} message">
-    <i class="close icon"></i>
-    <div class="header">{{_message_header}}</div>
-    <p>{{ _message }}</p>
-  </div>
-  {% endif %}
+  {{render_partial("shared/_message.html", _message=_message,
+  _message_header=_message_header, _message_color=_message_color)}}
   <div class="ui segment">
     <div class="ui three column centered grid">
       <div class="column">
@@ -47,7 +33,8 @@ render_partial("shared/_logo.html") }} {% if user %}
           <div class="content">
             <p class="header">
               API Key
-              <button class="mini ui icon button" style="float: right" onclick='CopyTextToClipboard("{{user.api_key}}")'>
+              <button class="mini ui icon button" style="float: right"
+                onclick='CopyTextToClipboard("{{user.api_key}}")'>
                 <i class="fa-solid fa-copy"></i>
               </button>
             </p>
@@ -67,7 +54,8 @@ render_partial("shared/_logo.html") }} {% if user %}
         <div class="ui raised fluid card">
           <div class="content">
             <p class="header">Number Of Submitted Indicators</p>
-            <a href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=&created_by={{ user.username }}" style="word-wrap: break-word">
+            <a href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags=&indicator_notes=&indicator_results=&indicator_ioc_id=&created_by={{ user.username }}"
+              style="word-wrap: break-word">
               {{user.indicators | length}}
             </a>
           </div>
@@ -95,6 +83,7 @@ render_partial("shared/_logo.html") }} {% if user %}
     Create User
   </button>
   <br />
-  {{ render_partial("user/_login_form.html", _message_header=_message_header, _message_color=_message_color, _message=_message) }}
+  {{ render_partial("user/_login_form.html", _message_header=_message_header, _message_color=_message_color,
+  _message=_message) }}
 </div>
 {% endif %} {% endblock %}
