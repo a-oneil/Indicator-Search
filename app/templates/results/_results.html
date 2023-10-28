@@ -57,8 +57,9 @@
 {% else %}
 <div class="ui segment">
   <p class="ui small header">
-    <i class="fa-solid fa-circle-check"></i> {{site.site|snakecase_to_title}} <button class="mini blue ui button"
-      style="float: right;" onclick='CopyTextToClipboard("{{site.results}}")'>Copy JSON</button>
+    <i class="fa-solid fa-circle-check"></i> <a id="{{site.site}}"></a>{{site.site|snakecase_to_title}} <button
+      class="mini blue ui button" style="float: right;" onclick='CopyTextToClipboard("{{site.results}}")'>Copy
+      JSON</button>
   </p>
   <div class="ui two column grid">
     {% for key,value in site.results.items() %}
@@ -73,7 +74,7 @@
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
           {% endif %}
-          {% if "http://" in value or "https://" in value %}
+          {% if ("http://" in value or "https://" in value) and not key == "whois"%}
           <button class="small ui icon blue button" style='float: right;'
             onclick=" window.open('{{value}}','_blank')"><i class="fa-solid fa-link"></i></button>
           {% endif %}
@@ -104,11 +105,11 @@
 
           {% else %} {# If the value is not a list, display it as a string
           #} {% if value is string and "\n" in value %}
-          <div class="description" style="word-wrap: break-word">
-            {{value}}
+          <div class="description">
+            <pre style="word-wrap: break-word;white-space: pre-line">{{value}}</pre>
           </div>
           {% else %}
-          <div class="description">{{value}}</div>
+          <div class=" description">{{value}}</div>
           {% endif %} {% endif %}
         </div>
       </div>
