@@ -47,6 +47,11 @@
   </h3>
 
   {{ render_partial("shared/_indicator_details.html", indicator=indicator) }}
+  {% if indicator.notes %}
+  <a class="ui purple label">
+    Note
+  </a>
+  {% endif %}
   {% if indicator.tags %}
   {{ render_partial("shared/_indicator_tags.html", indicator=indicator) }}
   {% endif %}

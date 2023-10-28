@@ -10,8 +10,7 @@
         <th class="left aligned">Notes</th>
         <th class="left aligned">Tags</th>
         <th class="one wide">JSON</th>
-        <th class="one wide">Actions</th
-      </tr>
+        <th class="one wide">Actions</th </tr>
     </thead>
     <tbody>
       {% for indicator in search_results %}
@@ -24,32 +23,32 @@
         <td>
           <a href="/indicator/results/{{ indicator.id }}">{{ indicator.indicator }}</a>
         </td>
-        <td>{{ indicator.notes }}</td>
-        <td><div class="ui labels">
-          {{ render_partial("shared/_indicator_tags.html", indicator=indicator) }}
-        </div></td>
+        <td>
+          {% if indicator.notes %}
+          {{ indicator.notes }}
+          {% endif %}
+        </td>
+        <td>
+          <div class="ui labels">
+            {{ render_partial("shared/_indicator_tags.html", indicator=indicator) }}
+          </div>
+        </td>
         <td>
           <a href="/api/indicator/results/{{ indicator.id }}">JSON</a>
         </td>
         <td>
-        <center>
-          {% if indicator.ioc_id %}
-            <a
-            class="ui compact red tiny button"
-            href="/iocs/delete/results/{{ indicator.id }}"
-            >Remove IOC</a>
-          {% else %}
-            <a
-            class="ui compact green tiny button"
-            href="/iocs/mark_ioc/{{ indicator.id }}"
-            >IOC</a>
-          {% endif %}
-          <br>
-          <br>
-          <a class="ui compact red tiny button" href="/searches/delete/{{ indicator.id }}">
-            Delete
-          </a>
-        </center>
+          <center>
+            {% if indicator.ioc_id %}
+            <a class="ui compact red tiny button" href="/iocs/delete/results/{{ indicator.id }}">Remove IOC</a>
+            {% else %}
+            <a class="ui compact green tiny button" href="/iocs/mark_ioc/{{ indicator.id }}">IOC</a>
+            {% endif %}
+            <br>
+            <br>
+            <a class="ui compact red tiny button" href="/searches/delete/{{ indicator.id }}">
+              Delete
+            </a>
+          </center>
         </td>
       </tr>
       {% endfor %}
