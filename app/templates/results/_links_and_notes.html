@@ -5,7 +5,7 @@
           <p class="ui small header"><i class="fa fa-clipboard"></i> Notes</p>
           <form class="ui form" action="/indicator/notes/{{indicator.id}}" method="post">
             <div class="field">
-              <input type="text" name="notes" placeholder="{{indicator.notes}}" value="{{indicator.notes}}" /><br />
+              <textarea rows="1" required name="notes">{{indicator.notes}}</textarea><br />
             </div>
             <button class="ui blue button" type="submit">
               Save <i class="fa-solid fa-floppy-disk"></i>
@@ -40,7 +40,7 @@
       <p class="ui small header"><i class="fa fa-clipboard"></i> Notes</p>
       <form class="ui form" action="/indicator/notes/{{indicator.id}}" method="post">
         <div class="field">
-          <input type="text" name="notes" placeholder="{{indicator.notes}}" value="{{indicator.notes}}" /><br />
+          <textarea rows="2" required name="notes">{{indicator.notes}}</textarea><br />
         </div>
         <button class="ui blue button" type="submit">
           Save <i class="fa-solid fa-floppy-disk"></i>
@@ -79,7 +79,7 @@
       <div class="ui fluid card">
         <div class="content">
           <p class="ui small header">
-            <i class="fa-solid fa-square-poll-vertical"></i> Successfully Gathered Results
+            <i class="fa-solid fa-square-poll-horizontal"></i> Search Results
           </p>
           <div class="ui list">
             {% for result in indicator.results %}
