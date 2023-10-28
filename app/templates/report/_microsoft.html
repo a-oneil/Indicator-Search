@@ -1,0 +1,127 @@
+<div class="ui segment">
+    <p class="ui big header">
+        <img src="/static/images/microsoft-icon.svg"
+            style="width:100%;max-width:18px;vertical-align:top;margin-right:4px"></img>Microsoft Security Response
+        Center
+    </p>
+    </p>
+    Report abuse to Microsoft Security Response Center (MSRC) for activity
+    originating from a Microsoft online service, such as Microsoft Azure, Bing, OneDrive, and Office365. For the
+    common types of abuse reported to MSRC, please review the "Reportable Incident Types" table below.
+    </br>
+    </br>
+    <form class="ui form" action="/report/microsoft" method="post">
+        <div class="three fields">
+            <div class="field">
+                <label>Date</label>
+                <input type="text" required name="date" placeholder="2020-12-01"><br>
+            </div>
+            <div class="field">
+                <label>Time</label>
+                <input type="text" required name="time" placeholder="11:00"><br>
+            </div>
+            <div class="field">
+                <label>Timezone</label>
+                <input type="text" required name="timeZone" placeholder="-0700"><br>
+            </div>
+        </div>
+        <div class="three fields">
+            <div class="field">
+                <label>Reporter Email</label>
+                <input type="text" required name="reporterEmail" placeholder="api@testing.com"><br>
+            </div>
+            <div class="field">
+                <label>Reporter Name</label>
+                <input type="text" required name="reporterName" placeholder="Api Tester"><br>
+            </div>
+            <div class="field">
+                <label>Threat Type</label>
+                <input type="text" required name="threatType" placeholder="IP Address"><br>
+            </div>
+        </div>
+        <div class="two fields">
+            <div class="field">
+                <label>Incident Type</label>
+                <input type="text" required name="incidentType"
+                    placeholder="Account Compromise/Unauthorized Access"><br>
+            </div>
+            <div class="field">
+                <label>Source</label>
+                <input type="text" required name="source" placeholder="127.0.0.1"><br>
+            </div>
+        </div>
+        <div class="field">
+            <label>Report Notes</label>
+            <textarea rows="2" required name="reportNotes" placeholder="Notes about this issue"></textarea>
+        </div>
+        <center>
+            <button class="ui red button" type="submit">Submit to MSRC</button>
+        </center>
+    </form>
+    </br>
+
+    <table class="ui small celled striped fixed table">
+        <tr>
+            <th class="three wide">Incident Type</th>
+            <th class="two wide">Threat Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>Account Compromise/Unauthorized Access</td>
+            <td>IP Address</td>
+            <td>Relates to when an attacker has successfully compromised an account.</td>
+        </tr>
+        <tr>
+            <td>Brute Force</td>
+            <td>IP Address</td>
+            <td>Relates to when an attacker uses trial-and-error to exhaustively explore all possible values to
+                unlock
+                an
+                asset (Password Spray, Dictionary Attack).</td>
+        </tr>
+        <tr>
+            <td>Denial of Service</td>
+            <td>IP Address</td>
+            <td>Relates to an interruption or suspension of services or hosts through a large number of interactions
+                with
+                the target or by depleting resources to the point where the target's functionality is affected
+                (Flooding,
+                Reflection Attack, Resource Depletion).</td>
+        </tr>
+        <tr>
+            <td>Malware</td>
+            <td>IP Address, URL</td>
+            <td>Relates to the hosting or distribution of malicious software that is specifically designed to
+                disrupt,
+                damage, or gain unauthorized access to a computer system.</td>
+        </tr>
+        <tr>
+            <td>Responsible AI</td>
+            <td>URL</td>
+            <td>Relates to Microsoft's Responsible AI principles: reliability and safety, fairness, privacy and
+                security,
+                inclusiveness, transparency and accountability. Only available through the Report Abuse Portal.</td>
+        </tr>
+        <tr>
+            <td>Scanning/Scraping</td>
+            <td>IP Address</td>
+            <td>Relates to when an attacker attempts to determine the state of the ports, collect information about
+                the
+                OS,
+                or extract data from human-readable output from exposed sources.</td>
+        </tr>
+        <tr>
+            <td>Phishing</td>
+            <td>URL</td>
+            <td>Relates to when an attacker creates an invented scenario or otherwise engages an individual to
+                solicit
+                information or manipulate the target into performing actions that serve attackers' interests (E.g.
+                Phishing).</td>
+        </tr>
+        <tr>
+            <td>Spam</td>
+            <td>IP Address</td>
+            <td>Relates to any unsolicited emails.</td>
+        </tr>
+    </table>
+</div>

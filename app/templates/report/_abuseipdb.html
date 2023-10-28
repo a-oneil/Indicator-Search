@@ -1,0 +1,162 @@
+<div class="ui segment">
+    <p class="ui big header">
+        <img src="/static/images/abuseipdb-logo.svg"
+            style="width:100%;max-width:18px;vertical-align:top;margin-right:4px"></img>Abuse IPDB
+    </p>
+    Report an IPv4 or IPv6 address to AbuseIPDB.
+    </br>
+    </br>
+    <form class="ui form" action="/report/abuseipdb" method="post">
+        <div class="two fields">
+            <div class="field">
+                <label>IP</label>
+                <input type="text" required name="ip" placeholder="8.8.8.8"><br>
+            </div>
+            <div class="field">
+                <label>Categories</label>
+                <input type="text" required name="category" placeholder="30"><br>
+            </div>
+        </div>
+        <div class="field">
+            <label>Comment</label>
+            <textarea rows="2" required name="comment" placeholder="Brute forcing Wordpress login"></textarea>
+        </div>
+        <p>Comments over 1024 characters (bytes) will be truncated. Please only provide relevant information (not
+            entire log dumps). Be sure to remove Personally Identifiable Information (PII) from your comments if you
+            wish to remain anonymous.</p>
+        <center>
+            <button class="ui red button" type="submit">Submit to Abuse IPDB</button>
+        </center>
+    </form>
+    </br>
+
+    <table class="ui small celled striped fixed table">
+        <tr>
+            <th class="two wide">Category ID</th>
+            <th class="two wide">Title</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>DNS Compromise</td>
+            <td>Altering DNS records resulting in improper redirection.</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>DNS Poisoning</td>
+            <td>Falsifying domain server cache (cache poisoning).</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Fraud Orders</td>
+            <td>Fraudulent orders.</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>DDoS Attack</td>
+            <td>Participating in distributed denial-of-service (usually part of botnet).</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>FTP Brute-Force</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>Ping of Death</td>
+            <td>Oversized IP packet.</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>Phishing</td>
+            <td>Phishing websites and/or email.</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>Fraud VoIP</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>Open Proxy</td>
+            <td>Open proxy, open relay, or Tor exit node.</td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>Web Spam</td>
+            <td>Comment/forum spam, HTTP referer spam, or other CMS spam.</td>
+        </tr>
+        <tr>
+            <td>11</td>
+            <td>Email Spam</td>
+            <td>Spam email content, infected attachments, and phishing emails. Note: Limit comments to only relevant
+                information (instead of log dumps) and be sure to remove PII if you want to remain anonymous.</td>
+        </tr>
+        <tr>
+            <td>12</td>
+            <td>Blog Spam</td>
+            <td>CMS blog comment spam.</td>
+        </tr>
+        <tr>
+            <td>13</td>
+            <td>VPN IP</td>
+            <td>Conjunctive category.</td>
+        </tr>
+        <tr>
+            <td>14</td>
+            <td>Port Scan</td>
+            <td>Scanning for open ports and vulnerable services.</td>
+        </tr>
+        <tr>
+            <td>15</td>
+            <td>Hacking</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>16</td>
+            <td>SQL Injection</td>
+            <td>Attempts at SQL injection.</td>
+        </tr>
+        <tr>
+            <td>17</td>
+            <td>Spoofing</td>
+            <td>Email sender spoofing.</td>
+        </tr>
+        <tr>
+            <td>18</td>
+            <td>Brute-Force</td>
+            <td>Credential brute-force attacks on webpage logins and services like SSH, FTP, SIP, SMTP, RDP, etc. This
+                category is separate from DDoS attacks.</td>
+        </tr>
+        <tr>
+            <td>19</td>
+            <td>Bad Web Bot</td>
+            <td>Webpage scraping (for email addresses, content, etc) and crawlers that do not honor robots.txt.
+                Excessive requests and user agent spoofing can also be reported here.</td>
+        </tr>
+        <tr>
+            <td>20</td>
+            <td>Exploited Host</td>
+            <td>Host is likely infected with malware and being used for other attacks or to host malicious content. The
+                host owner may not be aware of the compromise. This category is often used in combination with other
+                attack categories.</td>
+        </tr>
+        <tr>
+            <td>21</td>
+            <td>Web App Attack</td>
+            <td>Attempts to probe for or exploit installed web applications such as a CMS like WordPress/Drupal,
+                e-commerce solutions, forum software, phpMyAdmin and various other software plugins/solutions.</td>
+        </tr>
+        <tr>
+            <td>22</td>
+            <td>SSH</td>
+            <td>Secure Shell (SSH) abuse. Use this category in combination with more specific categories.</td>
+        </tr>
+        <tr>
+            <td>23</td>
+            <td>IoT Targeted</td>
+            <td>Abuse was targeted at an "Internet of Things" type device. Include information about what type of device
+                was targeted in the comments.</td>
+        </tr>
+    </table>
+</div>

@@ -7,6 +7,7 @@ from .routers import (
     iocs,
     feeds,
     users,
+    report,
     indicators_api,
     iocs_api,
     feeds_api,
@@ -27,6 +28,7 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 app.include_router(indicators.router)
 app.include_router(iocs.router)
 app.include_router(feeds.router)
+app.include_router(report.router)
 app.include_router(users.router)
 app.include_router(indicators_api.router)
 app.include_router(iocs_api.router)
