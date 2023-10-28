@@ -69,7 +69,7 @@
           <button class="small ui icon button" style='float: right;' onclick='CopyTextToClipboard("{{value}}")'><i
               class="fa-solid fa-copy"></i></button>
           {% if value is string %}
-          {% if value|searchable %}
+          {% if value|searchable and indicator.indicator not in value %}
           <button class="small ui icon red button" style='float: right;' onclick="createIndicator('{{value}}')">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
