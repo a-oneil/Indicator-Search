@@ -2,14 +2,14 @@
   <table class="ui small celled striped fixed table">
     <thead>
       <tr>
-        <th class="one wide">IOC ID</th>
-        <th class="two wide">IOC Created</th>
-        <th class="one wide">Indicator ID</th>
-        <th class="one wide">Type</th>
-        <th class="six wide" style="word-wrap: break-word">IOC</th>
-        <th class="left aligned">Notes</th>
-        <th class="left aligned">Tags</th>
-        <th class="one wide">Actions</th>
+        <th>IOC ID</th>
+        <th>IOC Created</th>
+        <th>Indicator ID</th>
+        <th>Type</th>
+        <th>IOC</th>
+        <th>Notes</th>
+        <th>Tags</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -29,13 +29,7 @@
           </div>
         </td>
         <td>
-        <center>
-          <a
-            class="ui compact red tiny button"
-            href="/iocs/delete/{{ ioc.id }}"
-            >Delete</a
-          >
-        </center>
+          <a class="ui compact" href="/iocs/delete/{{ ioc.id }}">Delete</a>
         </td>
       </tr>
       {% endfor %}

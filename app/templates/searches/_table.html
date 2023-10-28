@@ -2,15 +2,15 @@
   <table class="ui small celled striped fixed table">
     <thead>
       <tr>
-        <th class="one wide">ID</th>
-        <th class="one wide">Created</th>
-        <th class="one wide">Created By</th>
-        <th class="one wide">Type</th>
-        <th class="six wide" style="word-wrap: break-word">Indicator</th>
-        <th class="left aligned">Notes</th>
-        <th class="left aligned">Tags</th>
-        <th class="one wide">JSON</th>
-        <th class="one wide">Actions</th </tr>
+        <th>ID</th>
+        <th>Created</th>
+        <th>Created By</th>
+        <th>Type</th>
+        <th>Indicator</th>
+        <th>Notes</th>
+        <th>Tags</th>
+        <th>JSON</th>
+        <th>Actions</th>
     </thead>
     <tbody>
       {% for indicator in search_results %}
@@ -37,18 +37,17 @@
           <a href="/api/indicator/results/{{ indicator.id }}">JSON</a>
         </td>
         <td>
-          <center>
-            {% if indicator.ioc_id %}
-            <a class="ui compact red tiny button" href="/iocs/delete/results/{{ indicator.id }}">Remove IOC</a>
+          {% if indicator.ioc_id %}
+          <div class="ui labels">
+            <a class="ui compact" href="/iocs/delete/results/{{ indicator.id }}">Remove IOC</a>
             {% else %}
-            <a class="ui compact green tiny button" href="/iocs/mark_ioc/{{ indicator.id }}">IOC</a>
+            <a class="ui compact" href="/iocs/mark_ioc/{{ indicator.id }}">IOC</a>
             {% endif %}
             <br>
-            <br>
-            <a class="ui compact red tiny button" href="/searches/delete/{{ indicator.id }}">
+            <a class="ui compact" href="/searches/delete/{{ indicator.id }}">
               Delete
             </a>
-          </center>
+          </div>
         </td>
       </tr>
       {% endfor %}
