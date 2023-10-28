@@ -29,7 +29,7 @@
   }
 
   .image-container img:hover {
-    content: url("/static/images/copy-solid.png");
+    content: url("/static/images/icon-blue.png");
     width: 22px;
   }
 </style>
@@ -38,7 +38,8 @@
 
   <h3 class="ui header">
     <div class="image-container" style="float: left;">
-      <img src="/static/images/icon.png" onclick='CopyTextToClipboard("{{indicator.indicator}}")'>
+      <img src="/static/images/icon.png" alt="Copy to clipboard"
+        onclick='CopyTextToClipboard("{{indicator.indicator}}")'>
     </div>
     <a class="ui small header" style="word-wrap: break-word; margin-left: 5px; "
       href="/indicator/results/{{ indicator.id }}">
