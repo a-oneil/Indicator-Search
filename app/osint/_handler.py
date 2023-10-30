@@ -17,8 +17,11 @@ def new_indicator_handler(indicator, user, db: Session):
 
         """ Setup indicator json objects """
         indicator.results = []
+        indicator.feedlist_results = []
+
         # fmt: off
         if indicator.indicator_type == "ipv4":
+            indicator.feedlist_results = tools.search_feedlists(indicator, db)
             indicator.results += tools.tweetfeed_live(indicator)
             indicator.results += tools.search_ipwhois(indicator)
             indicator.results += tools.ipinfoio(indicator)
@@ -32,7 +35,9 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.shodan(indicator)
             indicator.results += tools.inquestlabs(indicator)
             indicator.results += tools.maltiverse(indicator)
+        
         elif indicator.indicator_type == "ipv6":
+            indicator.feedlist_results = tools.search_feedlists(indicator, db)
             indicator.results += tools.ipinfoio(indicator)
             indicator.results += tools.abuse_ipdb(indicator)
             indicator.results += tools.ipqualityscore(indicator)
@@ -40,6 +45,7 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.stopforumspam_ip(indicator)
 
         elif indicator.indicator_type == "fqdn":
+            indicator.feedlist_results = tools.search_feedlists(indicator, db)
             indicator.results += tools.tweetfeed_live(indicator)
             indicator.results += tools.virustotal_domain(indicator)
             indicator.results += tools.virustotal_url(indicator)
@@ -52,6 +58,7 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.kickbox_disposible_email(indicator)
 
         elif indicator.indicator_type == "url":
+            indicator.feedlist_results = tools.search_feedlists(indicator, db)
             indicator.results += tools.tweetfeed_live(indicator)
             indicator.results += tools.virustotal_domain(indicator)
             indicator.results += tools.virustotal_url(indicator)
@@ -63,6 +70,7 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.wayback_machine(indicator)
 
         elif indicator.indicator_type == "email":
+            indicator.feedlist_results = tools.search_feedlists(indicator, db)
             indicator.results += tools.emailrepio(indicator)
             indicator.results += tools.breach_directory(indicator)
             indicator.results += tools.stopforumspam_email(indicator)
@@ -73,6 +81,7 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.kickbox_disposible_email(indicator)
 
         elif indicator.indicator_type == "hash.md5":
+            indicator.feedlist_results = tools.search_feedlists(indicator, db)
             indicator.results += tools.circl_lu(indicator)
             indicator.results += tools.echo_trail(indicator)
             indicator.results += tools.tweetfeed_live(indicator)
@@ -83,6 +92,7 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.maltiverse(indicator)
 
         elif indicator.indicator_type == "hash.sha1":
+            indicator.feedlist_results = tools.search_feedlists(indicator, db)
             indicator.results += tools.circl_lu(indicator)
             indicator.results += tools.virustotal_hash(indicator)
             indicator.results += tools.hybrid_analysis(indicator)
@@ -91,6 +101,7 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.maltiverse(indicator)
 
         elif indicator.indicator_type == "hash.sha256":
+            indicator.feedlist_results = tools.search_feedlists(indicator, db)
             indicator.results += tools.circl_lu(indicator)
             indicator.results += tools.echo_trail(indicator)
             indicator.results += tools.tweetfeed_live(indicator)
@@ -101,6 +112,7 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.maltiverse(indicator)
 
         elif indicator.indicator_type == "hash.sha512":
+            indicator.feedlist_results = tools.search_feedlists(indicator, db)
             indicator.results += tools.virustotal_hash(indicator)
             indicator.results += tools.inquestlabs(indicator)
             indicator.results += tools.maltiverse(indicator)
@@ -112,8 +124,10 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.numverify(indicator)
             indicator.results += tools.ipqualityscore_phone(indicator)
 
-        # fmt: on
+        elif indicator.indicator_type == "useragent":
+            indicator.results += tools.whatsmybrowser_ua(indicator)
 
+        # fmt: on
         for each in indicator.results:
             keys_to_remove = []
             for key, value in each["results"].items():
@@ -133,8 +147,6 @@ def new_indicator_handler(indicator, user, db: Session):
             "BLUE",
         )
 
-        search_feedlists = tools.search_feedlists(indicator, db)
-        indicator.feedlist_results = search_feedlists if search_feedlists else None
         if indicator.feedlist_results:
             notifications.console_output(
                 "Indicator found in feedlists",

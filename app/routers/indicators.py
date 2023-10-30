@@ -55,10 +55,28 @@ def tag_order(tag_dict):
     return sorted_dict
 
 
+def supported_feedlist_types(indicator_type):
+    if indicator_type in [
+        "ipv4",
+        "ipv6",
+        "fqdn",
+        "url",
+        "email",
+        "hash.md5",
+        "hash.sha1",
+        "hash.sha256",
+        "hash.sha512",
+    ]:
+        return True
+    else:
+        return False
+
+
 templates.env.filters["time_created_strftime"] = time_created_strftime
 templates.env.filters["snakecase_to_title"] = snakecase_to_title
 templates.env.filters["searchable"] = searchable
 templates.env.filters["tag_order"] = tag_order
+templates.env.filters["supported_feedlist_types"] = supported_feedlist_types
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -165,7 +183,7 @@ async def create_indicator(
                 "recent_indicators": Indicators.get_recent_scans(db),
                 "_message_header": "Error!",
                 "_message_color": "red",
-                "_message": "Must be a valid: IPv4 Address, IPv6 Address, Hash, FQDN, URL, Email, Phone Number, or MAC Address",
+                "_message": "Must be a valid: IPv4 Address, IPv6 Address, Hash, FQDN, URL, Email, Phone Number, User Agent, or MAC Address",
                 "count_of_successful_scans": Indicators.successful_scans(db),
                 "count_of_failed_scans": Indicators.failed_scans(db),
             },
@@ -297,7 +315,7 @@ def delete_indicator(
             "count_of_successful_scans": Indicators.successful_scans(db),
             "count_of_failed_scans": Indicators.failed_scans(db),
             "_message": "Indicator deleted!",
-            "_message_color": "green",
+            "_message_color": "blue",
         },
     )
 

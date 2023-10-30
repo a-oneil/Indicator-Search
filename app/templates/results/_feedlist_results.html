@@ -1,3 +1,4 @@
+{% if indicator.indicator_type|supported_feedlist_types %}
 {% if indicator.feedlist_results %}
 <div class="ui segment">
   <p class="ui small header">
@@ -9,9 +10,7 @@
     <div class="column">
       <div class="ui fluid card">
         <div class="content">
-          <a href="{{item.url}}" indicator="_blank" class="header"
-            >{{item.feedlist}} [ID-{{item.feedlist_id}}]</a
-          >
+          <a href="{{item.url}}" indicator="_blank" class="header">{{item.feedlist}} [ID-{{item.feedlist_id}}]</a>
           <ul>
             <li>
               <div class="description"><b>Match:</b> {{item.match}}</div>
@@ -45,4 +44,5 @@
     <i class="fa-solid fa-circle-xmark"></i> Feedlists: No matches found
   </p>
 </div>
+{% endif %}
 {% endif %}
