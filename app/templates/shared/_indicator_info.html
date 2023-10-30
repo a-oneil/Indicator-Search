@@ -36,7 +36,24 @@
 
 <div class="ui segment">
 
+
+
   <h3 class="ui header">
+    {%if indicator.tags %}
+    {% if "malicious" in indicator.tags %}
+    <img src="/static/images/malicious_overlay.png" style="   
+    position:absolute;
+    top:-3.8px;
+    right:-1px; 
+    width: 50px">
+    {% elif "suspicious" in indicator.tags %}
+    <img src="/static/images/suspicious_overlay.png" style="   
+    position:absolute;
+    top:-3.8px;
+    right:-1px; 
+    width: 50px">
+    {% endif %}
+    {% endif %}
     <div class="image-container" style="float: left;">
       <img src="/static/images/icon.png" alt="Copy to clipboard"
         onclick='CopyTextToClipboard("{{indicator.indicator}}")'>
