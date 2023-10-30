@@ -30,15 +30,18 @@ def snakecase_to_title(value):
     value = value.replace("_", " ")
     return value.title()
 
+
 def searchable(value):
     if get_type(value):
         return True
     else:
         return False
-    
+
+
 templates.env.filters["time_created_strftime"] = time_created_strftime
 templates.env.filters["snakecase_to_title"] = snakecase_to_title
 templates.env.filters["searchable"] = searchable
+
 
 @router.get("/", response_class=HTMLResponse)
 def home(request: Request, db: Session = Depends(get_db)):
@@ -268,7 +271,17 @@ def delete_indicator(
 
     db.delete(indicator)
     db.commit()
-    return RedirectResponse(url=router.url_path_for("home"))
+    return templates.TemplateResponse(
+        "home/home.html",
+        {
+            "request": request,
+            "recent_indicators": Indicators.get_recent_scans(db),
+            "count_of_successful_scans": Indicators.successful_scans(db),
+            "count_of_failed_scans": Indicators.failed_scans(db),
+            "_message": "Indicator deleted!",
+            "_message_color": "green",
+        },
+    )
 
 
 @router.get("/searches/delete/{indicator_id}", response_class=HTMLResponse)

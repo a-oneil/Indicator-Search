@@ -96,7 +96,15 @@ def delete_feedlist(
     if feedlist:
         db.delete(feedlist)
         db.commit()
-        return RedirectResponse(url=url, status_code=status.HTTP_302_FOUND)
+        return templates.TemplateResponse(
+            "feeds/feeds.html",
+            {
+                "request": request,
+                "feed_lists": FeedLists.get_feedlists(db),
+                "_message_color": "blue",
+                "_message": "Feed deleted!",
+            },
+        )
     else:
         return RedirectResponse(url=url, status_code=status.HTTP_404_NOT_FOUND)
 

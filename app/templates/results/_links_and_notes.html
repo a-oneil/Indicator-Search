@@ -5,7 +5,7 @@
           <p class="ui small header"><i class="fa fa-clipboard"></i> Notes</p>
           <form class="ui form" action="/indicator/notes/{{indicator.id}}" method="post">
             <div class="field">
-              <textarea rows="1" required name="notes">{{indicator.notes}}</textarea><br />
+              <textarea rows="1" name="notes">{{indicator.notes}}</textarea><br />
             </div>
             <button class="ui blue button" type="submit">
               Save <i class="fa-solid fa-floppy-disk"></i>
@@ -40,7 +40,7 @@
       <p class="ui small header"><i class="fa fa-clipboard"></i> Notes</p>
       <form class="ui form" action="/indicator/notes/{{indicator.id}}" method="post">
         <div class="field">
-          <textarea rows="2" required name="notes">{{indicator.notes}}</textarea><br />
+          <textarea rows="2" name="notes">{{indicator.notes}}</textarea><br />
         </div>
         <button class="ui blue button" type="submit">
           Save <i class="fa-solid fa-floppy-disk"></i>
