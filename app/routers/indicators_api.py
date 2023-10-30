@@ -22,7 +22,7 @@ def create_indicator(
     if not indicator_type:
         raise HTTPException(
             400,
-            "Must be a valid IPv4 Address, IPv6 Address, Hash, FQDN, URL, Email, Phone Number or MAC Address",
+            "Must be a valid IPv4 Address, IPv6 Address, Hash, FQDN, URL, Email, Phone Number, User Agent, or MAC Address",
         )
     user = User_Accounts.get_user_by_api_key(request.api_key, db)
     new_indicator = Indicators(

@@ -5,6 +5,7 @@ import ipwhois
 import httpbl
 import time
 import base64
+import json
 from .. import config, notifications
 from ..models import FeedLists
 from maltiverse import Maltiverse
@@ -24,6 +25,13 @@ from .utils import (
 def search_feedlists(indicator, db):
     def perform_search(indicator, feedlist, list_type):
         try:
+            if indicator.indicator_type == "url":
+                search_string = convert_url_to_fqdn(indicator.indicator)
+            elif indicator.indicator_type == "email":
+                search_string = convert_email_to_fqdn(indicator.indicator)
+            else:
+                search_string = indicator.indicator
+
             req = requests.get(feedlist.url)
             if req.status_code == 200:
                 results = {}
@@ -31,7 +39,7 @@ def search_feedlists(indicator, db):
                 for line in lines:
                     line = remove_ip_address(line) if list_type == "fqdn" else line
                     if (
-                        indicator.indicator in line
+                        search_string in line
                         and not ("feedlist", feedlist.name) in results.items()
                     ):
                         results.update(
@@ -1386,3 +1394,74 @@ def kickbox_disposible_email(indicator):
         )
     except Exception as e:
         return failed_to_run("kickbox_disposible_email", e)
+
+
+def kickbox_disposible_email(indicator):
+    try:
+        response = requests.get(
+            f"https://open.kickbox.com/v1/disposable/{indicator.indicator}",
+        )
+
+        if response.status_code != 200:
+            return status_code_error(
+                "kickbox_disposible_email", response.status_code, response.reason
+            )
+
+        if not response.json().get("disposable"):
+            return no_results_found("kickbox_disposible_email")
+
+        return (
+            # fmt: off
+                {
+                    "site": "kickbox_disposible_email",
+                    "results": response.json().get("disposable", {})
+                },
+            # fmt: on
+        )
+    except Exception as e:
+        return failed_to_run("kickbox_disposible_email", e)
+
+
+def whatsmybrowser_ua(indicator):
+    try:
+        if config["WHATSMYBROWSER_API_KEY"] == "":
+            raise Exception("WHATSMYBROWSER_API_KEY is not set in .env file.")
+
+        response = requests.post(
+            "https://api.whatismybrowser.com/api/v2/user_agent_parse",
+            data=json.dumps(
+                {
+                    "user_agent": indicator.indicator,
+                    "parse_options": {},
+                }
+            ),
+            headers={
+                "X-API-KEY": config["WHATSMYBROWSER_API_KEY"],
+            },
+        )
+
+        if response.status_code != 200:
+            return status_code_error(
+                "whatsmybrowser_ua", response.status_code, response.reason
+            )
+
+        return (
+            # fmt: off
+                {
+                    "site": "whatsmybrowser_ua",
+                    "results": {
+                        "is_abusive": response.json().get("parse", {}).get("is_abusive"),
+                        "simple_software_string": response.json().get("parse", {}).get("simple_software_string"),
+                        "software": response.json().get("parse", {}).get("software"),
+                        "software_name": response.json().get("parse", {}).get("software_name"),
+                        "software_version": response.json().get("parse", {}).get("software_version"),
+                        "software_version_full": response.json().get("parse", {}).get("software_version_full"),
+                        "operating_system": response.json().get("parse", {}).get("operating_system"),
+                        "operating_system_name": response.json().get("parse", {}).get("operating_system_name"),
+                        "operating_system_version_full": response.json().get("parse", {}).get("operating_system_version_full"),
+                    }
+                },
+            # fmt: on
+        )
+    except Exception as e:
+        return failed_to_run("whatsmybrowser_ua", e)

@@ -92,6 +92,7 @@ Menu `option 9` will use the `USER_INVITE_KEY` from the config file to create a 
 * URL
 * Email
 * Phone Number
+* User Agent
 * MAC Address
 
 ## Tools
@@ -120,6 +121,7 @@ Menu `option 9` will use the `USER_INVITE_KEY` from the config file to create a 
 |Hybrid Analysis|Hash|Yes|
 |Malware Bazzar|Hash|No|
 |Numverify|Phone|Yes|
+|Whats My Browser|User Agent|Yes|
 |MAC Vendors|MAC Address|No|
 
 ## Screenshots

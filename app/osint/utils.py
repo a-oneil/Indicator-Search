@@ -67,6 +67,14 @@ def get_type(indicator):
         re.I,
     ):
         return "phone"
+
+    elif re.match(
+        r".*(Mozilla|AppleWebKit|Chrome|Safari|Firefox|Edge|IE|Trident|Opera|OPR|Version|Android|Mobile|like Gecko).*",
+        indicator,
+        re.I,
+    ):
+        return "useragent"
+
     return None
 
 
@@ -107,7 +115,7 @@ def get_feedlist_type(indicator):
         "hash.sha512",
     ]:
         return "hash"
-    elif indicator.indicator_type in ["fqdn", "url"]:
+    elif indicator.indicator_type in ["fqdn", "url", "email"]:
         return "fqdn"
     else:
         return None
