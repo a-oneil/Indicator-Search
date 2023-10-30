@@ -12,6 +12,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Session, relationship
+from sqlalchemy.orm.attributes import flag_modified
 
 
 class Indicators(Base):
@@ -126,6 +127,14 @@ class Indicators(Base):
     def update_notes(cls, indicator_id: int, notes: str, db: Session):
         indicator = db.query(cls).filter(cls.id == indicator_id).first()
         indicator.notes = notes
+        tags_dict = indicator.tags if indicator.tags else {}
+        if notes:
+            tags_dict["note"] = True
+        else:
+            tags_dict.pop("note", None)
+            db.commit()
+        indicator.tags = tags_dict
+        flag_modified(indicator, "tags")
         db.commit()
         db.refresh(indicator)
         return indicator

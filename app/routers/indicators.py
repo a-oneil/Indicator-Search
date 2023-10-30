@@ -38,9 +38,27 @@ def searchable(value):
         return False
 
 
+def tag_order(tag_dict):
+    keys = list(tag_dict.keys())
+    keys.sort()
+    sorted_dict = {i: tag_dict[i] for i in keys}
+
+    if "malicious" in sorted_dict:
+        malicious_value = sorted_dict.pop("malicious")
+        tag_dict = {"malicious": malicious_value, **sorted_dict}
+        return tag_dict
+    elif "suspicious" in sorted_dict:
+        suspicious_value = sorted_dict.pop("suspicious")
+        tag_dict = {"suspicious": suspicious_value, **sorted_dict}
+        return tag_dict
+
+    return sorted_dict
+
+
 templates.env.filters["time_created_strftime"] = time_created_strftime
 templates.env.filters["snakecase_to_title"] = snakecase_to_title
 templates.env.filters["searchable"] = searchable
+templates.env.filters["tag_order"] = tag_order
 
 
 @router.get("/", response_class=HTMLResponse)

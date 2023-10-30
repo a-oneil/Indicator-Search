@@ -1,5 +1,6 @@
 {% if indicator.tags %}
-{% for key,value in indicator.tags.items()|sort %}
+{% set tags = indicator.tags|tag_order %}
+{% for key,value in tags.items() %}
 {% if key == "ioc" %}
 <a class="ui red label" href="/api/iocs/{{value}}">
     {{key|snakecase_to_title}}
@@ -33,6 +34,12 @@
 <a class="ui label"
     href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
     {{value}} IP Address
+</a>
+
+{% elif key == "note" %}
+<a class="ui purple label"
+    href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
+    {{key|snakecase_to_title}}
 </a>
 
 {% else %}

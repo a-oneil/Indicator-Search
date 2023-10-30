@@ -35,25 +35,26 @@
 </style>
 
 <div class="ui segment">
-
-
-
   <h3 class="ui header">
+    <!-- Top right malicious_overlay/suspicious_overlay -->
     {%if indicator.tags %}
     {% if "malicious" in indicator.tags %}
     <img src="/static/images/malicious_overlay.png" style="   
     position:absolute;
     top:-3.8px;
     right:-1px; 
-    width: 50px">
+    width: 50px;
+    border-radius: 0px 4px 0px 0px;">
     {% elif "suspicious" in indicator.tags %}
     <img src="/static/images/suspicious_overlay.png" style="   
     position:absolute;
     top:-3.8px;
     right:-1px; 
-    width: 50px">
+    width: 50px;
+    border-radius: 0px 4px 0px 0px;">
     {% endif %}
     {% endif %}
+
     <div class="image-container" style="float: left;">
       <img src="/static/images/icon.png" alt="Copy to clipboard"
         onclick='CopyTextToClipboard("{{indicator.indicator}}")'>
@@ -66,11 +67,6 @@
 
   <div class="ui labels">
     {{ render_partial("shared/_indicator_details.html", indicator=indicator) }}
-    {% if indicator.notes %}
-    <a class="ui purple label">
-      Note
-    </a>
-    {% endif %}
     {% if indicator.tags %}
     {{ render_partial("shared/_indicator_tags.html", indicator=indicator) }}
     {% endif %}
