@@ -125,12 +125,10 @@ Menu `option 9` will use the `USER_INVITE_KEY` from the config file to create a 
 ## Screenshots
 ![Search Results](images/results1.png)
 ---
-![Search Results](images/results2.png)
----
-![Search Results](images/results3.png)
----
+### App CLI Menu 
 ![Menu](images/menu.png)
 ---
+### Slack Notifications
 ![Slack Notifications](images/slack_notifications.png)
 
 ## Results JSON example
