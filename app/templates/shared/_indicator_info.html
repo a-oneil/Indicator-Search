@@ -38,20 +38,23 @@
   <h3 class="ui header">
     <!-- Top right malicious_overlay/suspicious_overlay -->
     {%if indicator.tags %}
+
     {% if "malicious" in indicator.tags %}
     <img src="/static/images/malicious_overlay.png" style="   
     position:absolute;
-    top:-3.8px;
+    top:5px;
     right:-1px; 
     width: 50px;
     border-radius: 0px 4px 0px 0px;">
+
     {% elif "suspicious" in indicator.tags %}
     <img src="/static/images/suspicious_overlay.png" style="   
     position:absolute;
-    top:-3.8px;
+    top:-3.5px;
     right:-1px; 
     width: 50px;
     border-radius: 0px 4px 0px 0px;">
+
     {% endif %}
     {% endif %}
 
