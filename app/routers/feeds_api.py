@@ -35,6 +35,9 @@ def create_feedlist(
     if url_already_in_feedlists:
         raise HTTPException(400, f"{request.url} already exists in database.")
 
+    if request.list_type.lower() not in ["any", "ip", "hash", "fqdn"]:
+        raise HTTPException(400, "Incorrect feedlist type")
+
     new_feedlist = FeedLists(
         name=request.name,
         category=request.category,

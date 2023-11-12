@@ -43,3 +43,12 @@ class FeedLists(Base):
             .filter(cls.list_type == list_type)
             .all()
         )
+
+    @classmethod
+    def any_list_type_feedlists(cls, db: Session):
+        return (
+            db.query(cls)
+            .filter(cls.active == True)
+            .filter(cls.list_type == "any")
+            .all()
+        )

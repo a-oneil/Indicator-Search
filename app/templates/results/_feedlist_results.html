@@ -9,8 +9,8 @@
     {% for item in indicator.feedlist_results %}
     <div class="column">
       <div class="ui fluid card">
-        <div class="content">
-          <a href="{{item.url}}" indicator="_blank" class="header">{{item.feedlist}} [ID-{{item.feedlist_id}}]</a>
+        <div class="content" style="word-wrap: break-word"">
+          <a href=" {{item.url}}" indicator="_blank" class="header">{{item.feedlist}} [ID-{{item.feedlist_id}}]</a>
           <ul>
             <li>
               <div class="description"><b>Match:</b> {{item.match}}</div>

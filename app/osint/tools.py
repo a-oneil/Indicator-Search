@@ -68,22 +68,38 @@ async def search_feedlists(indicator, db):
             )
 
     results = []
+
     list_type = get_feedlist_type(indicator)
 
     if list_type:
-        feedlists = FeedLists.get_active_feedlists_by_type(list_type, db)
+        feedlists_to_search = []
 
-        if not feedlists:
+        list_type_match = FeedLists.get_active_feedlists_by_type(list_type, db)
+        if list_type_match:
+            for x in list_type_match:
+                feedlists_to_search.append(x)
+
+        any_type_lists = FeedLists.any_list_type_feedlists(db)
+        if any_type_lists:
+            for x in any_type_lists:
+                feedlists_to_search.append(x)
+
+        if not feedlists_to_search:
             return None
 
         notifications.console_output(
-            f"{len(feedlists)} {list_type} feedlists enabled. Searching feedlists now",
+            f"{len(feedlists_to_search)} {list_type} feedlists enabled. Searching feedlists now",
             indicator,
             "BLUE",
         )
 
-        for feedlist in feedlists:
+        for feedlist in feedlists_to_search:
             try:
+                notifications.console_output(
+                    f"Searching for indicator in {feedlist.name} - {feedlist.list_type}",
+                    indicator,
+                    "BLUE",
+                )
                 search_results = perform_search(indicator, feedlist, list_type)
                 if search_results:
                     results.append(search_results)
@@ -93,9 +109,6 @@ async def search_feedlists(indicator, db):
                 continue
 
     if results:
-        notifications.console_output(
-            f"{len(results)} feedlist matches found", indicator, "BLUE"
-        )
         return Indicators.save_feedlist_results(indicator.id, results, db)
     else:
         return None

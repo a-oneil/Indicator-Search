@@ -139,7 +139,7 @@ def new_indicator_handler(indicator, user, db: Session):
 
         if indicator.feedlist_results:
             notifications.console_output(
-                "Indicator found in feedlists",
+                f"Indicator found in {len(indicator.feedlist_results)} feeds",
                 indicator,
                 "BLUE",
             )

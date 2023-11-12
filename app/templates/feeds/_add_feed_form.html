@@ -14,8 +14,8 @@
         </div>
         <div class="field">
             <div class="field">
-                <select class="ui search dropdown">
-                    <option value="">List Type</option>
+                <select class="ui search dropdown" name="list_type">
+                    <option value="any">any</option>
                     <option value="ipv4">ip</option>
                     <option value="hash">hash</option>
                     <option value="fqdn">fqdn</option>
@@ -24,7 +24,7 @@
         </div>
 
         <div class="field">
-            <input type="text" name="list_type" placeholder="How often does this list refresh (Optional)"><br>
+            <input type="text" name="list_period" placeholder="How often does this list refresh (Optional)"><br>
         </div>
         <button class="ui red button" type="submit">Add</button>
     </form>
