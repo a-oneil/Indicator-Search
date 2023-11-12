@@ -7,7 +7,7 @@ import time
 import base64
 import json
 from .. import config, notifications
-from ..models import FeedLists
+from ..models import FeedLists, Indicators
 from maltiverse import Maltiverse
 from shodan import Shodan
 from .utils import (
@@ -22,7 +22,7 @@ from .utils import (
 )
 
 
-def search_feedlists(indicator, db):
+async def search_feedlists(indicator, db):
     def perform_search(indicator, feedlist, list_type):
         try:
             if indicator.indicator_type == "url":
@@ -96,7 +96,7 @@ def search_feedlists(indicator, db):
         notifications.console_output(
             f"{len(results)} feedlist matches found", indicator, "BLUE"
         )
-        return results
+        return Indicators.save_feedlist_results(indicator.id, results, db)
     else:
         return None
 

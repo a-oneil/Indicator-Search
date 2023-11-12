@@ -138,3 +138,11 @@ class Indicators(Base):
         db.commit()
         db.refresh(indicator)
         return indicator
+
+    @classmethod
+    def save_feedlist_results(cls, indicator_id: int, feedlist_results, db: Session):
+        indicator = db.query(cls).filter(cls.id == indicator_id).first()
+        indicator.feedlist_results = feedlist_results
+        db.commit()
+        db.refresh(indicator)
+        return indicator

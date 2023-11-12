@@ -55,7 +55,7 @@ def tagging_handler(indicator, db):
 def feedlist_results(indicator):
     tags = {}
     if indicator.feedlist_results:
-        tags.update({"feedlist_match": True})
+        tags.update({"feedlist_match": True, "suspicious": True})
     return tags
 
 

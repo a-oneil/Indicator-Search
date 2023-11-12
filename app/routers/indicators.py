@@ -9,7 +9,7 @@ from fastapi import (
 from .. import templates
 from ..models import Indicators, Iocs
 from ..database import get_db
-from ..osint import new_indicator_handler, get_type, refang
+from ..osint import new_indicator_handler, get_type, refang, tools
 from ..authentication import frontend_auth_required
 from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse, HTMLResponse
@@ -170,6 +170,21 @@ async def create_indicator(
         db.add(new_indicator)
         db.commit()
         db.refresh(new_indicator)
+        if any(
+            match in new_indicator.indicator_type
+            for match in [
+                "ipv4",
+                "ipv6",
+                "fqdn",
+                "url",
+                "email",
+                "hash.md5",
+                "hash.sha1",
+                "hash.sha256",
+                "hash.sha512",
+            ]
+        ):
+            background_tasks.add_task(tools.search_feedlists, new_indicator, db)
         background_tasks.add_task(new_indicator_handler, new_indicator, user, db)
         return templates.TemplateResponse(
             "results/results.html",

@@ -1,7 +1,7 @@
 from .. import schemas
 from ..models import Iocs, Indicators, User_Accounts
 from ..database import get_db
-from ..osint import new_indicator_handler, get_type
+from ..osint import new_indicator_handler, get_type, tools
 from ..authentication import auth_api_key
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException
@@ -33,6 +33,21 @@ def create_indicator(
     db.add(new_indicator)
     db.commit()
     db.refresh(new_indicator)
+    if any(
+        match in new_indicator.indicator_type
+        for match in [
+            "ipv4",
+            "ipv6",
+            "fqdn",
+            "url",
+            "email",
+            "hash.md5",
+            "hash.sha1",
+            "hash.sha256",
+            "hash.sha512",
+        ]
+    ):
+        background_tasks.add_task(tools.search_feedlists, new_indicator, db)
     background_tasks.add_task(new_indicator_handler, new_indicator, user, db)
     return new_indicator
 
