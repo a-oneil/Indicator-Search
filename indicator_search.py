@@ -46,7 +46,7 @@ def menu():
     print(f"{color.BLUE}8.{color.ENDCOLOR}  Seed indicators")
     print(f"{color.BLUE}9.{color.ENDCOLOR}  Create user")
     print(f"{color.YELLOW}  9a.{color.ENDCOLOR} Create admin user")
-    print(f"{color.BLUE}10.{color.ENDCOLOR} Exit")
+    print(f"\n{color.YELLOW}Ctrl + c to exit{color.ENDCOLOR}")
     menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
 
 
@@ -88,8 +88,6 @@ def menu_switch(choice):
     elif choice == "9a":
         create_admin_user()
         menu()
-    elif choice == "10":
-        exit(0)
     else:
         menu()
 
@@ -115,8 +113,11 @@ def ioc_ageout_automation():
                 },
                 json={"api_key": api_key},
             )
-            for value in response.json().values():
-                print(f"{color.YELLOW}IOC Automation: {color.ENDCOLOR}{value}")
+            detail = response.json().get("detail")
+
+            if detail != "No IOCs to age out":
+                for value in response.json().values():
+                    print(f"{color.YELLOW}IOC Automation: {color.ENDCOLOR}{value}")
             time.sleep(3600)
         else:
             print(
@@ -133,14 +134,14 @@ def reinstall_packages():
     system = platform.system()
     if system.lower() == "linux":
         distro = platform.uname()
-        
-        if any(match in distro for match in ['debian', 'ubuntu', 'kali']):
+
+        if any(match in distro for match in ["debian", "ubuntu", "kali"]):
             subprocess.run(
                 ["sudo", "apt", "install", "python3-dev", "python3-venv"],
                 check=True,
             )
 
-        elif any(match in distro for match in ['arch', 'manjaro']):
+        elif any(match in distro for match in ["arch", "manjaro"]):
             subprocess.run(
                 ["sudo", "pacman", "-S", "python3"],
                 check=True,
