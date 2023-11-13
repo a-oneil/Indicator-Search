@@ -1,6 +1,3 @@
-from .. import config
-
-
 def links_handler(indicator):
     links = {}
     if indicator.indicator_type == "ipv4":
