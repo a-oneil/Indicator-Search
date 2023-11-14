@@ -30,65 +30,83 @@ def load_config():
 
 
 def menu():
-    print("")
-    print(f"{color.RED}{'='*16} Indicator Search {'='*16}{color.ENDCOLOR}")
-    print(f"{color.BLUE}1.{color.ENDCOLOR}  Setup enviroment")
-    print(f"{color.BLUE}2.{color.ENDCOLOR}  Build docker-compose and run")
-    print(f"{color.YELLOW} 2a.{color.ENDCOLOR}  Docker compose up")
-    print(f"{color.YELLOW} 2b.{color.ENDCOLOR}  Docker compose down")
-    print(f"{color.YELLOW}{'='*22} Dev {'='*23}{color.ENDCOLOR}")
-    print(f"{color.BLUE}3.{color.ENDCOLOR}  Run local instance (127.0.0.1:8000)")
-    print(f"{color.BLUE}4.{color.ENDCOLOR}  Run local instance (0.0.0.0:80)")
-    print(f"{color.BLUE}5.{color.ENDCOLOR}  Build docker image")
-    print(f"{color.BLUE}6.{color.ENDCOLOR}  Delete local sqlite database")
-    print(f"{color.YELLOW}{'='*22} API {'='*23}{color.ENDCOLOR}")
-    print(f"{color.BLUE}7.{color.ENDCOLOR}  Seed feedlists database")
-    print(f"{color.BLUE}8.{color.ENDCOLOR}  Seed indicators")
-    print(f"{color.BLUE}9.{color.ENDCOLOR}  Create user")
-    print(f"{color.YELLOW}  9a.{color.ENDCOLOR} Create admin user")
-    print(f"\n{color.YELLOW}Ctrl + c to exit{color.ENDCOLOR}")
-    menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
+    try:
+        # fmt: off
+        print(f"{color.YELLOW}Ctrl + c to exit{color.ENDCOLOR}")
+        print(f"{color.BLUE}To configure API tokens, modify the ./config/.env file\nThen, restart the app or rebuild the container{color.ENDCOLOR}")
+        print("")
+        print(f"{color.RED}{'='*16} Indicator Search {'='*16}{color.ENDCOLOR}")
+        print(f"{color.BLUE}1.{color.ENDCOLOR}  Setup enviroment")
+        print(f"{color.BLUE}2.{color.ENDCOLOR}  Build docker-compose and run locally with SSL proxy")
+        print(f"{color.YELLOW} 2a.{color.ENDCOLOR}  Docker compose up")
+        print(f"{color.YELLOW} 2b.{color.ENDCOLOR}  Docker compose down")
+        print(f"{color.YELLOW}{'='*22} Dev {'='*23}{color.ENDCOLOR}")
+        print(f"{color.BLUE}3.{color.ENDCOLOR}  Run local instance reachable at 127.0.0.1:8000 - Change reload enabled")
+        print(f"{color.BLUE}4.{color.ENDCOLOR}  Run local instance reachable at 0.0.0.0:80 - Change reload disabled")
+        print(f"{color.BLUE}5.{color.ENDCOLOR}  Build a docker image")
+        print(f"{color.BLUE}6.{color.ENDCOLOR}  Build a docker image and push to a container registry")
+        print(f"{color.BLUE}7.{color.ENDCOLOR}  Delete local sqlite database, will require")
+        print(f"{color.YELLOW}{'='*22} API {'='*23}{color.ENDCOLOR}")
+        print(f"{color.BLUE}8.{color.ENDCOLOR}  Seed feedlists database")
+        print(f"{color.BLUE}9.{color.ENDCOLOR}  Seed indicators")
+        print(f"{color.BLUE}10.{color.ENDCOLOR}  Create user")
+        print(f"{color.YELLOW}  10a.{color.ENDCOLOR} Create admin user")
+        # fmt: on
+        menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
+    except KeyboardInterrupt:
+        import psutil
+
+        print(f"{color.RED}Exiting...{color.ENDCOLOR}")
+        current_system_pid = os.getpid()
+        ThisSystem = psutil.Process(current_system_pid)
+        ThisSystem.terminate()
 
 
 def menu_switch(choice):
-    if choice == "1":
-        reinstall_packages()
-        reconfig()
-        menu()
-    elif choice == "2":
-        create_self_signed_cert()
-        docker_compose_build()
-        docker_compose_up()
-        menu()
-    elif choice == "2a":
-        docker_compose_up()
-        menu()
-    elif choice == "2b":
-        docker_compose_down()
-        menu()
-    elif choice == "3":
-        run_local()
-    elif choice == "4":
-        run_local_global()
-    elif choice == "5":
-        build_docker_image()
-        menu()
-    elif choice == "6":
-        delete_sqlite()
-        menu()
-    elif choice == "7":
-        seed_feedlists()
-        menu()
-    elif choice == "8":
-        seed_indicators()
-        menu()
-    elif choice == "9":
-        create_user()
-        menu()
-    elif choice == "9a":
-        create_admin_user()
-        menu()
-    else:
+    try:
+        if choice == "1":
+            reinstall_packages()
+            reconfig()
+            menu()
+        elif choice == "2":
+            create_self_signed_cert()
+            docker_compose_build()
+            docker_compose_up()
+            menu()
+        elif choice == "2a":
+            docker_compose_up()
+            menu()
+        elif choice == "2b":
+            docker_compose_down()
+            menu()
+        elif choice == "3":
+            run_local()
+        elif choice == "4":
+            run_local_global()
+        elif choice == "5":
+            build_docker_image()
+            menu()
+        elif choice == "6":
+            pass
+        elif choice == "7":
+            delete_sqlite()
+            menu()
+        elif choice == "8":
+            seed_feedlists()
+            menu()
+        elif choice == "9":
+            seed_indicators()
+            menu()
+        elif choice == "10":
+            create_user()
+            menu()
+        elif choice == "10a":
+            create_admin_user()
+            menu()
+        else:
+            menu()
+    except KeyboardInterrupt:
+        print(f"{color.RED}Exiting...{color.ENDCOLOR}")
         menu()
 
 
@@ -218,17 +236,35 @@ def run_local_global():
     )
 
 
-def build_docker_image():
+def build_docker_image(tag=None):
+    if not tag:
+        tag = input("Enter a image:tag")
     print("Building docker image")
     subprocess.run(
         [
             "docker",
             "build",
             "-t",
-            "indicator-search:latest",
+            tag,
             "-f",
             "Dockerfile",
             ".",
+        ],
+        check=True,
+    )
+    print(f"{color.BLUE}Docker image built successfully!{color.ENDCOLOR}")
+
+
+def push_docker_to_registry():
+    tag = input("Enter a image:tag")
+    repo = input(f"Enter a repository. Example: registry.docker.com/user/repo")
+    print("Building docker image")
+    build_docker_image(tag)
+    subprocess.run(
+        [
+            "docker",
+            "push",
+            f"{repo}/{tag}",
         ],
         check=True,
     )
@@ -459,12 +495,8 @@ if __name__ == "__main__":
             reinstall_packages()
             reconfig()
             print(
-                f"{color.YELLOW}Setup complete, please configure your env file located at ./config/.env{color.ENDCOLOR}"
+                f"{color.YELLOW}Setup complete, make sure to configure your env file located at ./config/.env{color.ENDCOLOR}"
             )
         else:
-            try:
-                config = load_config()
-                menu()
-            except KeyboardInterrupt:
-                print(f"{color.RED}\nExiting...{color.ENDCOLOR}")
-                menu()
+            config = load_config()
+            menu()

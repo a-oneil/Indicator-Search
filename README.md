@@ -51,13 +51,15 @@ Once the app has been built, the docker containers should always restart but if 
 * Menu `option 2a` Docker compose up
 * Menu `option 2b` Docker compose down
 
-Re-running `option 2` will rebuild your containers but the database volume is persistant between rebuilds.
+Re-running `option 2` will rebuild your containers (the database volume is persistant between rebuilds).
 
 
-Menu `option 5` will just build the docker container and tag the image as `indicator-search:latest`.
+Menu `option 5` will just build a docker container and prompt for a tag.
 Afterwards you can run the container with the following command:
 
 `docker run -p 8000:8000 -v "./path/to/db.sqlite:/code/db.sqlite" indicator-search:latest`
+
+Menu `option 6` will just build a docker container and prompt for a tag and a repository to upload to.
 
 ### Local instances
 Menu `option 3` runs uvicorn directly and the app is reachable at `http://127.0.0.1:8000`
@@ -67,19 +69,21 @@ Menu `option 4` also runs uvicorn directly but the app is listening on all inter
 
 ## Seeding
 ### Seeding Feedlists
-Menu `option 7` uses the json files located in `config/feedlist_examples` to auto-create new feeds. When you choose to seed the feedlists, it will iterate through all feeds in the files. If the URL is already added, the server will reject the feedlist addition.
+Menu `option 8` uses the json files located in `config/feedlist_examples` to auto-create new feeds. When you choose to seed the feedlists, it will iterate through all feeds in the files. If the URL is already added, the server will reject the feedlist addition.
 1. Run `python3 indicator_search.py` and choose the option to seed feedlists.
 2. Enter your `api_key`.
 
 ### Seeding Indicators
-Menu `option 8` provides 8 example indicators to quickly test that all the API tools are working as expected.
+Menu `option 9` provides 8 example indicators to quickly test that all the API tools are working as expected.
 1. Run `python3 indicator_search.py` and choose the option to seed indicators.
 2. Enter your `api_key`.
 
 ### Creating A User
-Menu `option 9` will use the `USER_INVITE_KEY` from the config file to create a new user.
+Menu `option 10` will use the `USER_INVITE_KEY` from the config file to create a new user.
 1. Run `python3 indicator_search.py` and choose the option to create a user.
 2. Enter username and password. It will use the user invite code from the config to verify user creation is expected.
+
+Menu `option 10a` will use the `USER_INVITE_KEY` from the config file to create a new "Admin" user. Once completed, it will display an API key for the Admin user. Save this API key to the .env file to enable the IOC ageout automation that runs hourly to prune expired IOCs.
 
 ## Supported Indicators
 * IPv4
