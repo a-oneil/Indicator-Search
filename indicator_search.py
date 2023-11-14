@@ -3,7 +3,6 @@ import os
 import time
 import argparse
 import json
-import platform
 import shutil
 from threading import Thread
 
@@ -65,7 +64,6 @@ def menu():
 def menu_switch(choice):
     try:
         if choice == "1":
-            reinstall_packages()
             reconfig()
             menu()
         elif choice == "2":
@@ -145,40 +143,6 @@ def ioc_ageout_automation():
             time.sleep(3600)
 
 
-def reinstall_packages():
-    print(
-        f"{color.YELLOW}Installing required OS packages (see Readme), requesting password. {color.ENDCOLOR}"
-    )
-    system = platform.system()
-    if system.lower() == "linux":
-        distro = platform.uname()
-
-        if any(match in distro for match in ["debian", "ubuntu", "kali"]):
-            subprocess.run(
-                ["sudo", "apt", "install", "python3-dev", "python3-venv"],
-                check=True,
-            )
-
-        elif any(match in distro for match in ["arch", "manjaro"]):
-            subprocess.run(
-                ["sudo", "pacman", "-S", "python3"],
-                check=True,
-            )
-        else:
-            print(f"{color.RED}Unsupported Linux Distro{color.ENDCOLOR} - {distro}")
-            exit(1)
-
-    elif system.lower() == "darwin":
-        subprocess.run(
-            ["brew", "install", "virtualenv"],
-            check=True,
-        )
-
-    else:
-        print(f"{color.RED}Unsupported OS{color.ENDCOLOR}")
-        exit(1)
-
-
 def reconfig():
     if not os.path.exists("./config/.env"):
         shutil.copyfile("./config/.env.example", "./config/.env")
@@ -193,7 +157,7 @@ def reconfig():
         shutil.rmtree("./venv")
     print(f"{color.YELLOW}Installing dependencies{color.ENDCOLOR}")
 
-    subprocess.run(["python3", "-m", "venv", "venv"], check=True)
+    subprocess.run(["python3.10", "-m", "venv", "venv"], check=True)
     subprocess.run(
         [
             "./venv/bin/python3",
@@ -257,7 +221,7 @@ def build_docker_image(tag=None):
 
 def push_docker_to_registry():
     tag = input("Enter a image:tag")
-    repo = input(f"Enter a repository. Example: registry.docker.com/user/repo")
+    repo = input("Enter a repository. Example: registry.docker.com/user/repo")
     print("Building docker image")
     build_docker_image(tag)
     subprocess.run(
@@ -493,7 +457,6 @@ if __name__ == "__main__":
     else:
         color = terminalColors()
         if not os.path.exists("./venv"):
-            reinstall_packages()
             reconfig()
             print(
                 f"{color.YELLOW}Setup complete, make sure to configure your env file located at ./config/.env{color.ENDCOLOR}"

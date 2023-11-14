@@ -17,8 +17,8 @@ Discover the app's features and capabilities through a live demonstration at [in
 ## Setup
 For now, Indicator Search can either be ran locally, served over port 8000 or via docker container. The instructions below should get you started.
 
-This project runs on Fastapi (Python3), you will need:
-* Python3
+This project runs on Fastapi you will need:
+* Python3.10
 * Docker / Docker-compose if you want to run via docker
 
 1. Git clone the repo and cd into it.
