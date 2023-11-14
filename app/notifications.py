@@ -25,7 +25,7 @@ def send_message_to_slack(
     channel=str(config["SLACK_CHANNEL"]),
     bot_token=str(config["SLACK_BOT_TOKEN"]),
 ):
-    if config["ENABLE_SLACK"] == True:
+    if config["ENABLE_SLACK"]:
         try:
             url = "https://slack.com/api/chat.postMessage"
             headers = {
