@@ -2,26 +2,26 @@
     {
         "name": "Bazaar Abuse.ch MD5",
         "category": "MD5 Recent additions",
-        "listURL": "https://bazaar.abuse.ch/export/txt/md5/recent/"
+        "url": "https://bazaar.abuse.ch/export/txt/md5/recent/"
     },
     {
         "name": "Threatfox Abuse.ch MD5",
         "category": "MD5 Recently found malicious files on C2",
-        "listURL": "https://threatfox.abuse.ch/export/txt/md5/recent/"
+        "url": "https://threatfox.abuse.ch/export/txt/md5/recent/"
     },
     {
         "name": "Bazaar Abuse.ch SHA1",
         "category": "SHA1 Recent additions",
-        "listURL": "https://bazaar.abuse.ch/export/txt/sha1/recent/"
+        "url": "https://bazaar.abuse.ch/export/txt/sha1/recent/"
     },
     {
         "name": "Bazaar Abuse.ch SHA256",
         "category": "SHA256 Recent additions",
-        "listURL": "https://bazaar.abuse.ch/export/txt/sha256/recent/"
+        "url": "https://bazaar.abuse.ch/export/txt/sha256/recent/"
     },
     {
         "name": "Threatfox Abuse.ch SHA256",
         "category": "SHA256 Recently found malicious files on C2",
-        "listURL": "https://threatfox.abuse.ch/export/txt/sha256/recent/"
+        "url": "https://threatfox.abuse.ch/export/txt/sha256/recent/"
     }
 ]

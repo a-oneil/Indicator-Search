@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Suricata - Exploit",
+        "description": "This category is for signatures that protect against direct exploits not otherwise covered in a specific service category. This is the category where attacks against vulnerabilities such as against Microsoft Windows will be found. Attacks with their own category such as SQL injection have their own category",
+        "category": "Exploit",
+        "url": "https://rules.emergingthreats.net/open/suricata-5.0/rules/emerging-exploit.rules"
+    },
+    {
+        "name": "Suricata - Malware",
+        "description": "This category is for signatures to detect malicious software. Rules in this category detect activity related to malicious software that is detected on the network including malware in transit, active malware, malware infections, malware attacks, and updating of malware.",
+        "category": "Malware",
+        "url": "https://rules.emergingthreats.net/open/suricata-5.0/rules/emerging-malware.rules"
+    },
+    {
+        "name": "Suricata - Phishing",
+        "description": "This category is for signatures which detect credential phishing activity. This includes landing pages exhibiting credential phishing as well as successful submission of credentials into credential phishing sites",
+        "category": "Malware",
+        "url": "https://rules.emergingthreats.net/open/suricata-5.0/rules/emerging-phishing.rules"
+    },
+    {
+        "name": "Suricata - Current Events",
+        "description": "This category is for signatures with rules developed in response to active and short-lived campaigns and high-profile items that are expected to be temporary. One example is fraud campaigns related to disasters. The rules in this category are ones that are not intended to be kept in in the ruleset for long, or that need to be further tested before they are considered for inclusion. Most often these will be simple sigs for the Storm binary URL of the day, sigs to catch CLSID’s of newly found vulnerable apps where we don’t have any detail on the exploit, etc.",
+        "category": "Malware",
+        "url": "https://rules.emergingthreats.net/open/suricata-5.0/rules/emerging-current_events.rules"
+    }
+]

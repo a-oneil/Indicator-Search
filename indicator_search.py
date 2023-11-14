@@ -289,7 +289,7 @@ def seed_feedlists():
                 json={
                     "api_key": api_key,
                     "name": feedlist.get("name"),
-                    "url": feedlist.get("listURL"),
+                    "url": feedlist.get("url"),
                     "description": feedlist.get("description"),
                     "category": feedlist.get("category"),
                     "list_type": list_type,
@@ -312,6 +312,7 @@ def seed_feedlists():
     seed("./config/feedlist_examples/iplists.json", api_key, list_type="ip")
     seed("./config/feedlist_examples/hashlists.json", api_key, list_type="hash")
     seed("./config/feedlist_examples/domainlists.json", api_key, list_type="fqdn")
+    seed("./config/feedlist_examples/anylists.json", api_key, list_type="any")
 
 
 def seed_indicators():
