@@ -45,7 +45,7 @@ def menu():
         print(f"{color.BLUE}4.{color.ENDCOLOR}  Run local instance reachable at 0.0.0.0:80 - Change reload disabled")
         print(f"{color.BLUE}5.{color.ENDCOLOR}  Build a docker image")
         print(f"{color.BLUE}6.{color.ENDCOLOR}  Build a docker image and push to a container registry")
-        print(f"{color.BLUE}7.{color.ENDCOLOR}  Delete local sqlite database, will require")
+        print(f"{color.BLUE}7.{color.ENDCOLOR}  Delete local sqlite database, will require restart of the app to rebuild")
         print(f"{color.YELLOW}{'='*22} API {'='*23}{color.ENDCOLOR}")
         print(f"{color.BLUE}8.{color.ENDCOLOR}  Seed feedlists database")
         print(f"{color.BLUE}9.{color.ENDCOLOR}  Seed indicators")
