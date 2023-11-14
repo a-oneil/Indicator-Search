@@ -22,7 +22,7 @@ from .utils import (
 )
 
 
-async def search_feedlists(indicator, db):
+def search_feedlists(indicator, db):
     def perform_search(indicator, feedlist, list_type):
         try:
             if indicator.indicator_type == "url":
@@ -1381,32 +1381,6 @@ def wayback_machine(indicator):
         )
     except Exception as e:
         return failed_to_run("wayback_machine", e)
-
-
-def kickbox_disposible_email(indicator):
-    try:
-        response = requests.get(
-            f"https://open.kickbox.com/v1/disposable/{indicator.indicator}",
-        )
-
-        if response.status_code != 200:
-            return status_code_error(
-                "kickbox_disposible_email", response.status_code, response.reason
-            )
-
-        if not response.json().get("disposable"):
-            return no_results_found("kickbox_disposible_email")
-
-        return (
-            # fmt: off
-                {
-                    "site": "kickbox_disposible_email",
-                    "results": response.json().get("disposable", {})
-                },
-            # fmt: on
-        )
-    except Exception as e:
-        return failed_to_run("kickbox_disposible_email", e)
 
 
 def kickbox_disposible_email(indicator):

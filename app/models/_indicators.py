@@ -9,6 +9,7 @@ from sqlalchemy import (
     Text,
     ForeignKey,
     and_,
+    Numeric,
 )
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Session, relationship
@@ -20,6 +21,7 @@ class Indicators(Base):
     id = Column(Integer, primary_key=True, index=True)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
+    processing_time = Column(Numeric(5, 2), nullable=True)
     creator = relationship("User_Accounts", back_populates="indicators")
     username = Column(String, ForeignKey("user_accounts.username"))
     indicator = Column(String)

@@ -4,6 +4,7 @@
       <tr>
         <th>ID</th>
         <th>Created</th>
+        <th>Processing Time</th>
         <th>Created By</th>
         <th>Type</th>
         <th>Indicator</th>
@@ -18,6 +19,7 @@
         <td>
           <a href="/indicator/results/{{ indicator.id }}">{{ indicator.id }}</a>
         <td>{{ indicator.time_created }}</td>
+        <td>{{ indicator.processing_time }}s</td>
         <td>{{ indicator.creator.username }}</td>
         <td>{{ indicator.indicator_type }}</td>
         <td>

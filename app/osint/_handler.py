@@ -3,17 +3,36 @@ from . import tools, enrichments_handler, tagging_handler, links_handler
 from .. import notifications
 from ..models import Iocs
 from sqlalchemy.orm import Session
-from time import process_time
+import time
+import threading
 
 
 def new_indicator_handler(indicator, user, db: Session):
     try:
-        t1_start = process_time()
+        t1_start = time.time()
         notifications.console_output(
             f"New indicator added by {user.username}, starting scan for {indicator.indicator_type}: {indicator.indicator}",
             indicator,
             "BLUE",
         )
+
+        if any(
+            match in indicator.indicator_type
+            for match in [
+                "ipv4",
+                "ipv6",
+                "fqdn",
+                "url",
+                "email",
+                "hash.md5",
+                "hash.sha1",
+                "hash.sha256",
+                "hash.sha512",
+            ]
+        ):
+            threading.Thread(
+                target=tools.search_feedlists, daemon=False, args=(indicator, db)
+            ).start()
 
         """ Setup indicator json objects """
         indicator.results = []
@@ -174,13 +193,14 @@ def new_indicator_handler(indicator, user, db: Session):
         indicator = Iocs.search_for_ioc(indicator, db)
 
         """ Mark indicator as complete and commit to database"""
+        t1_stop = time.time()
+        processing_time = t1_stop - t1_start
         indicator.complete = True
+        indicator.processing_time = processing_time
         db.add(indicator)
         db.commit()
-
-        t1_stop = process_time()
         notifications.console_output(
-            f"Indicator has been completed in {t1_stop - t1_start}",
+            f"Indicator has been completed in {processing_time}",
             indicator,
             "BLUE",
         )
