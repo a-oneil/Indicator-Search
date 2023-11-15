@@ -325,7 +325,7 @@ def create_user():
         print(color.RED + response.text + color.ENDCOLOR)
     else:
         print(
-            f"{color.BLUE}Successfully created user, log into the user on the webapp to view the API Key{color.ENDCOLOR}"
+            f"{color.BLUE}Successfully created the user {response.json().get('username')}{color.ENDCOLOR}\nPassword: {password}\nAPI Key: {response.json().get('api_key')}"
         )
 
 
