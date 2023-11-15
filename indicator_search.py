@@ -85,7 +85,8 @@ def menu_switch(choice):
             build_docker_image()
             menu()
         elif choice == "6":
-            pass
+            push_docker_to_registry()
+            menu()
         elif choice == "7":
             delete_sqlite()
             menu()
@@ -218,19 +219,27 @@ def build_docker_image(tag=None):
 
 
 def push_docker_to_registry():
-    tag = input("Enter a image:tag")
-    repo = input("Enter a repository. Example: registry.docker.com/user/repo")
-    print("Building docker image")
-    build_docker_image(tag)
-    subprocess.run(
-        [
-            "docker",
-            "push",
-            f"{repo}/{tag}",
-        ],
-        check=True,
-    )
-    print(f"{color.BLUE}Docker image built successfully!{color.ENDCOLOR}")
+    try:
+        tag = input("Enter a image:tag ~> ")
+        repo = input("Enter a repository. Example: registry.docker.com/user/repo ~> ")
+        print("Building docker image")
+        build_docker_image(tag)
+        print("Pushing to registry")
+        subprocess.run(
+            [
+                "docker",
+                "push",
+                f"{repo}/{tag}",
+            ],
+            check=True,
+        )
+        print(
+            f"{color.BLUE}Docker image pushed to registry successfully!{color.ENDCOLOR}"
+        )
+    except Exception as e:
+        print(
+            f"{color.RED}Error occurred while pushing to registry: {str(e)}{color.ENDCOLOR}"
+        )
 
 
 def seed_feedlists():
