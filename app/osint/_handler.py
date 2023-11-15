@@ -1,10 +1,10 @@
+import time
 import traceback
+import threading
 from . import tools, enrichments_handler, tagging_handler, links_handler
 from .. import notifications
 from ..models import Iocs
 from sqlalchemy.orm import Session
-import time
-import threading
 
 
 def new_indicator_handler(indicator, user, db: Session):
@@ -200,7 +200,7 @@ def new_indicator_handler(indicator, user, db: Session):
         db.add(indicator)
         db.commit()
         notifications.console_output(
-            f"Indicator has been completed in {processing_time}",
+            f"Indicator has been completed in {processing_time} seconds",
             indicator,
             "BLUE",
         )
