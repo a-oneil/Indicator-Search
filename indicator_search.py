@@ -172,8 +172,7 @@ def reconfig():
 
 
 def run_local():
-    t = Thread(target=ioc_ageout_automation)
-    t.start()
+    Thread(target=ioc_ageout_automation).start()
     subprocess.run(
         [
             "./venv/bin/uvicorn",
@@ -187,8 +186,7 @@ def run_local():
 
 
 def run_local_global():
-    t = Thread(target=ioc_ageout_automation)
-    t.start()
+    Thread(target=ioc_ageout_automation).start()
     subprocess.run(
         [
             "./venv/bin/uvicorn",
