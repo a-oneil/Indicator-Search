@@ -482,7 +482,7 @@ if __name__ == "__main__":
         "-r",
         "--run",
         action="store_true",
-        help="Run instance reachable at 0.0.0.0:80",
+        help="Run instance reachable at 0.0.0.0:8000",
     )
 
     parser.add_argument(
