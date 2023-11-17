@@ -2,7 +2,7 @@
 ![Home](app/static/images/logo.png)
 
 ## About
-Indicator Search is a web application and API designed for rapid scanning of indicators (observables found during a security incident) against multiple OSINT sites, based on the input indicator type. Inspired by Intelowl, this project aims to provide a similar tool while utilizing the FastAPI framework. Indicator search could deployed among a shared server between security engineers to aid in quick observable lookups as it enables analysts to gather information from various sources in a streamlined manner.
+Indicator Search is a web application and API designed for rapid aggregation of OSINT results, based on the input indicator type. Inspired by Intelowl, this project aims to provide a similar tool while utilizing the FastAPI framework. 
 
 ### Contributing
 If you're interested in contributing to Indicator Search, feel free to fork this repository, make your improvements, and submit a pull request. I welcome any enhancements or bug fixes that can make this tool even more valuable for the security community.
@@ -12,19 +12,23 @@ Indicator Search is a tool designed for informational purposes and should be use
 ### Demo
 Discover the app's features and capabilities through a live demonstration at [indicatorsearch.app](https://indicatorsearch.app).
 
-![Home](images/home.png)
+![Home](app/static/images/home.png)
 
 ## Setup
-This project runs on FastAPI / Python3.10 
+This project operates on FastAPI with Python 3.10.
 
-OS packages you will need:
-* Python3.10
-* Docker / Docker-compose if you want to run via docker
+Necessary OS packages include:
+- Python 3.10
+- Docker/Docker-compose if Docker deployment is desired
 
-1. Git clone the repo and cd into it.
-2. Run `python3 indicator_search.py` to install dependencies.
-3. Configure `./config/.env`.
-4. Run `python3 indicator_search.py` again and choose an option from the menu.
+Follow these steps:
+
+1. Clone the repository and navigate to it.
+2. Execute python3 indicator_search.py. This will duplicate the example environment file and prompt you to complete it.
+3. Adjust the settings in the ./config/.env file.
+4. Re-run python3 indicator_search.py to set up the environment and access the indicator search menu.
+5. Choose your preferred method for running indicator search from the menu.
+6. Create an admin user and save the API to the .env file for the api menu options to work. This API key is also used for the IOC ageout automation that runs every hour.
 
 ### Env File
 The env file located at `./config/.env` is used to configure the applications api keys and tweakable settings. 
@@ -38,6 +42,8 @@ On inital run of the app, it will clone the `.env.example` file also located in 
 * `ENABLE_SLACK`: True/False
 * `SLACK_BOT_TOKEN`: Slack bot token with message permissions
 * `SLACK_CHANNEL`: Channel to post slack updates to
+* `DOCKER_IMAGE_TAG`: indicator_search:latest
+* `DOCKER_REGISTRY`: Dockerregistry.com/user/repo
 
 ### Tool API Keys
 If you don't have an api key, leave the value as `"API_KEY": ""`
@@ -53,37 +59,23 @@ Once the app has been built, the docker containers should always restart but if 
 
 Re-running `option 2` will rebuild your containers (the database volume is persistant between rebuilds).
 
-
-Menu `option 5` will just build a docker container and prompt for a tag.
-Afterwards you can run the container with the following command:
-
-`docker run -p 8000:8000 -v "./path/to/db.sqlite:/code/db.sqlite" indicator-search:latest`
-
-Menu `option 6` will just build a docker container and prompt for a tag and a repository to upload to.
+Menu `option 6` will just build a docker container, prompt for a tag and a repository to upload to.
 
 ### Local instances
-Menu `option 3` runs uvicorn directly and the app is reachable at `http://127.0.0.1:8000`
+Menu `option 3` or (-d) runs a local reloadable version of the app and is reachable at `http://127.0.0.1:8000`
 
-Menu `option 4` also runs uvicorn directly but the app is listening on all interfaces at `http://0.0.0.0:80`
+Menu `option 4` or (-r) runs the app listening on all interfaces at `http://0.0.0.0:80`
 
-
-## Seeding
 ### Seeding Feedlists
-Menu `option 8` uses the json files located in `config/feedlist_examples` to auto-create new feeds. When you choose to seed the feedlists, it will iterate through all feeds in the files. If the URL is already added, the server will reject the feedlist addition.
-1. Run `python3 indicator_search.py` and choose the option to seed feedlists.
-2. Enter your `api_key`.
+Menu `option 7` uses the json files located in `config/feedlist_examples` to auto-create new feeds. When you choose to seed the feedlists, it will iterate through all feeds in the files. If the URL is already added, the server will reject the feedlist addition.
 
 ### Seeding Indicators
-Menu `option 9` provides 8 example indicators to quickly test that all the API tools are working as expected.
-1. Run `python3 indicator_search.py` and choose the option to seed indicators.
-2. Enter your `api_key`.
+Menu `option 8` provides 8 example indicators to quickly test that all the API tools are working as expected.
 
 ### Creating A User
-Menu `option 10` will use the `USER_INVITE_KEY` from the config file to create a new user.
-1. Run `python3 indicator_search.py` and choose the option to create a user.
-2. Enter username and password. It will use the user invite code from the config to verify user creation is expected.
+Menu `option 9` will use the `USER_INVITE_KEY` from the config file to create a new user.
 
-Menu `option 10a` will use the `USER_INVITE_KEY` from the config file to create a new "Admin" user. Once completed, it will display an API key for the Admin user. Save this API key to the .env file to enable the IOC ageout automation that runs hourly to prune expired IOCs.
+Menu `option 9a` will use the `USER_INVITE_KEY` from the config file to create a new "Admin" user. Once completed, it will display an API key for the Admin user. Save this API key to the .env file to enable the IOC ageout automation that runs hourly to prune expired IOCs.
 
 ## Supported Indicators
 * IPv4
@@ -129,13 +121,13 @@ Menu `option 10a` will use the `USER_INVITE_KEY` from the config file to create 
 |MAC Vendors|MAC Address|No|
 
 ## Screenshots
-![Search Results](images/results1.png)
+![Search Results](app/static/images/results1.png)
 ---
 ### App CLI Menu 
-![Menu](images/menu.png)
+![Menu](app/static/images/menu.png)
 ---
 ### Slack Notifications
-![Slack Notifications](images/slack_notifications.png)
+![Slack Notifications](app/static/images/slack_notifications.png)
 
 ## Results JSON example
 ```

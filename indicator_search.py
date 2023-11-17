@@ -16,6 +16,15 @@ class terminalColors:
 
 def load_config():
     try:
+        if not os.path.exists("./config/.env"):
+            shutil.copyfile("./config/.env.example", "./config/.env")
+            print(
+                f"{color.YELLOW}Creating a new .env file located at ./config/.env. Please configure it before proceeding.{color.ENDCOLOR}"
+            )
+            exit(1)
+        else:
+            print(f"{color.BLUE}Existing .env file found{color.ENDCOLOR}")
+
         f = open("./config/.env", "r")
         config = json.load(f)
         f.close()
@@ -42,19 +51,16 @@ def menu():
         print(f"{color.YELLOW}{'='*22} Dev {'='*23}{color.ENDCOLOR}")
         print(f"{color.BLUE}3.{color.ENDCOLOR}  Run local instance reachable at 127.0.0.1:8000 - Change reload enabled")
         print(f"{color.BLUE}4.{color.ENDCOLOR}  Run local instance reachable at 0.0.0.0:80 - Change reload disabled")
-        print(f"{color.BLUE}5.{color.ENDCOLOR}  Build a docker image")
-        print(f"{color.BLUE}6.{color.ENDCOLOR}  Build a docker image and push to a container registry")
-        print(f"{color.BLUE}7.{color.ENDCOLOR}  Delete local sqlite database, will require restart of the app to rebuild")
+        print(f"{color.BLUE}5.{color.ENDCOLOR}  Build a docker image and push to a container registry")
+        print(f"{color.BLUE}6.{color.ENDCOLOR}  Delete local sqlite database, will require restart of the app to rebuild")
         print(f"{color.YELLOW}{'='*22} API {'='*23}{color.ENDCOLOR}")
-        print(f"{color.BLUE}8.{color.ENDCOLOR}  Seed feedlists database")
-        print(f"{color.BLUE}9.{color.ENDCOLOR}  Seed indicators")
-        print(f"{color.BLUE}10.{color.ENDCOLOR}  Create user")
-        print(f"{color.YELLOW}  10a.{color.ENDCOLOR} Create admin user")
+        print(f"{color.BLUE}7.{color.ENDCOLOR}  Seed feedlists database")
+        print(f"{color.BLUE}8.{color.ENDCOLOR}  Seed indicators")
+        print(f"{color.BLUE}9.{color.ENDCOLOR}  Create user")
+        print(f"{color.YELLOW}  9a.{color.ENDCOLOR} Create admin user")
         # fmt: on
         menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
     except KeyboardInterrupt:
-        import psutil
-
         print(f"{color.RED}Exiting...{color.ENDCOLOR}")
         current_system_pid = os.getpid()
         ThisSystem = psutil.Process(current_system_pid)
@@ -78,28 +84,25 @@ def menu_switch(choice):
             docker_compose_down()
             menu()
         elif choice == "3":
-            run_local()
+            run_dev()
         elif choice == "4":
-            run_local_global()
+            run_global()
         elif choice == "5":
-            build_docker_image()
-            menu()
-        elif choice == "6":
             push_docker_to_registry()
             menu()
-        elif choice == "7":
+        elif choice == "6":
             delete_sqlite()
             menu()
-        elif choice == "8":
+        elif choice == "7":
             seed_feedlists()
             menu()
-        elif choice == "9":
+        elif choice == "8":
             seed_indicators()
             menu()
-        elif choice == "10":
+        elif choice == "9":
             create_user()
             menu()
-        elif choice == "10a":
+        elif choice == "9a":
             create_admin_user()
             menu()
         else:
@@ -111,13 +114,14 @@ def menu_switch(choice):
 
 def ioc_ageout_automation():
     import requests
+    from urllib3.exceptions import InsecureRequestWarning
 
-    api_key = config["ADMIN_API_KEY"]
+    requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
     if not api_key:
         print(
             f"{color.RED}IOC Ageout automation failed to run due to no ADMIN_API_KEY being set in the env file.\nPlease either create a user from the menu or use an existing user's api key.{color.ENDCOLOR}"
         )
-        return False
+        return
 
     first_run = True
     while True:
@@ -129,36 +133,28 @@ def ioc_ageout_automation():
                     "Accept": "application/json",
                 },
                 json={"api_key": api_key},
+                verify=False,
             )
             detail = response.json().get("detail")
-
-            if detail != "No IOCs to age out":
-                for value in response.json().values():
-                    print(f"{color.YELLOW}IOC Automation: {color.ENDCOLOR}{value}")
-            time.sleep(3600)
+            for value in (
+                response.json().values() if detail != "No IOCs to age out" else False
+            ):
+                print(f"{color.YELLOW}IOC Automation: {color.ENDCOLOR}{value}")
         else:
             print(
                 f"{color.YELLOW}IOC Automation: {color.ENDCOLOR} Automation started, waiting 1 hour before first run"
             )
             first_run = False
-            time.sleep(3600)
+        time.sleep(3600)
 
 
 def reconfig():
-    if not os.path.exists("./config/.env"):
-        shutil.copyfile("./config/.env.example", "./config/.env")
-        print(
-            f"{color.YELLOW}Creating a new .env file from the example{color.ENDCOLOR}"
-        )
-    else:
-        print(f"{color.BLUE}Existing .env file found{color.ENDCOLOR}")
-
     if os.path.exists("./venv/"):
         print(f"{color.YELLOW}Removing existing environment{color.ENDCOLOR}")
         shutil.rmtree("./venv")
     print(f"{color.YELLOW}Installing dependencies{color.ENDCOLOR}")
 
-    subprocess.run(["python3.10", "-m", "venv", "venv"], check=True)
+    subprocess.run(["python3", "-m", "venv", "venv"], check=True)
     subprocess.run(
         [
             "./venv/bin/python3",
@@ -172,7 +168,7 @@ def reconfig():
     )
 
 
-def run_local():
+def run_dev():
     Thread(target=ioc_ageout_automation).start()
     subprocess.run(
         [
@@ -186,7 +182,7 @@ def run_local():
     )
 
 
-def run_local_global():
+def run_global():
     Thread(target=ioc_ageout_automation).start()
     subprocess.run(
         [
@@ -199,29 +195,36 @@ def run_local_global():
     )
 
 
-def build_docker_image(tag=None):
-    if not tag:
-        tag = input("Enter a image:tag")
-    print("Building docker image")
-    subprocess.run(
-        [
-            "docker",
-            "build",
-            "-t",
-            tag,
-            "-f",
-            "Dockerfile",
-            ".",
-        ],
-        check=True,
-    )
-    print(f"{color.BLUE}Docker image built successfully!{color.ENDCOLOR}")
-
-
 def push_docker_to_registry():
+    def build_docker_image(tag):
+        print("Building docker image")
+        subprocess.run(
+            [
+                "docker",
+                "build",
+                "-t",
+                tag,
+                "-f",
+                "Dockerfile",
+                ".",
+            ],
+            check=True,
+        )
+        print(f"{color.BLUE}Docker image built successfully!{color.ENDCOLOR}")
+
     try:
-        tag = input("Enter a image:tag ~> ")
-        repo = input("Enter a repository. Example: registry.docker.com/user/repo ~> ")
+        tag = (
+            config["DOCKER_IMAGE_TAG"]
+            if config["DOCKER_IMAGE_TAG"]
+            else input("Enter a image:tag ~> ")
+        )
+
+        repo = (
+            config["DOCKER_REGISTRY"]
+            if config["DOCKER_REGISTRY"]
+            else input("Enter a repository. Example: registry.docker.com/user/repo ~> ")
+        )
+
         print("Building docker image")
         build_docker_image(tag)
         print("Pushing to registry")
@@ -243,9 +246,7 @@ def push_docker_to_registry():
 
 
 def seed_feedlists():
-    import requests
-
-    def seed(json_file_path, api_key, list_type):
+    def seed(json_file_path, list_type):
         with open(json_file_path, "r") as json_file:
             json_input = json.load(json_file)
         json_file.close()
@@ -266,6 +267,7 @@ def seed_feedlists():
                     "list_type": list_type,
                     "list_period": feedlist.get("list_period"),
                 },
+                verify=False,
             )
 
             if response.status_code != 200:
@@ -279,16 +281,13 @@ def seed_feedlists():
                         f"{color.BLUE}Successfully seeded {response.json().get('list_type')} feedlist: {color.ENDCOLOR}{response.json().get('name')}"
                     )
 
-    api_key = str(input(f"{color.YELLOW}Enter API Key: {color.ENDCOLOR}")).strip()
-    seed("./config/feedlist_examples/iplists.json", api_key, list_type="ip")
-    seed("./config/feedlist_examples/hashlists.json", api_key, list_type="hash")
-    seed("./config/feedlist_examples/domainlists.json", api_key, list_type="fqdn")
-    seed("./config/feedlist_examples/anylists.json", api_key, list_type="any")
+    seed("./config/feedlist_examples/iplists.json", list_type="ip")
+    seed("./config/feedlist_examples/hashlists.json", list_type="hash")
+    seed("./config/feedlist_examples/domainlists.json", list_type="fqdn")
+    seed("./config/feedlist_examples/anylists.json", list_type="any")
 
 
 def seed_indicators():
-    import requests
-
     indicator_list = [
         "a3cb3b02a683275f7e0a0f8a9a5c9e07",
         "124.89.118.9",
@@ -300,12 +299,12 @@ def seed_indicators():
         "7490cb2192170167731093ed47a4c256532c5f28dacb1c264d5ffb9be9e6f909",
         "00sms.xyz",
     ]
-    api_key = str(input(f"{color.YELLOW}Enter API Key: {color.ENDCOLOR}")).strip()
     for indicator in indicator_list:
         response = requests.post(
             f"{config['SERVER_ADDRESS']}/api/indicator",
             headers={"Content-Type": "application/json", "Accept": "application/json"},
             json={"indicator": indicator, "api_key": api_key},
+            verify=False,
         )
         if response.status_code != 200:
             print(color.RED + response.text + color.ENDCOLOR)
@@ -316,8 +315,6 @@ def seed_indicators():
 
 
 def create_user():
-    import requests
-
     user = str(input(f"{color.YELLOW}Enter username: {color.ENDCOLOR}")).strip()
     password = str(input(f"{color.YELLOW}Enter password: {color.ENDCOLOR}")).strip()
 
@@ -329,6 +326,7 @@ def create_user():
             "password": password,
             "invite_key": config["USER_INVITE_KEY"],
         },
+        verify=False,
     )
     if response.status_code != 200:
         print(color.RED + response.text + color.ENDCOLOR)
@@ -339,8 +337,6 @@ def create_user():
 
 
 def create_admin_user():
-    import requests
-
     password = str(input(f"{color.YELLOW}Enter password: {color.ENDCOLOR}")).strip()
 
     response = requests.post(
@@ -351,6 +347,7 @@ def create_admin_user():
             "password": password,
             "invite_key": config["USER_INVITE_KEY"],
         },
+        verify=False,
     )
     if response.status_code != 200:
         print(color.RED + response.text + color.ENDCOLOR)
@@ -405,10 +402,7 @@ def docker_compose_build():
     }
 
     subprocess.run(
-        [
-            "docker-compose",
-            "build",
-        ],
+        ["docker-compose", "build", "--no-cache", "--progress", "plain"],
         env=env,
         check=True,
     )
@@ -453,21 +447,32 @@ if __name__ == "__main__":
         "-r",
         "--run",
         action="store_true",
-        help="You know what you're doing, start the server",
+        help="Run instance reachable at 0.0.0.0:80",
     )
 
-    if parser.parse_args().run:
-        color = terminalColors()
-        config = load_config()
-        run_local_global()
+    parser.add_argument(
+        "-d",
+        "--dev",
+        action="store_true",
+        help="Run dev instance reachable at 127.0.0.1:8000",
+    )
 
-    else:
-        color = terminalColors()
-        if not os.path.exists("./venv"):
-            reconfig()
-            print(
-                f"{color.YELLOW}Setup complete, make sure to configure your env file located at ./config/.env{color.ENDCOLOR}"
-            )
-        else:
-            config = load_config()
-            menu()
+    color = terminalColors()
+    config = load_config()
+    api_key = config["ADMIN_API_KEY"]
+
+    if parser.parse_args().run:
+        run_global()
+
+    if parser.parse_args().dev:
+        run_dev()
+
+    if not os.path.exists("./venv"):
+        reconfig()
+
+    import requests
+    import psutil
+    from urllib3.exceptions import InsecureRequestWarning
+
+    requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+    menu()
