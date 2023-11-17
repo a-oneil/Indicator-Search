@@ -6,11 +6,11 @@ from fastapi import (
     BackgroundTasks,
     Cookie,
 )
-from .. import templates
-from ..models import Indicators, Iocs
-from ..database import get_db
-from ..osint import new_indicator_handler, get_type, refang
-from ..authentication import frontend_auth_required
+from ... import templates
+from ...models import Indicators, Iocs
+from ...database import get_db
+from ...osint import new_indicator_handler, get_type, refang
+from ...authentication import frontend_auth_required
 from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse, HTMLResponse
 from typing import Optional

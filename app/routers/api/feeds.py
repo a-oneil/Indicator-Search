@@ -1,7 +1,7 @@
-from .. import schemas
-from ..models import FeedLists
-from ..database import get_db
-from ..authentication import auth_api_key
+from ... import schemas
+from ...models import FeedLists
+from ...database import get_db
+from ...authentication import auth_api_key
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -77,7 +77,9 @@ def delete_feedlist(request: schemas.DeleteFeedlist, db: Session = Depends(get_d
 
 
 @router.delete("/feeds", name="Delete all feedlists", tags=["Feed Lists"])
-def delete_feedlist(request: schemas.DeleteAllFeedlists, db: Session = Depends(get_db)):
+def delete_all_feedlist(
+    request: schemas.DeleteAllFeedlists, db: Session = Depends(get_db)
+):
     auth_api_key(request, db)
     feedlists = FeedLists.get_feedlists(db)
     if not feedlists:

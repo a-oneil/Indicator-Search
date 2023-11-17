@@ -1,5 +1,5 @@
 # Indicator Search
-![Home](app/static/images/logo.png)
+![Home](app/routers/web/static/images/logo.png)
 
 ## About
 Indicator Search is a web application and API designed for rapid aggregation of OSINT results, based on the input indicator type. Inspired by Intelowl, this project aims to provide a similar tool while utilizing the FastAPI framework. 
@@ -12,7 +12,7 @@ Indicator Search is a tool designed for informational purposes and should be use
 ### Demo
 Discover the app's features and capabilities through a live demonstration at [indicatorsearch.app](https://indicatorsearch.app).
 
-![Home](app/static/images/home.png)
+![Home](app/routers/web/static/images/home.png)
 
 ## Setup
 This project operates on FastAPI with Python 3.10.
@@ -119,13 +119,13 @@ Menu `option 8` will use the `USER_INVITE_KEY` from the config file to create a 
 |MAC Vendors|MAC Address|No|[link](https://macvendors.com/)|
 
 ## Screenshots
-![Search Results](app/static/images/results1.png)
+![Search Results](app/routers/web/static/images/results1.png)
 ---
 ### App CLI Menu 
-![Menu](app/static/images/menu.png)
+![Menu](app/routers/web/static/images/menu.png)
 ---
 ### Slack Notifications
-![Slack Notifications](app/static/images/slack_notifications.png)
+![Slack Notifications](app/routers/web/static/images/slack_notifications.png)
 
 ## Results JSON example
 ```

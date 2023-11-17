@@ -1,7 +1,7 @@
-from .. import templates
-from ..database import get_db
-from ..models import FeedLists
-from ..authentication import frontend_auth_required
+from ... import templates
+from ...database import get_db
+from ...models import FeedLists
+from ...authentication import frontend_auth_required
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, status, Request, Form, Cookie
 from starlette.responses import RedirectResponse, HTMLResponse

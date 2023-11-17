@@ -1,11 +1,11 @@
 import secrets
 import bcrypt
 from datetime import timedelta
-from .. import templates, config
-from ..models import User_Accounts, Indicators
-from ..database import get_db
+from ... import templates, config
+from ...models import User_Accounts, Indicators
+from ...database import get_db
 from fastapi import APIRouter, Depends, Request, Form, Cookie
-from ..authentication import (
+from ...authentication import (
     check_user_login,
     create_access_token,
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES,
@@ -111,7 +111,7 @@ def update_user(
 
 
 @router.get("/delete", response_class=HTMLResponse)
-def get_user(
+def delete_user(
     request: Request,
     db: Session = Depends(get_db),
     access_token: Optional[str] = Cookie(None),

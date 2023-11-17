@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Request, Cookie
-from .. import templates
-from ..models import Iocs, Indicators
-from ..database import get_db
-from ..authentication import frontend_auth_required
+from ... import templates
+from ...models import Iocs, Indicators
+from ...database import get_db
+from ...authentication import frontend_auth_required
 from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse, HTMLResponse
 from typing import Optional

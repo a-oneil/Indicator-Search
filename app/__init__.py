@@ -31,6 +31,6 @@ def load_config_file():
 
 
 color = terminalColors()
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory="app/routers/web/templates")
 jinja_partials.register_starlette_extensions(templates)
 config = load_config_file()
