@@ -50,14 +50,13 @@ def menu():
         print(f"{color.YELLOW} 2b.{color.ENDCOLOR}  Docker compose down")
         print(f"{color.YELLOW}{'='*22} Dev {'='*23}{color.ENDCOLOR}")
         print(f"{color.BLUE}3.{color.ENDCOLOR}  Run local instance reachable at 127.0.0.1:8000 - Change reload enabled")
-        print(f"{color.BLUE}4.{color.ENDCOLOR}  Run local instance reachable at 0.0.0.0:80 - Change reload disabled")
-        print(f"{color.BLUE}5.{color.ENDCOLOR}  Build a docker image and push to a container registry")
-        print(f"{color.BLUE}6.{color.ENDCOLOR}  Delete local sqlite database, will require restart of the app to rebuild")
+        print(f"{color.BLUE}4.{color.ENDCOLOR}  Build a docker image and push to a container registry")
         print(f"{color.YELLOW}{'='*22} API {'='*23}{color.ENDCOLOR}")
-        print(f"{color.BLUE}7.{color.ENDCOLOR}  Seed feedlists database")
-        print(f"{color.BLUE}8.{color.ENDCOLOR}  Seed indicators")
-        print(f"{color.BLUE}9.{color.ENDCOLOR}  Create user")
-        print(f"{color.YELLOW}  9a.{color.ENDCOLOR} Create admin user")
+        print(f"{color.BLUE}5.{color.ENDCOLOR}  Seed feedlists database")
+        print(f"{color.BLUE}6.{color.ENDCOLOR}  Seed indicators")
+        print(f"{color.BLUE}7.{color.ENDCOLOR}  Create user")
+        print(f"{color.BLUE}8.{color.ENDCOLOR}  Create admin user")
+        print(f"{color.BLUE}9.{color.ENDCOLOR}  Search indicator")
         # fmt: on
         menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
     except KeyboardInterrupt:
@@ -86,24 +85,27 @@ def menu_switch(choice):
         elif choice == "3":
             run_dev()
         elif choice == "4":
-            run_global()
-        elif choice == "5":
             push_docker_to_registry()
             menu()
+        elif choice == "5":
+            seed_feedlists()
+            input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
+            menu()
         elif choice == "6":
-            delete_sqlite()
+            seed_indicators()
+            input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
             menu()
         elif choice == "7":
-            seed_feedlists()
+            create_user()
+            input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
             menu()
         elif choice == "8":
-            seed_indicators()
+            create_admin_user()
+            input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
             menu()
         elif choice == "9":
-            create_user()
-            menu()
-        elif choice == "9a":
-            create_admin_user()
+            search_indicator()
+            input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
             menu()
         else:
             menu()
@@ -189,7 +191,7 @@ def run_global():
             "./venv/bin/uvicorn",
             "app.main:app",
             "--host=0.0.0.0",
-            "--port=80",
+            "--port=8000",
         ],
         check=True,
     )
@@ -353,19 +355,50 @@ def create_admin_user():
         )
 
 
-def delete_sqlite():
-    confirm = input(
-        f"{color.RED}Are you sure you want to delete the local database? (y/n) ~> {color.ENDCOLOR}"
-    )
-    if confirm.lower() != "y":
-        menu()
+def search_indicator():
+    import time
+    import json
 
-    if os.path.exists("./db.sqlite"):
-        os.remove("./db.sqlite")
-        os.close(os.open("./db.sqlite", os.O_CREAT))
-        print(f"{color.BLUE}Successfully deleted local database{color.ENDCOLOR}")
-    else:
-        print(f"{color.RED}Local database does not exist{color.ENDCOLOR}")
+    try:
+        indicator = input(f"{color.YELLOW}Enter indicator: {color.ENDCOLOR}").strip()
+        response = requests.post(
+            f"{config['SERVER_ADDRESS']}/api/indicator",
+            headers={"Content-Type": "application/json", "Accept": "application/json"},
+            json={"indicator": indicator, "api_key": config["ADMIN_API_KEY"]},
+            verify=False,
+        )
+
+        if response.status_code != 200:
+            raise Exception(response.text)
+
+        print(json.dumps(response.json(), indent=2))
+        print(f"{color.BLUE}Waiting for search to complete!{color.ENDCOLOR}")
+        count = 0
+        complete = False
+        while not complete:
+            complete = response.json().get("complete")
+            if complete:
+                print(json.dumps(response.json(), indent=2))
+                break
+
+            response = requests.get(
+                f"{config['SERVER_ADDRESS']}/api/indicator/{response.json().get('id')}",
+                headers={
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
+                verify=False,
+            )
+            if response.status_code != 200:
+                raise Exception(response.text)
+
+            if count > 12:
+                raise Exception("Timed out after 12 attempts")
+
+            count += 1
+            time.sleep(5)
+    except Exception as e:
+        print(color.RED + str(e) + color.ENDCOLOR)
 
 
 def create_self_signed_cert():
