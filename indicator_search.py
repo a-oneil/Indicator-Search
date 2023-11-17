@@ -279,10 +279,10 @@ def seed_feedlists():
                         f"{color.BLUE}Successfully seeded {response.json().get('list_type')} feedlist: {color.ENDCOLOR}{response.json().get('name')}"
                     )
 
-    seed("./config/feedlist_examples/iplists.json", list_type="ip")
-    seed("./config/feedlist_examples/hashlists.json", list_type="hash")
-    seed("./config/feedlist_examples/domainlists.json", list_type="fqdn")
-    seed("./config/feedlist_examples/anylists.json", list_type="any")
+    seed("./config/feedlist_examples/ip.json", list_type="ip")
+    seed("./config/feedlist_examples/hash.json", list_type="hash")
+    seed("./config/feedlist_examples/fqdn.json", list_type="fqdn")
+    seed("./config/feedlist_examples/any.json", list_type="any")
 
 
 def seed_indicators():
