@@ -19,7 +19,7 @@ This project operates on FastAPI with Python 3.10.
 
 Necessary OS packages include:
 - Python 3.10
-- Docker/Docker-compose if Docker deployment is desired
+- Docker and Docker-compose
 
 Follow these steps:
 
