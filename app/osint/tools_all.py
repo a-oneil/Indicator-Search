@@ -871,21 +871,7 @@ def shodan(indicator):
             # fmt: off
                 {
                     "site": "shodan",
-                    "results": {
-                        "hostnames": host.get("hostnames"),
-                        "domains": host.get("domains"),
-                        "tags": host.get("tags"),
-                        "last_update": host.get("last_update"),
-                        "city": host.get("city"),
-                        "asn": host.get("asn"),
-                        "isp": host.get("isp"),
-                        "country": host.get("country_name"),
-                        "region": host.get("region_code"),
-                        "os": host.get("os"),
-                        "ports": host.get("ports"),
-                        "vulns": host.get("vulns"),
-                        "url": f"https://www.shodan.io/host/{indicator.indicator}",
-                    },
+                    "results": host
                 },
             # fmt: on
         )
