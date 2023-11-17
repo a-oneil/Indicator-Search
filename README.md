@@ -91,33 +91,32 @@ Menu `option 8` will use the `USER_INVITE_KEY` from the config file to create a 
 * MAC Address
 
 ## Tools
-| Tool | Indicator Type | API Key Required? |
-|------|----------------|-------------------|
-|Public Feedlists|IP, Hash, FQDN|No, publicly available feedlists|
-|Virus Total|IPv4, IPv6, Hash, FQDN, URL|Yes|
-|Inquest Labs|IPv4, IPv6, Hash, FQDN, URL, Email|No|
-|Tweetfeed|IPv4, Hash, FQDN, URL|No|
-|Maltiverse|IPv4, Hash, FQDN, URL|Yes|
-|Stop Forum Spam|IPv4, IPv6, Email|No|
-|IPInfoio|IPv4, IPv6|No|
-|Abuse IPDB|IPv4, IPv6|Yes|
-|IP Quality Score|IPv4, IPv6, Phone|Yes|
-|Greynoise Community|IPv4|Yes|
-|Project Honeypot|IPv4|Yes|
-|Hacked IP Threatlist|IPv4|No|
-|Shodan|IPv4|Yes|
-|URLVoid (APIVoid)|URL, FQDN, Email|Yes|
-|Checkphish|URL, FQDN|Yes|
-|URLScan|URL, FQDN|No|
-|Breach Directory|Email|Yes|
-|Kickbox Disposable|Email|No|
-|Circl lu|Hash|No|
-|Echo Trail|Hash|Yes|
-|Hybrid Analysis|Hash|Yes|
-|Malware Bazzar|Hash|No|
-|Numverify|Phone|Yes|
-|Whats My Browser|User Agent|Yes|
-|MAC Vendors|MAC Address|No|
+| Tool | Indicator Type | API Key Required? | Link |
+|------|----------------|-------------------|------|
+|Public Feedlists|IP, Hash, FQDN|No, publicly available feedlists||
+|Virus Total|IPv4, IPv6, Hash, FQDN, URL|Yes|[link](https://virustotal.com)|
+|Inquest Labs|IPv4, IPv6, Hash, FQDN, URL, Email|No|[link](https://labs.inquest.net/)|
+|Tweetfeed|IPv4, Hash, FQDN, URL|No|[link](https://tweetfeed.live/)|
+|Maltiverse|IPv4, Hash, FQDN, URL|Yes|[link](https://whatis.maltiverse.com/)|
+|Stop Forum Spam|IPv4, IPv6, Email|No|[link](https://www.stopforumspam.com/)|
+|IPInfoio|IPv4, IPv6|No|[link](https://ipinfo.io/)|
+|Abuse IPDB|IPv4, IPv6|Yes|[link](https://www.abuseipdb.com/)|
+|IP Quality Score|IPv4, IPv6, Phone|Yes|[link](https://www.ipqualityscore.com/)|
+|Greynoise Community|IPv4|Yes|[link](https://www.greynoise.io/)|
+|Project Honeypot|IPv4|Yes|[link](https://www.projecthoneypot.org/)|
+|Hacked IP Threatlist|IPv4|No|[link](http://www.hackedip.com/)|
+|Shodan|IPv4|Yes|[link](https://www.shodan.io/)|
+|URLVoid (APIVoid)|URL, FQDN, Email|Yes|[link](https://www.urlvoid.com/)|
+|URLScan|URL, FQDN|No|[link](https://urlscan.io/)|
+|Breach Directory|Email|Yes|[link](https://breachdirectory.org/)|
+|Kickbox Disposable|Email|No|[link](https://open.kickbox.io/)|
+|Circl lu|Hash|No|[link](https://www.circl.lu/)|
+|Echo Trail|Hash|Yes|[link](https://www.echotrail.io/)|
+|Hybrid Analysis|Hash|Yes|[link](https://www.hybrid-analysis.com/)|
+|Malware Bazzar|Hash|No|[link](https://bazaar.abuse.ch/)|
+|Numverify|Phone|Yes|[link](https://numverify.com/)|
+|Whats My Browser|User Agent|Yes|[link](https://www.whatsmybrowser.org/)|
+|MAC Vendors|MAC Address|No|[link](https://macvendors.com/)|
 
 ## Screenshots
 ![Search Results](app/static/images/results1.png)
