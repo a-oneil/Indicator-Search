@@ -16,23 +16,25 @@ def new_indicator_handler(indicator, user, db: Session):
             "BLUE",
         )
 
-        if any(
-            match in indicator.indicator_type
-            for match in [
-                "ipv4",
-                "ipv6",
-                "fqdn",
-                "url",
-                "email",
-                "hash.md5",
-                "hash.sha1",
-                "hash.sha256",
-                "hash.sha512",
-            ]
-        ):
-            threading.Thread(
+        feedlist_supported_types = [
+            "ipv4",
+            "ipv6",
+            "fqdn",
+            "url",
+            "email",
+            "hash.md5",
+            "hash.sha1",
+            "hash.sha256",
+            "hash.sha512",
+        ]
+
+        threads_to_wait_for = []
+        if any(match in indicator.indicator_type for match in feedlist_supported_types):
+            thread = threading.Thread(
                 target=tools.search_feedlists, daemon=False, args=(indicator, db)
-            ).start()
+            )
+            threads_to_wait_for.append(thread)
+            threads_to_wait_for[0].start()
 
         """ Setup indicator json objects """
         indicator.results = []
@@ -133,8 +135,12 @@ def new_indicator_handler(indicator, user, db: Session):
 
         elif indicator.indicator_type == "useragent":
             indicator.results += tools.whatsmybrowser_ua(indicator)
-
         # fmt: on
+
+        if threads_to_wait_for:
+            for thread in threads_to_wait_for:
+                thread.join()
+
         for each in indicator.results:
             keys_to_remove = []
             for key, value in each["results"].items():
