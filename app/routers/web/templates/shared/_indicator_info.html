@@ -48,14 +48,6 @@
 </style>
 
 <div class="ui segment">
-  <button class="small ui icon right ui button" style="   
-      position:absolute;
-      top: 0%;
-      right: 120%;
-      left: 0%;
-      width: 50px;
-      border-radius: 4px 0px 4px 0px;" onclick='CopyTextToClipboard("{{indicator.indicator}}", this)'><i
-      class="fa-solid fa-copy"></i></button>
   <h3 class="ui header">
     <!-- Top right malicious_overlay/suspicious_overlay -->
     {%if indicator.tags %}
@@ -84,8 +76,10 @@
       {{ indicator.indicator }}
     </a>
   </h3>
-
+  <div class="ui divider"></div>
   <div class="ui labels">
+    <a class="ui label" onclick='CopyTextToClipboard("{{indicator.indicator}}", this)'><i
+        class="fa-solid fa-copy"></i></a>
     {{ render_partial("shared/_indicator_details.html", indicator=indicator) }}
     {% if indicator.tags %}
     {{ render_partial("shared/_indicator_tags.html", indicator=indicator) }}
