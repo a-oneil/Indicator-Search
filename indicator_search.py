@@ -196,22 +196,6 @@ def run_global():
 
 
 def push_docker_to_registry():
-    def build_docker_image(tag):
-        print("Building docker image")
-        subprocess.run(
-            [
-                "docker",
-                "build",
-                "-t",
-                tag,
-                "-f",
-                "Dockerfile",
-                ".",
-            ],
-            check=True,
-        )
-        print(f"{color.BLUE}Docker image built successfully!{color.ENDCOLOR}")
-
     try:
         tag = (
             config["DOCKER_IMAGE_TAG"]
@@ -219,20 +203,32 @@ def push_docker_to_registry():
             else input("Enter a image:tag ~> ")
         )
 
-        repo = (
+        registry = (
             config["DOCKER_REGISTRY"]
             if config["DOCKER_REGISTRY"]
             else input("Enter a repository. Example: registry.docker.com/user/repo ~> ")
         )
 
         print("Building docker image")
-        build_docker_image(tag)
+        subprocess.run(
+            [
+                "docker",
+                "build",
+                "-t",
+                f"{registry}/{tag}",
+                "-f",
+                "Dockerfile",
+                ".",
+            ],
+            check=True,
+        )
+        print(f"{color.BLUE}Docker image built successfully!{color.ENDCOLOR}")
         print("Pushing to registry")
         subprocess.run(
             [
                 "docker",
                 "push",
-                f"{repo}/{tag}",
+                f"{registry}/{tag}",
             ],
             check=True,
         )
@@ -358,6 +354,12 @@ def create_admin_user():
 
 
 def delete_sqlite():
+    confirm = input(
+        f"{color.RED}Are you sure you want to delete the local database? (y/n) ~> {color.ENDCOLOR}"
+    )
+    if confirm.lower() != "y":
+        menu()
+
     if os.path.exists("./db.sqlite"):
         os.remove("./db.sqlite")
         os.close(os.open("./db.sqlite", os.O_CREAT))

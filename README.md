@@ -59,7 +59,7 @@ Once the app has been built, the docker containers should always restart but if 
 
 Re-running `option 2` will rebuild your containers (the database volume is persistant between rebuilds).
 
-Menu `option 6` will just build a docker container, prompt for a tag and a repository to upload to.
+Menu `option 5` will just build a docker container, prompt for a tag and a repository to upload to.
 
 ### Local instances
 Menu `option 3` or (-d) runs a local reloadable version of the app and is reachable at `http://127.0.0.1:8000`
