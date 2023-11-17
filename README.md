@@ -93,7 +93,7 @@ Menu `option 8` will use the `USER_INVITE_KEY` from the config file to create a 
 ## Tools
 | Tool | Indicator Type | API Key Required? | Link |
 |------|----------------|-------------------|------|
-|Public Feedlists|IP, Hash, FQDN|No, publicly available feedlists||
+|Public Feedlists|IP, Hash, FQDN, Any|No, publicly available feedlists||
 |Virus Total|IPv4, IPv6, Hash, FQDN, URL|Yes|[link](https://virustotal.com)|
 |Inquest Labs|IPv4, IPv6, Hash, FQDN, URL, Email|No|[link](https://labs.inquest.net/)|
 |Tweetfeed|IPv4, Hash, FQDN, URL|No|[link](https://tweetfeed.live/)|
