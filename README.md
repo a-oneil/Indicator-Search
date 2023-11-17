@@ -24,9 +24,9 @@ Necessary OS packages include:
 Follow these steps:
 
 1. Clone the repository and navigate to it.
-2. Execute python3 indicator_search.py. This will duplicate the example environment file and prompt you to complete it.
-3. Adjust the settings in the ./config/.env file.
-4. Re-run python3 indicator_search.py to set up the environment and access the indicator search menu.
+2. Execute `python3 indicator_search.py`. This will duplicate the example environment file and prompt you to complete it.
+3. Adjust the settings in the `./config/.env` file.
+4. Re-run `python3 indicator_search.py` to set up the environment and access the indicator search menu.
 5. Choose your preferred method for running indicator search from the menu.
 6. Create an admin user and save the API to the .env file for the api menu options to work. This API key is also used for the IOC ageout automation that runs every hour.
 
