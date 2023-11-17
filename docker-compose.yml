@@ -33,7 +33,7 @@ services:
     labels:
       - "traefik.http.routers.app.rule=Host(`${HOSTNAME}`)"
       - "traefik.http.routers.app.tls=true"
-      - "traefik.http.services.app.loadbalancer.server.port=80"
+      - "traefik.http.services.app.loadbalancer.server.port=8000"
     volumes:
       - ${PWD}/db.sqlite:/code/db.sqlite
 
