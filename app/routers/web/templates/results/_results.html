@@ -1,5 +1,5 @@
 <script>
-  function CopyTextToClipboard(text) {
+  function CopyTextToClipboard(text, button) {
     // Create a temporary textarea element to hold the text
     var tempTextarea = document.createElement("textarea");
     tempTextarea.value = text;
@@ -15,6 +15,19 @@
 
     // Remove the temporary textarea
     document.body.removeChild(tempTextarea);
+
+    // Change button color on click
+    button.style.backgroundColor = '#28ba50'; // Change to the desired color
+
+    // Set a timeout to revert the button color after 1 second (1000 milliseconds)
+    setTimeout(function () {
+      button.style.backgroundColor = ''; // Revert to the original color
+      button.innerHTML = '<i class="fa-solid fa-copy"></i>'; // Revert to the original button text
+    }, 500);
+
+    // Update button text to indicate that the text has been copied
+    button.innerHTML = '<i class="fa-solid fa-check"></i>';
+
   }
 </script>
 
@@ -56,17 +69,22 @@
 
 {% else %}
 <div class="ui segment">
+  <button class="small ui icon left ui button" style="   
+  position:absolute;
+  top: 0px;
+  right:-3.5px; 
+  width: 50px;
+  border-radius: 0px 4px 4px 4px;" onclick='CopyTextToClipboard("{{site.results}}", this)'><i
+      class="fa-solid fa-copy"></i></button>
   <p class="ui small header">
-    <i class="fa-solid fa-circle-check"></i> <a id="{{site.site}}"></a>{{site.site|snakecase_to_title}} <button
-      class="mini blue ui button" style="float: right;" onclick='CopyTextToClipboard("{{site.results}}")'>Copy
-      JSON</button>
+    <i class="fa-solid fa-circle-check"></i> <a id="{{site.site}}"></a>{{site.site|snakecase_to_title}}</i>
   </p>
   <div class="ui two column grid">
     {% for key,value in site.results.items() %}
     <div class="column" style="padding: 14px; word-wrap: break-word">
       <div class="ui raised fluid card">
         <div class="content">
-          <button class="small ui icon button" style='float: right;' onclick='CopyTextToClipboard("{{value}}")'><i
+          <button class="small ui icon button" style='float: right;' onclick='CopyTextToClipboard("{{value}}", this)'><i
               class="fa-solid fa-copy"></i></button>
           {% if value is string %}
           {% if value|searchable and indicator.indicator not in value %}
