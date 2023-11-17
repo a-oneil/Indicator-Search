@@ -596,7 +596,7 @@ def stopforumspam_email(indicator):
             # fmt: off
                 {
                     "site": "stop_forum_spam_email",
-                    "results":{
+                    "results": {
                         "appears": results.get("response", {}).get("appears"),
                         "frequency": results.get("response", {}).get("frequency")
                     },
@@ -623,7 +623,7 @@ def stopforumspam_ip(indicator):
             # fmt: off
                 {
                     "site": "stop_forum_spam_ip",
-                    "results":{
+                    "results": {
                         "appears": results.get("response", {}).get("appears"),
                         "frequency": results.get("response", {}).get("frequency")
                     },
@@ -1005,7 +1005,7 @@ def breach_directory(indicator):
             # fmt: off
                 {
                     "site": "breach_directory",
-                    "results":{
+                    "results": {
                         "found": response.json().get("found", {}),
                         "frequency": response.json().get("result", [])
                     },
@@ -1031,7 +1031,7 @@ def shodan(indicator):
             # fmt: off
                 {
                     "site": "shodan",
-                    "results":{
+                    "results": {
                         "hostnames": host.get("hostnames"),
                         "domains": host.get("domains"),
                         "tags": host.get("tags"),
@@ -1053,84 +1053,6 @@ def shodan(indicator):
         return failed_to_run("shodan", e)
 
 
-def checkphish(indicator):
-    # https://checkphish.ai/checkphish-api/
-    try:
-        if config["CHECK_PHISH_API_KEY"] == "":
-            raise Exception("CHECK_PHISH_API_KEY is not set in .env file.")
-
-        if indicator.indicator_type == "fqdn":
-            fqdn = convert_fqdn_to_url(indicator.indicator)
-            start_job = requests.post(
-                "https://developers.checkphish.ai/api/neo/scan",
-                headers={"Content-Type": "application/json"},
-                json={
-                    "apiKey": config["CHECK_PHISH_API_KEY"],
-                    "urlInfo": {"url": fqdn},
-                },
-            )
-        elif indicator.indicator_type == "url":
-            url = indicator.indicator
-            start_job = requests.post(
-                "https://developers.checkphish.ai/api/neo/scan",
-                headers={"Content-Type": "application/json"},
-                json={
-                    "apiKey": config["CHECK_PHISH_API_KEY"],
-                    "urlInfo": {"url": url},
-                },
-            )
-        else:
-            raise Exception("Invalid indicator type for check_phish")
-
-        if start_job.status_code != 200:
-            return status_code_error(
-                "check_phish", start_job.status_code, start_job.reason
-            )
-
-        status = None
-        retry_count = 0
-        while status != "DONE":
-            if retry_count > 5:
-                return failed_to_run("check_phish", "Job took too long to complete.")
-            time.sleep(5)
-            response = requests.post(
-                "https://developers.checkphish.ai/api/neo/scan/status",
-                headers={"Content-Type": "application/json"},
-                json={
-                    "apiKey": config["CHECK_PHISH_API_KEY"],
-                    "jobID": start_job.json().get("jobID"),
-                    "insights": True,
-                },
-            )
-            status = response.json().get("status")
-            retry_count += 1
-
-        if response.status_code != 200:
-            return status_code_error(
-                "check_phish", response.status_code, response.reason
-            )
-
-        if not response.json().get("error") == False:
-            return no_results_found("check_phish")
-
-        return (
-            # fmt: off
-                {
-                    "site": "check_phish",
-                    "results":{
-                        "disposition": response.json().get("disposition"),
-                        "url_sha256": response.json().get("url_sha256"),
-                        "insights": response.json().get("insights"),
-                        "screenshot": response.json().get("screenshot_path"),
-                        "scan_error": response.json().get("error"),
-                    },
-                },
-            # fmt: on
-        )
-    except Exception as e:
-        return failed_to_run("check_phish", e)
-
-
 def malware_bazzar(indicator):
     try:
         response = requests.post(
@@ -1150,7 +1072,7 @@ def malware_bazzar(indicator):
             # fmt: off
                 {
                     "site": "malware_bazzar",
-                    "results":{
+                    "results": {
                         "file_type": response.json().get("data")[0].get("file_type"),
                         "signature": response.json().get("data")[0].get("signature"),
                         "file_name": response.json().get("data")[0].get("file_name"),
