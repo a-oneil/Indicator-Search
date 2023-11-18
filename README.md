@@ -14,68 +14,6 @@ Discover the app's features and capabilities through a live demonstration at [in
 
 ![Home](app/routers/web/static/images/home.png)
 
-## Setup
-This project operates on FastAPI with Python 3.10.
-
-Necessary OS packages include:
-- Python 3.10
-- Docker and Docker-compose
-
-Follow these steps:
-
-1. Clone the repository and navigate to it.
-2. Execute `python3 indicator_search.py`. This will duplicate the example environment file and prompt you to complete it.
-3. Adjust the settings in the `./config/.env` file.
-4. Re-run `python3 indicator_search.py` to set up the environment and access the indicator search menu.
-5. Choose your preferred method for running indicator search from the menu.
-6. Create an admin user and save the API to the .env file for the api menu options to work. This API key is also used for the IOC ageout automation that runs every hour.
-
-### Env File
-The env file located at `./config/.env` is used to configure the applications api keys and tweakable settings. 
-
-On inital run of the app, it will clone the `.env.example` file also located in the config folder and then print a message asking you to configure it.
-
-* `SERVER_ADDRESS`: Used for seeding API calls and slack notifications
-* `HOSTNAME`: Required for docker https proxy
-* `ADMIN_API_KEY`: A user's api key for the ageout ioc automation that is ran every hour
-* `USER_INVITE_KEY`: Required for user signup
-* `ENABLE_SLACK`: True/False
-* `SLACK_BOT_TOKEN`: Slack bot token with message permissions
-* `SLACK_CHANNEL`: Channel to post slack updates to
-* `DOCKER_IMAGE_TAG`: indicator_search:latest
-* `DOCKER_REGISTRY`: Dockerregistry.com/user/repo
-
-### Tool API Keys
-If you don't have an api key, leave the value as `"API_KEY": ""`
-
-The tool will be omitted from the indicators results.
-
-### Docker
-Menu `option 2` will create a self-signed https cert and build the docker container / traefik reverse proxy.
-
-Once the app has been built, the docker containers should always restart but if you need to start or stop the app, you can use:
-* Menu `option 2a` Docker compose up
-* Menu `option 2b` Docker compose down
-
-Re-running `option 2` will rebuild your containers (the database volume is persistant between rebuilds).
-
-
-### Development
-Menu `option 3` or (-d) runs a local reloadable version of the app and is reachable at `http://127.0.0.1:8000`
-
-Menu `option 4` will just build a docker container, prompt for a tag and a repository to upload to. This option will allow you to run your indicator search app somewhere other than the current host you're configuring it from. Make sure all of the settings in the configuration file are correct for where you plan to be running the app.
-
-### Seeding Feedlists
-Menu `option 5` uses the json files located in `config/feedlist_examples` to auto-create new feeds. When you choose to seed the feedlists, it will iterate through all feeds in the files. If the URL is already added, the server will reject the feedlist addition.
-
-### Seeding Indicators
-Menu `option 6` provides 8 example indicators to quickly test that all the API tools are working as expected.
-
-### Creating A User
-Menu `option 7` will use the `USER_INVITE_KEY` from the config file to create a new user.
-
-Menu `option 8` will use the `USER_INVITE_KEY` from the config file to create a new "Admin" user. Once completed, it will display an API key for the Admin user. Save this API key to the .env file to enable the IOC ageout automation that runs hourly to prune expired IOCs.
-
 ## Supported Indicators
 * IPv4
 * IPv6
@@ -118,16 +56,12 @@ Menu `option 8` will use the `USER_INVITE_KEY` from the config file to create a 
 |Whats My Browser|User Agent|Yes|[link](https://www.whatsmybrowser.org/)|
 |MAC Vendors|MAC Address|No|[link](https://macvendors.com/)|
 
-## Screenshots
-![Search Results](app/routers/web/static/images/results1.png)
----
-### App CLI Menu 
-![Menu](app/routers/web/static/images/menu.png)
----
-### Slack Notifications
-![Slack Notifications](app/routers/web/static/images/slack_notifications.png)
+## Setup / How to use
+See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/menu.md).
 
-## Results JSON example
+## Example Results
+![Search Results](app/routers/web/static/images/results1.png)
+
 ```
 {
   "time_created": "2023-09-06T17:  "time_created": "2023-08-18T06:36:54",
