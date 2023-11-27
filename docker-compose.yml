@@ -38,6 +38,8 @@ services:
       - "traefik.http.routers.app.rule=Host(`${HOSTNAME}`)"
       - "traefik.http.routers.app.tls=true"
       - "traefik.http.services.app.loadbalancer.server.port=8000"
+    volumes:
+      - ./config/.env:/code/config/.env
     networks:
       vpcbr:
         ipv4_address: 172.50.0.3
