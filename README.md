@@ -60,309 +60,97 @@ Discover the app's features and capabilities through a live demonstration at [in
 See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/menu.md).
 
 ## Example Results
-![Search Results](app/routers/web/static/images/results1.png)
+![Search Results](app/routers/web/static/images/results.png)
 
 ```
 {
-  "time_created": "2023-09-06T17:  "time_created": "2023-08-18T06:36:54",
-  "username": null,
-  "indicator_type": "hash.md5",
-  "feedlist_results": null,
-  "tags": {
-    "Signature": "trojan.mimikatz/hacktoolx",
-    "Category": "trojan",
-    "VT Hits": "59/71",
-    "Malicious": true
-  },
-  "enrichments": null,
-  "ioc_id": null,
-  "id": 16,
-  "time_updated": "2023-08-18T06:37:03",
-  "indicator": "a3cb3b02a683275f7e0a0f8a9a5c9e07",
-  "results": [
-    {
-      "site": "Circl.lu",
-      "results": {
-        "Error": "No results found"
-      }
-    },
-    {
-      "site": "Echo Trail",
-      "results": {
-        "Error": "No results found"
-      }
-    },
-    {
-      "site": "Tweetfeed.live",
-      "results": {
-        "Error": "No results found"
-      }
-    },
-    {
-      "site": "virustotal_hash",
-      "results": {
-        "Harmless": 0,
-        "Malicious": 59,
-        "Suspicious": 0,
-        "Undetected": 12,
-        "Suggested Threat Label": "trojan.mimikatz/hacktoolx",
-        "Popular Threat Category": "trojan",
-        "Community Votes": {
-          "harmless": 1,
-          "malicious": 8
-        },
-        "Name": null,
-        "Names": [
-          "mimikatz-2-2.exe",
-          "mimimikotiki.exe",
-          "mimikatz",
-          "mimikatz.exe",
-          "kittenz.exe",
-          "mimimikotiki.ex_",
-          "Cobaltbghdbghich21_browsingExe.exe",
-          "mim64.exe",
-          "flag5{c5237169a63c259944d3b8fe59db0ab8}.exe",
-          "mimikatz.pdf",
-          "._cache__CACHE~2.EXE",
-          "output.213384677.txt",
-          "mimik.exe",
-          "itrackBr_6da58a5f-2b81-452c-b5eb-7f28a21d33d3.jpg",
-          "31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc.exe",
-          "output.193444480.txt",
-          "go-memexec-706618059.exe",
-          "._cache__CACHE~1.EXE",
-          "_CACHE~2.EXE",
-          "ben4585.tmp.exe",
-          "_CACHE~1.EXE",
-          "._cache_file.exe",
-          "google.exe",
-          "._cache_a6f78e8bef7166b336de0dc89103124b503bb59689f7d407b4436c8b689fca5f.exe"
-        ],
-        "Type": "PE32+ executable (console) x86-64, for MS Windows",
-        "Type Tag": "peexe",
-        "Tags": [
-          "peexe",
-          "assembly",
-          "overlay",
-          "runtime-modules",
-          "signed",
-          "detect-debug-environment",
-          "idle",
-          "long-sleeps",
-          "direct-cpu-clock-access",
-          "64bits",
-          "checks-disk-space"
-        ],
-        "Times Submitted": 65,
-        "Product": "mimikatz",
-        "Product Description": "mimikatz for Windows",
-        "Signed": "Signed",
-        "Signing Date": "05:19 PM 09/18/2020",
-        "MD5": "a3cb3b02a683275f7e0a0f8a9a5c9e07",
-        "SHA1": "d241df7b9d2ec0b8194751cd5ce153e27cc40fa4",
-        "SHA256": "31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc"
-      }
-    },
-    {
-      "site": "Hybrid Analysis",
-      "results": {
-        "File Name": "mimkatz",
-        "Type": "PE32+ executable (console) x86-64, for MS Windows",
-        "Job Environment": "Windows 10 64 bit",
-        "AV Detect": 78,
-        "VX Family": "HackTool.Mimikatz",
-        "Verdict": "malicious",
-        "Threat Score": 100,
-        "SHA1": "d241df7b9d2ec0b8194751cd5ce153e27cc40fa4",
-        "SHA256": "31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc",
-        "SHA512": "95a99fd1686bd5b01d3eb5b055d3cab900e6480d4e2360595b64d57c80e74daa4c14753fa2e0e224ea5c72735af3339fb72f7d9455f4feeb3e237e6c20866d96",
-        "Classification": [
-          "banker",
-          "emotet",
-          "hacktool",
-          "infostealer",
-          "netwire",
-          "qakbot",
-          "ransomware",
-          "rat"
-        ],
-        "Tags": [
-          "tag",
-          "banker",
-          "emotet",
-          "hacktool",
-          "infostealer",
-          "netwire",
-          "qakbot",
-          "ransomware",
-          "rat"
-        ]
-      }
-    },
-    {
-      "site": "Malware Bazzar",
-      "results": {
-        "File Type": "exe",
-        "Signature": "MimiKatz",
-        "File Name": "31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc",
-        "Delivery Method": null,
-        "Tags": null
-      }
-    },
-    {
-      "site": "InQuestLabs",
-      "results": {
-        "Error": "No results found"
-      }
-    }
-  ],
-  "external_links": {
-    "VirusTotal": "https://www.virustotal.com/gui/file/a3cb3b02a683275f7e0a0f8a9a5c9e07",
-    "Hybrid Analysis": "https://www.hybrid-analysis.com/search?query=a3cb3b02a683275f7e0a0f8a9a5c9e07",
-    "Joes Sandbox": "https://www.joesandbox.com/search?q=a3cb3b02a683275f7e0a0f8a9a5c9e07",
-    "JSON": "http://127.0.0.1:8000/api/indicator/16"
-  },
-  "notes": null,
-  "complete": true
-}04:29",
+  "id": 4,
+  "time_created": "2023-11-27T04:59:54.522028+00:00",
   "username": "aoneil",
-  "indicator_type": "hash.md5",
+  "indicator": "https://injective.claims",
+  "indicator_type": "url",
   "feedlist_results": null,
-  "tags": {
-    "signature": "trojan.mimikatz/hacktoolx",
-    "category": "trojan",
-    "vt_hits": "53/65",
-    "malicious": true
+  "enrichments": {
+    "last_scan_screenshot": "https://urlscan.io/screenshots/7e27ee56-5caa-4227-841a-1121cf65b692.png"
   },
-  "enrichments": null,
   "ioc_id": null,
-  "time_updated": "2023-09-06T17:04:38",
-  "id": 9,
-  "indicator": "a3cb3b02a683275f7e0a0f8a9a5c9e07",
+  "time_updated": "2023-11-27T04:59:54.543198+00:00",
+  "processing_time": 13.17,
   "results": [
-    {
-      "site": "circl.lu",
-      "results": {
-        "error": "No results found"
-      }
-    },
-    {
-      "site": "echo_trail",
-      "results": {
-        "error": "No results found"
-      }
-    },
     {
       "site": "tweetfeed.live",
       "results": {
+        "date": "2023-07-19 13:33:54",
+        "user": "CarlyGriggs13",
+        "type": "url",
+        "value": "https://injective.claims",
+        "tags": [
+          "#phishing",
+          "#scam",
+          "#malware"
+        ],
+        "tweet": "https://twitter.com/CarlyGriggs13/status/1681658624647602176"
+      }
+    },
+    {
+      "site": "virustotal_domain",
+      "results": {
+        "harmless": 60,
+        "malicious": 5,
+        "suspicious": 1,
+        "undetected": 22,
+        "categories": {
+          "Webroot": "Phishing and Other Frauds",
+          "Xcitium Verdict Cloud": "media sharing",
+          "Sophos": "spyware and malware",
+          "alphaMountain.ai": "Suspicious (alphaMountain.ai)"
+        },
+        "tld": "claims",
+        "community_votes": {
+          "harmless": 0,
+          "malicious": 0
+        },
+        "last_analysis": "Mon Oct 30 17:29:02 2023"
+      }
+    },
+    {
+      "site": "virustotal_url",
+      "results": {
+        "harmless": 63,
+        "malicious": 6,
+        "suspicious": 1,
+        "undetected": 20,
+        "url": "https://injective.claims/",
+        "last_response_code": 200,
+        "tld": "claims",
+        "threat_names": [
+          "Mal/HTMLGen-A"
+        ],
+        "community_votes": {
+          "harmless": 0,
+          "malicious": 0
+        },
+        "categories": {
+          "Webroot": "Phishing and Other Frauds",
+          "Sophos": "spyware and malware",
+          "Xcitium Verdict Cloud": "media sharing",
+          "alphaMountain.ai": "Suspicious (alphaMountain.ai)"
+        }
+      }
+    },
+    {
+      "site": "url_void",
+      "results": {
         "error": "No results found"
       }
     },
     {
-      "site": "virustotal_hash",
+      "site": "urlscan.io",
       "results": {
-        "malicious": 53,
-        "undetected": 12,
-        "suggested_threat_label": "trojan.mimikatz/hacktoolx",
-        "popular_threat_category": "trojan",
-        "community_votes": {
-          "harmless": 1,
-          "malicious": 8
-        },
-        "names": [
-          "output.256963751.txt",
-          "mimikatz",
-          "mimikatz.exe",
-          "output.256962353.txt",
-          "mimikatz-2-2.exe",
-          "mimimikotiki.exe",
-          "kittenz.exe",
-          "mimimikotiki.ex_",
-          "Cobaltbghdbghich21_browsingExe.exe",
-          "mim64.exe",
-          "flag5{c5237169a63c259944d3b8fe59db0ab8}.exe",
-          "mimikatz.pdf",
-          "._cache__CACHE~2.EXE",
-          "output.213384677.txt",
-          "mimik.exe",
-          "itrackBr_6da58a5f-2b81-452c-b5eb-7f28a21d33d3.jpg",
-          "31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc.exe",
-          "output.193444480.txt",
-          "go-memexec-706618059.exe",
-          "._cache__CACHE~1.EXE",
-          "_CACHE~2.EXE",
-          "ben4585.tmp.exe",
-          "_CACHE~1.EXE",
-          "._cache_file.exe",
-          "google.exe"
-        ],
-        "type": "PE32+ executable (console) x86-64, for MS Windows",
-        "type_tag": "peexe",
-        "tags": [
-          "peexe",
-          "assembly",
-          "overlay",
-          "runtime-modules",
-          "signed",
-          "detect-debug-environment",
-          "idle",
-          "long-sleeps",
-          "direct-cpu-clock-access",
-          "64bits",
-          "checks-disk-space"
-        ],
-        "times_submitted": 67,
-        "product": "mimikatz",
-        "product_description": "mimikatz for Windows",
-        "signed": "Signed",
-        "signing_date": "05:19 PM 09/18/2020",
-        "md5": "a3cb3b02a683275f7e0a0f8a9a5c9e07",
-        "sha1": "d241df7b9d2ec0b8194751cd5ce153e27cc40fa4",
-        "sha256": "31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc"
-      }
-    },
-    {
-      "site": "hybrid_analysis",
-      "results": {
-        "file_name": "mimkatz",
-        "type": "PE32+ executable (console) x86-64, for MS Windows",
-        "job_environment": "Windows 10 64 bit",
-        "av_detect": 78,
-        "vx_family": "HackTool.Mimikatz",
-        "verdict": "malicious",
-        "threat_score": 100,
-        "sha1": "d241df7b9d2ec0b8194751cd5ce153e27cc40fa4",
-        "sha256": "31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc",
-        "sha512": "95a99fd1686bd5b01d3eb5b055d3cab900e6480d4e2360595b64d57c80e74daa4c14753fa2e0e224ea5c72735af3339fb72f7d9455f4feeb3e237e6c20866d96",
-        "classification": [
-          "banker",
-          "emotet",
-          "hacktool",
-          "infostealer",
-          "netwire",
-          "qakbot",
-          "ransomware",
-          "rat"
-        ],
-        "tags": [
-          "tag",
-          "banker",
-          "emotet",
-          "hacktool",
-          "infostealer",
-          "netwire",
-          "qakbot",
-          "ransomware",
-          "rat"
-        ]
-      }
-    },
-    {
-      "site": "malware_bazzar",
-      "results": {
-        "file_type": "exe",
-        "signature": "MimiKatz",
-        "file_name": "31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc"
+        "last_scan_guid": "7e27ee56-5caa-4227-841a-1121cf65b692",
+        "last_scan_url": "https://urlscan.io/result/7e27ee56-5caa-4227-841a-1121cf65b692/",
+        "last_scan_time": "2023-07-20T07:15:35.447Z",
+        "last_scan_screenshot": "https://urlscan.io/screenshots/7e27ee56-5caa-4227-841a-1121cf65b692.png"
       }
     },
     {
@@ -374,62 +162,28 @@ See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/me
     {
       "site": "maltiverse",
       "results": {
-        "classification": "malicious",
-        "blacklist": [
-          {
-            "count": 1,
-            "description": "Common Raven",
-            "first_seen": "2023-02-05 04:18:59",
-            "labels": [
-              "malicious-activity"
-            ],
-            "last_seen": "2023-02-06 02:06:31",
-            "source": "Maltiverse"
-          },
-          {
-            "count": 1,
-            "description": "Generic Malware",
-            "first_seen": "2023-01-31 07:45:03",
-            "last_seen": "2023-01-31 07:45:03",
-            "source": "Hybrid-Analysis"
-          },
-          {
-            "count": 1,
-            "description": "MimiKatz",
-            "first_seen": "2022-06-21 10:53:09",
-            "labels": [
-              "malicious-activity"
-            ],
-            "last_seen": "2022-06-21 10:53:09",
-            "source": "MalwareBazaar Abuse.ch"
-          },
-          {
-            "count": 1,
-            "description": "Gen:Heur.Mimikatz",
-            "first_seen": "2020-09-23 08:16:05",
-            "last_seen": "2020-09-23 08:16:05",
-            "source": "Hybrid-Analysis"
-          }
-        ],
-        "tags": [
-          "apt",
-          "banker",
-          "emotet",
-          "hacktool",
-          "infostealer",
-          "netwire",
-          "qakbot",
-          "ransomware",
-          "rat"
-        ]
+        "error": "No results found"
+      }
+    },
+    {
+      "site": "wayback_machine",
+      "results": {
+        "error": "No results found"
       }
     }
   ],
   "external_links": {
-    "virustotal": "https://www.virustotal.com/gui/file/a3cb3b02a683275f7e0a0f8a9a5c9e07",
-    "hybrid_analysis": "https://www.hybrid-analysis.com/search?query=a3cb3b02a683275f7e0a0f8a9a5c9e07",
-    "joes_sandbox": "https://www.joesandbox.com/search?q=a3cb3b02a683275f7e0a0f8a9a5c9e07",
-    "json": "https://indicatorsearch.app/api/indicator/9"
+    "virustotal": "https://www.virustotal.com/gui/domain/https://injective.claims",
+    "mx_toolbox": "https://mxtoolbotwitter/SuperTool.aspx?action=mx%3ahttps://injective.claims&run=toolpage",
+    "urlscan.io": "https://urlscan.io/search/#injective.claims",
+    "google": "https://www.google.com/search?q=https://injective.claims",
+    "twitter": "https://twitter.com/search?q=https://injective.claims&src=typed_query",
+    "json": "https://127.0.0.1:8000/api/indicator/4"
+  },
+  "tags": {
+    "tweetfeed_match": true,
+    "vt_hits": "6/90",
+    "suspicious": true
   },
   "notes": null,
   "complete": true

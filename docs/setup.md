@@ -21,18 +21,19 @@ The env file located at `./config/.env` is used to configure the applications ap
 
 On inital run of the app, it will clone the `.env.example` file also located in the config folder and then print a message asking you to configure it.
 
-* `SERVER_ADDRESS`: Used for seeding API calls and slack notifications
-* `HOSTNAME`: Required for docker https proxy
-* `ADMIN_API_KEY`: A user's api key for the ageout ioc automation that is ran every hour
-* `USER_INVITE_KEY`: Required for user signup
+* `SERVER_ADDRESS`: Used for seeding API calls, slack notifications, and result links.
+* `HOSTNAME`: Required for docker https proxy.
+* `ADMIN_API_KEY`: A user's api key for the ageout ioc automation that is ran every hour.
+* `USER_INVITE_KEY`: Required for user signup.
 * `ENABLE_SLACK`: True/False
-* `SLACK_BOT_TOKEN`: Slack bot token with message permissions
-* `SLACK_CHANNEL`: Channel to post slack updates to
+* `SLACK_BOT_TOKEN`: Slack bot token with message permissions.
+* `SLACK_CHANNEL`: Channel to post slack updates to.
 * `DOCKER_IMAGE_TAG`: indicator_search:latest
 * `DOCKER_REGISTRY`: Dockerregistry.com/user/repo
-* `IS_POSTGRES_USER`: 
-* `IS_POSTGRES_PASSWORD`:
-* `IS_POSTGRES_DB`:
+* `POSTGRES_HOST`: If running on the same host, this is handled for you. If you want to build an image and push to a container, make sure to set the correct postgres IP.
+* `POSTGRES_USER`: User for postgres.
+* `POSTGRES_PASSWORD`: Password for the postgres user.
+* `POSTGRES_DB`: Database name for indicator search data.
 
 ## Tool API Keys
 If you don't have an api key, leave the value as `"API_KEY": ""`
