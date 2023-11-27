@@ -1,13 +1,21 @@
-from sqlalchemy import (
-    Boolean,
-    Column,
-    Integer,
-    String,
-    DateTime,
-)
+from sqlalchemy import Boolean, Column, Integer, String, DateTime, TypeDecorator
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Session, relationship
 from ..database import Base
+
+
+class HexByteString(TypeDecorator):
+    """Convert Python bytestring to string with hexadecimal digits and back for storage."""
+
+    impl = String
+
+    def process_bind_param(self, value, dialect):
+        if not isinstance(value, bytes):
+            raise TypeError("HexByteString columns support only bytes values.")
+        return value.hex()
+
+    def process_result_value(self, value, dialect):
+        return bytes.fromhex(value) if value else None
 
 
 class User_Accounts(Base):
@@ -16,7 +24,7 @@ class User_Accounts(Base):
     username = Column(String, unique=True)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     api_key = Column(String)
-    password_hash = Column(String)
+    password_hash = Column(HexByteString)
     disabled = Column(Boolean, default=True)
     indicators = relationship("Indicators", back_populates="creator")
 
