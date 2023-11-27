@@ -49,7 +49,6 @@ def menu():
         print(f"{color.YELLOW} 2a.{color.ENDCOLOR}  Docker compose up")
         print(f"{color.YELLOW} 2b.{color.ENDCOLOR}  Docker compose stop")
         print(f"{color.YELLOW} 2c.{color.ENDCOLOR}  Docker compose logs")
-        print(f"{color.YELLOW} 2d.{color.ENDCOLOR}  Docker compose remove")
         print(f"{color.BLUE}3.{color.ENDCOLOR}  Run local instance reachable at 127.0.0.1:8000 - Change reload enabled")
         print(f"{color.BLUE}4.{color.ENDCOLOR}  Build a docker image and push to a container registry")
         print(f"{color.YELLOW}{'='*22} API {'='*23}{color.ENDCOLOR}")
@@ -81,8 +80,6 @@ def menu_switch(choice):
             docker_compose_stop()
         elif choice == "2c":
             docker_compose_logs()
-        elif choice == "2d":
-            docker_compose_rm()
         elif choice == "3":
             launch_postgres()
             time.sleep(15)
@@ -475,17 +472,6 @@ def docker_compose_stop():
 def docker_compose_logs():
     subprocess.run(
         ["docker-compose", "logs", "-f"],
-        check=True,
-    )
-
-
-def docker_compose_rm():
-    subprocess.run(
-        ["docker-compose", "stop"],
-        check=True,
-    )
-    subprocess.run(
-        ["docker-compose", "rm"],
         check=True,
     )
 
