@@ -98,7 +98,6 @@ def virustotal(indicator):
             if site.get("results").get("popular_threat_category"):
                 tags.update({"category": site.get("results").get("popular_threat_category")})
 
-
         if site.get("site") in ["virustotal_url", "virustotal_hash", "virustotal_domain", "virustotal_ip"]: 
             malicious_hits = site.get("results").get("malicious", 0)
             undetected_hits = site.get("results").get("undetected", 0)
