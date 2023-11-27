@@ -19,8 +19,6 @@ Follow these steps:
 ## Env File
 The env file located at `./config/.env` is used to configure the applications api keys and tweakable settings. 
 
-On inital run of the app, it will clone the `.env.example` file also located in the config folder and then print a message asking you to configure it.
-
 * `SERVER_ADDRESS`: Used for seeding API calls, slack notifications, and result links.
 * `HOSTNAME`: Required for docker https proxy, this must be the same as the hostname on the SSL cert. 
 * `ADMIN_API_KEY`: A user's api key for the ageout ioc automation that is ran every hour.
@@ -30,7 +28,8 @@ On inital run of the app, it will clone the `.env.example` file also located in 
 * `SLACK_CHANNEL`: Channel to post slack updates to.
 * `DOCKER_IMAGE_TAG`: indicator_search:latest
 * `DOCKER_REGISTRY`: Dockerregistry.com/user/repo
-* `POSTGRES_HOST`: If running on the same host, this is handled for you. If you want to build an image and push to a container, make sure to set the correct postgres IP.
+* `POSTGRES_HOST`: If running on the same host, this is handled for you. If you want to build an image and push to a container, make sure to set the correct postgres IP and port.
+* `POSTGRES_PORT`: Default is 5432. 
 * `POSTGRES_USER`: User for postgres.
 * `POSTGRES_PASSWORD`: Password for the postgres user.
 * `POSTGRES_DB`: Database name for Indicator Search data.
