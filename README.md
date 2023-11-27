@@ -12,7 +12,7 @@ Indicator Search is a tool designed for informational purposes and should be use
 ### Demo
 Discover the app's features and capabilities through a live demonstration at [indicatorsearch.app](https://indicatorsearch.app).
 
-![Home](app/routers/web/static/images/home.png)
+![Home](app/routers/web/static/images/front-page.png)
 
 ## Supported Indicators
 * IPv4
