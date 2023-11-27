@@ -47,8 +47,9 @@ def menu():
         print(f"{color.BLUE}1.{color.ENDCOLOR}  Setup enviroment")
         print(f"{color.BLUE}2.{color.ENDCOLOR}  Build docker-compose and run locally with SSL proxy")
         print(f"{color.YELLOW} 2a.{color.ENDCOLOR}  Docker compose up")
-        print(f"{color.YELLOW} 2b.{color.ENDCOLOR}  Docker compose down")
-        print(f"{color.YELLOW}{'='*22} Dev {'='*23}{color.ENDCOLOR}")
+        print(f"{color.YELLOW} 2b.{color.ENDCOLOR}  Docker compose stop")
+        print(f"{color.YELLOW} 2c.{color.ENDCOLOR}  Docker compose logs")
+        print(f"{color.YELLOW} 2d.{color.ENDCOLOR}  Docker compose remove")
         print(f"{color.BLUE}3.{color.ENDCOLOR}  Run local instance reachable at 127.0.0.1:8000 - Change reload enabled")
         print(f"{color.BLUE}4.{color.ENDCOLOR}  Build a docker image and push to a container registry")
         print(f"{color.YELLOW}{'='*22} API {'='*23}{color.ENDCOLOR}")
@@ -70,45 +71,42 @@ def menu_switch(choice):
     try:
         if choice == "1":
             reconfig()
-            menu()
         elif choice == "2":
             create_self_signed_cert()
             docker_compose_build()
             docker_compose_up()
-            menu()
         elif choice == "2a":
             docker_compose_up()
-            menu()
         elif choice == "2b":
-            docker_compose_down()
-            menu()
+            docker_compose_stop()
+        elif choice == "2c":
+            docker_compose_logs()
+        elif choice == "2d":
+            docker_compose_rm()
         elif choice == "3":
+            launch_postgres()
+            time.sleep(15)
             run_dev()
         elif choice == "4":
             push_docker_to_registry()
-            menu()
         elif choice == "5":
             seed_feedlists()
             input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
-            menu()
         elif choice == "6":
             seed_indicators()
             input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
-            menu()
         elif choice == "7":
             create_user()
             input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
-            menu()
         elif choice == "8":
             create_admin_user()
             input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
-            menu()
         elif choice == "9":
             search_indicator()
             input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
-            menu()
         else:
             menu()
+        menu()
     except KeyboardInterrupt:
         print(f"{color.RED}Exiting...{color.ENDCOLOR}")
         menu()
@@ -428,12 +426,12 @@ def create_self_signed_cert():
 
 
 def docker_compose_build():
-    if not os.path.exists("./db.sqlite"):
-        os.close(os.open("./db.sqlite", os.O_CREAT))
-
     env = {
         **os.environ,
         "HOSTNAME": config["HOSTNAME"],
+        "POSTGRES_USER": config["POSTGRES_USER"],
+        "POSTGRES_PASSWORD": config["POSTGRES_PASSWORD"],
+        "POSTGRES_DB": config["POSTGRES_DB"],
     }
 
     subprocess.run(
@@ -459,7 +457,7 @@ def docker_compose_up():
     )
 
 
-def docker_compose_down():
+def docker_compose_stop():
     env = {
         **os.environ,
         "HOSTNAME": config["HOSTNAME"],
@@ -467,7 +465,45 @@ def docker_compose_down():
     subprocess.run(
         [
             "docker-compose",
-            "down",
+            "stop",
+        ],
+        env=env,
+        check=True,
+    )
+
+
+def docker_compose_logs():
+    subprocess.run(
+        ["docker-compose", "logs", "-f"],
+        check=True,
+    )
+
+
+def docker_compose_rm():
+    subprocess.run(
+        ["docker-compose", "stop"],
+        check=True,
+    )
+    subprocess.run(
+        ["docker-compose", "rm"],
+        check=True,
+    )
+
+
+def launch_postgres():
+    env = {
+        **os.environ,
+        "HOSTNAME": config["HOSTNAME"],
+        "POSTGRES_USER": config["POSTGRES_USER"],
+        "POSTGRES_PASSWORD": config["POSTGRES_PASSWORD"],
+        "POSTGRES_DB": config["POSTGRES_DB"],
+    }
+    subprocess.run(
+        [
+            "docker-compose",
+            "up",
+            "-d",
+            "db",
         ],
         env=env,
         check=True,
@@ -500,6 +536,8 @@ if __name__ == "__main__":
         run_global()
 
     if parser.parse_args().dev:
+        launch_postgres()
+        time.sleep(15)
         run_dev()
 
     if not os.path.exists("./venv"):
