@@ -1385,8 +1385,6 @@ def shimon(indicator):
         else:
             raise Exception("Invalid indicator type for shimon")
 
-        print(encoded_url)
-
         response = requests.get(
             f"https://shimon-6983d71a338d.herokuapp.com/api/fingerprint/calculate?url={encoded_url}",
             headers={"accept": "application/json"},
