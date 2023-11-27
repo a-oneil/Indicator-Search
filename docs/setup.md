@@ -12,8 +12,8 @@ Follow these steps:
 1. Clone the repository and navigate to it.
 2. Execute `python3 indicator_search.py`. This will duplicate the example environment file and prompt you to complete it.
 3. Adjust the settings in the `./config/.env` file.
-4. Re-run `python3 indicator_search.py` to set up the environment and access the indicator search menu.
-5. Choose your preferred method for running indicator search from the menu.
+4. Re-run `python3 indicator_search.py` to set up the environment and access the Indicator Search menu.
+5. Choose your preferred method for running Indicator Search from the menu.
 6. Create an admin user and save the API to the .env file for the api menu options to work. This API key is also used for the IOC ageout automation that runs every hour.
 
 ## Env File
@@ -22,7 +22,7 @@ The env file located at `./config/.env` is used to configure the applications ap
 On inital run of the app, it will clone the `.env.example` file also located in the config folder and then print a message asking you to configure it.
 
 * `SERVER_ADDRESS`: Used for seeding API calls, slack notifications, and result links.
-* `HOSTNAME`: Required for docker https proxy.
+* `HOSTNAME`: Required for docker https proxy, this must be the same as the hostname on the SSL cert. 
 * `ADMIN_API_KEY`: A user's api key for the ageout ioc automation that is ran every hour.
 * `USER_INVITE_KEY`: Required for user signup.
 * `ENABLE_SLACK`: True/False
@@ -33,7 +33,7 @@ On inital run of the app, it will clone the `.env.example` file also located in 
 * `POSTGRES_HOST`: If running on the same host, this is handled for you. If you want to build an image and push to a container, make sure to set the correct postgres IP.
 * `POSTGRES_USER`: User for postgres.
 * `POSTGRES_PASSWORD`: Password for the postgres user.
-* `POSTGRES_DB`: Database name for indicator search data.
+* `POSTGRES_DB`: Database name for Indicator Search data.
 
 ## Tool API Keys
 If you don't have an api key, leave the value as `"API_KEY": ""`
