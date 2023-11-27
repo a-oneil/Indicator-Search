@@ -24,7 +24,7 @@ services:
       - ./config/certificates.yml:/configuration/certificates.yml
     networks:
       vpcbr:
-        ipv4_address: 172.50.0.2
+        ipv4_address: 172.190.0.2
 
   app:
     container_name: indicator-search
@@ -42,7 +42,7 @@ services:
       - ./config/.env:/code/config/.env
     networks:
       vpcbr:
-        ipv4_address: 172.50.0.3
+        ipv4_address: 172.190.0.3
 
   db:
     container_name: indicator-search-postgres
@@ -58,7 +58,7 @@ services:
       - indicator_search_db:/var/lib/postgresql/data
     networks:
       vpcbr:
-        ipv4_address: 172.50.0.4
+        ipv4_address: 172.190.0.4
 
 volumes:
   indicator_search_db:
@@ -69,5 +69,5 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.50.0.0/16
-          gateway: 172.50.0.1
+        - subnet: 172.190.0.0/24
+          gateway: 172.190.0.1
