@@ -8,7 +8,7 @@ def enrichments_handler(indicator):
         enrichments.update(geo_data(indicator))
 
     elif indicator.indicator_type == "ipv6":
-        pass
+        enrichments.update(geo_data(indicator))
 
     elif indicator.indicator_type == "fqdn":
         enrichments.update(urlscan(indicator))
