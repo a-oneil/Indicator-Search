@@ -1,6 +1,6 @@
 <div class="ui segment"> {% if related_indicators %} <div class="ui two column centered grid">
     <div class="column">
-      <div class="ui fluid card">
+      <div class="ui raised fluid card">
         <div class="content">
           <p class="ui small header"><i class="fa fa-clipboard"></i> Notes</p>
           <form class="ui form" action="/indicator/notes/{{indicator.id}}" method="post">
@@ -16,7 +16,7 @@
     </div>
 
     <div class="column" style="padding-left: 0px">
-      <div class="ui fluid card">
+      <div class="ui raised fluid card">
         <div class="content">
           <p class="ui small header">
             <i class="fa fa-clone"></i> Indicator Scan History
@@ -35,7 +35,7 @@
     </div>
   </div>
   {% else %}
-  <div class="ui segment">
+  <div class="ui raised segment">
     <div class="content">
       <p class="ui small header"><i class="fa fa-clipboard"></i> Notes</p>
       <form class="ui form" action="/indicator/notes/{{indicator.id}}" method="post">
@@ -53,7 +53,7 @@
   {% if indicator.external_links %}
   <div class="ui two column centered grid" style="margin-top: -10px;">
     <div class="column">
-      <div class="ui fluid card">
+      <div class="ui raised fluid card">
         <div class="content">
           <p class="ui small header">
             <i class="fa-solid fa-link"></i> External Links
@@ -62,7 +62,7 @@
             {# Display a card with the results info #} {% for key,value in
             indicator.external_links.items() %}
             <div class="column">
-              <div class="ui raised fluid card">
+              <div class="ui fluid card">
                 <button class="fluid ui blue button" onclick="window.open('{{value}}', '_blank')">
                   {{key|snakecase_to_title}}
                 </button>
@@ -76,7 +76,7 @@
 
     {# Display the related indicators if any #}
     <div class="column" style="padding-left: 0px">
-      <div class="ui fluid card">
+      <div class="ui raised fluid card">
         <div class="content">
           <p class="ui small header">
             <i class="fa-solid fa-square-poll-horizontal"></i> Search Results
