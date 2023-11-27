@@ -1,8 +1,8 @@
-from .. import schemas
-from ..models import Iocs, Indicators, User_Accounts
-from ..database import get_db
-from ..osint import new_indicator_handler, get_type, refang
-from ..authentication import auth_api_key
+from ... import schemas
+from ...models import Iocs, Indicators, User_Accounts
+from ...database import get_db
+from ...osint import new_indicator_handler, get_type, refang
+from ...authentication import auth_api_key
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException
 

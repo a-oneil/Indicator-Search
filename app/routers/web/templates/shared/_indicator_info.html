@@ -1,6 +1,6 @@
 {% if indicator.complete %}
 <script>
-  function CopyTextToClipboard(text) {
+  function CopyTextToClipboard(text, button) {
     // Create a temporary textarea element to hold the text
     var tempTextarea = document.createElement("textarea");
     tempTextarea.value = text;
@@ -16,6 +16,19 @@
 
     // Remove the temporary textarea
     document.body.removeChild(tempTextarea);
+
+    // Change button color on click
+    button.style.backgroundColor = '#28ba50'; // Change to the desired color
+
+    // Set a timeout to revert the button color after 1 second (1000 milliseconds)
+    setTimeout(function () {
+      button.style.backgroundColor = ''; // Revert to the original color
+      button.innerHTML = '<i class="fa-solid fa-copy"></i>'; // Revert to the original button text
+    }, 500);
+
+    // Update button text to indicate that the text has been copied
+    button.innerHTML = '<i class="fa-solid fa-check"></i>';
+
   }
 </script>
 
@@ -58,17 +71,15 @@
     {% endif %}
     {% endif %}
 
-    <div class="image-container" style="float: left;">
-      <img src="/static/images/icon.png" alt="Copy to clipboard"
-        onclick='CopyTextToClipboard("{{indicator.indicator}}")'>
-    </div>
     <a class="ui small header" style="word-wrap: break-word; margin-left: 5px; "
       href="/indicator/results/{{ indicator.id }}">
       {{ indicator.indicator }}
     </a>
   </h3>
-
+  <div class="ui divider"></div>
   <div class="ui labels">
+    <a class="ui label" onclick='CopyTextToClipboard("{{indicator.indicator}}", this)'><i
+        class="fa-solid fa-copy"></i></a>
     {{ render_partial("shared/_indicator_details.html", indicator=indicator) }}
     {% if indicator.tags %}
     {{ render_partial("shared/_indicator_tags.html", indicator=indicator) }}

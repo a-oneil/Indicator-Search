@@ -22,6 +22,9 @@ services:
       - ./config/traefik.crt:/configuration/traefik.crt
       - ./config/traefik.key:/configuration/traefik.key
       - ./config/certificates.yml:/configuration/certificates.yml
+    networks:
+      vpcbr:
+        ipv4_address: 172.50.0.2
 
   app:
     container_name: indicator-search
@@ -29,14 +32,40 @@ services:
     image: ubuntu:22.04
     depends_on:
       - reverse-proxy
+      - db
     restart: always
     labels:
       - "traefik.http.routers.app.rule=Host(`${HOSTNAME}`)"
       - "traefik.http.routers.app.tls=true"
-      - "traefik.http.services.app.loadbalancer.server.port=80"
+      - "traefik.http.services.app.loadbalancer.server.port=8000"
+    networks:
+      vpcbr:
+        ipv4_address: 172.50.0.3
+
+  db:
+    container_name: indicator-search-postgres
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
     volumes:
-      - ${PWD}/db.sqlite:/code/db.sqlite
+      - indicator_search_db:/var/lib/postgresql/data
+    networks:
+      vpcbr:
+        ipv4_address: 172.50.0.4
 
 volumes:
-  db:
+  indicator_search_db:
     driver: local
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.50.0.0/16
+          gateway: 172.50.0.1

@@ -1,9 +1,7 @@
 import requests
 import xmltodict
-import datetime
 import ipwhois
 import httpbl
-import time
 import base64
 import json
 from .. import config, notifications
@@ -125,14 +123,7 @@ def ipinfoio(indicator):
             # fmt: off
             {
                 "site": "ipinfo.io",
-                "results": {
-                    "city": response.json().get("city"),
-                    "region": response.json().get("region"),
-                    "geolocation": response.json().get("loc"),
-                    "organization": response.json().get("org"),
-                    "postal_code": response.json().get("postal"),
-                    "timezone": response.json().get("timezone"),
-                },
+                "results": response.json()
             },
             # fmt: on
         )
@@ -185,23 +176,7 @@ def ipqualityscore(indicator):
             # fmt: off
                 {
                     "site": "ip_quality_score",
-                    "results": {
-                        "isp": response.json().get("ISP", ""),
-                        "organization": response.json().get("organization", ""),
-                        "country": response.json().get("country_code", ""),
-                        "city": response.json().get("city", ""),
-                        "mobile": response.json().get("mobile", ""),
-                        "is_crawler": response.json().get("is_crawler", ""),
-                        "connection_type": response.json().get("connection_type", ""),
-                        "recent_abuse": response.json().get("recent_abuse", ""),
-                        "bot_status": response.json().get("bot_status", ""),
-                        "vpn": response.json().get("vpn", ""),
-                        "active_vpn": response.json().get("active_vpn", ""),
-                        "tor": response.json().get("tor", ""),
-                        "active_tor": response.json().get("active_tor", ""),
-                        "fraud_score": response.json().get("fraud_score", ""),
-                        "abuse_velocity": response.json().get("abuse_velocity", ""), 
-                    },
+                    "results": response.json()
                 },
             # fmt: on
         )
@@ -233,15 +208,7 @@ def virustotal_ip(indicator):
             # fmt: off
                 {
                     "site": "virustotal_ip",
-                    "results": {
-                        "last analysis date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("last_analysis_date")).strftime('%c') if response.json().get("data").get("attributes").get("last_analysis_date") else "",
-                        "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
-                        "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
-                        "suspicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("suspicious"),
-                        "undetected": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("undetected"),
-                        "reputation": response.json().get("data").get("attributes").get("reputation"),
-                        "tags": response.json().get("data").get("attributes").get("tags"),
-                    },
+                    "results": response.json().get("data")
                 },
             # fmt: on
         )
@@ -281,21 +248,7 @@ def virustotal_domain(indicator):
             # fmt: off
                 {
                     "site": "virustotal_domain",
-                    "results": {
-                        "whois": response.json().get("data").get("attributes").get("whois"),
-                        "creation_date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("creation_date")).strftime('%c') if response.json().get("data").get("attributes").get("creation_date") else "",
-                        "whois_date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("whois_date")).strftime('%c') if response.json().get("data").get("attributes").get("whois_date") else "",
-                        "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
-                        "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
-                        "suspicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("suspicious"),
-                        "undetected": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("undetected"),
-                        "categories": response.json().get("data").get("attributes").get("categories"),
-                        "tld": response.json().get("data").get("attributes").get("tld"),
-                        "tags": response.json().get("data").get("attributes").get("tags"),
-                        "community_votes": response.json().get("data").get("attributes").get("total_votes"),
-                        "categories": response.json().get("data").get("attributes").get("categories"),
-                        "last_analysis": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("last_analysis_date")).strftime('%c') if response.json().get("data").get("attributes").get("last_analysis_date") else ""
-                    },
+                    "results": response.json().get("data")
                 },
             # fmt: on
         )
@@ -343,21 +296,7 @@ def virustotal_url(indicator):
             # fmt: off
                 {
                     "site": "virustotal_url",
-                    "results": {
-                        "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
-                        "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
-                        "suspicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("suspicious"),
-                        "undetected": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("undetected"),
-                        "url": response.json().get("data").get("attributes").get("url"),
-                        "final_url": response.json().get("data").get("attributes").get("final_url"),
-                        "last_response_code": response.json().get("data").get("attributes").get("last_http_response_code"),
-                        "redirection_chain": response.json().get("data").get("attributes").get("redirection_chain"),
-                        "tld": response.json().get("data").get("attributes").get("tld"),
-                        "threat_names": response.json().get("data").get("attributes").get("threat_names"),
-                        "tags": response.json().get("data").get("attributes").get("tags"),
-                        "community_votes": response.json().get("data").get("attributes").get("total_votes"),
-                        "categories": response.json().get("data").get("attributes").get("categories"),
-                    },
+                    "results": response.json().get("data")
                 },
             # fmt: on
         )
@@ -391,28 +330,7 @@ def virustotal_hash(indicator):
             # fmt: off
                 {
                     "site": "virustotal_hash",
-                    "results": {
-                        "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
-                        "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
-                        "suspicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("suspicious"),
-                        "undetected": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("undetected"),
-                        "suggested_threat_label": response.json().get("data").get("attributes").get("popular_threat_classification", {}).get("suggested_threat_label"),
-                        "popular_threat_category": response.json().get("data").get("attributes").get("popular_threat_classification").get("popular_threat_category")[0].get("value") if response.json().get("data").get("attributes").get("popular_threat_classification", {}).get("popular_threat_category", []) else None,
-                        "community_votes": response.json().get("data").get("attributes").get("total_votes"),
-                        "name": response.json().get("data").get("attributes").get("meaningful_names"),
-                        "names": response.json().get("data").get("attributes").get("names"),
-                        "type": response.json().get("data").get("attributes").get("magic"),
-                        "type_tag": response.json().get("data").get("attributes").get("type_tag"),
-                        "tags": response.json().get("data").get("attributes").get("tags"),
-                        "times_submitted": response.json().get("data").get("attributes").get("times_submitted"),
-                        "product": response.json().get("data").get("attributes").get("signature_info", {}).get("product"),
-                        "product_description": response.json().get("data").get("attributes").get("signature_info", {}).get("description"),
-                        "signed": response.json().get("data").get("attributes").get("signature_info", {}).get("verified"),
-                        "signing_date": response.json().get("data").get("attributes").get("signature_info", {}).get("signing date"),
-                        "md5": response.json().get("data").get("attributes").get("md5"),
-                        "sha1": response.json().get("data").get("attributes").get("sha1"),
-                        "sha256": response.json().get("data").get("attributes").get("sha256"),
-                    },
+                    "results": response.json().get("data")
                 },
             # fmt: on
         )
@@ -442,13 +360,7 @@ def greynoise_community(indicator):
             # fmt: off
                 {
                     "site": "greynoise_community",
-                    "results": {
-                        "classification": response.json().get("classification"),
-                        "noise": response.json().get("noise"),
-                        "riot": response.json().get("riot"),
-                        "name": response.json().get("name"),
-                        "last_seen": response.json().get("last_seen"),
-                    },
+                    "results": response.json()
                 },
             # fmt: on
         )
@@ -542,12 +454,9 @@ def urlvoid(indicator):
                     {
                         "site": "url_void",
                         "results": {
-                            "dns_records": response.json().get("data", {}).get("report", {}).get("dns_records", {}).get("mx", {}).get("records", []),
-                            "detections": response.json().get("data", {}).get("report", {}).get("domain_blacklist", {}).get("detections"),
+                            "raw": response.json(),
                             "scanners_detected": blacklists_list,
                             "security_checks": security_checks_list,
-                            "risk_score": response.json().get("data", {}).get("report", {}).get("risk_score", "").get("result"),
-                            "redirection": response.json().get("data", {}).get("report", {}).get("redirection", {}),
                         },
                     },
                 # fmt: on
@@ -656,11 +565,7 @@ def abuse_ipdb(indicator):
         return (
             {
                 "site": "abuseipdb",
-                "results": {
-                    "reports": response.json().get("data", {}).get("totalReports"),
-                    "abuse_score": response.json().get("data", {}).get("abuseConfidenceScore"),
-                    "last_report": response.json().get("data", {}).get("lastReportedAt"),
-                },
+                "results": response.json()
             },
         )
         # fmt: on
@@ -688,35 +593,7 @@ def emailrepio(indicator):
             # fmt: off
                 {
                     "site": "emailrep.io",
-                    "results": {
-                        "reputation": response.json().get("reputation"),
-                        "suspicious": response.json().get("suspicious"),
-                        "references": response.json().get("references"),
-                        "blacklisted": response.json().get("details",{}).get("blacklisted"),
-                        "malicious_activity": response.json().get("details",{}).get("malicious_activity"),
-                        "malicious_activity_recent": response.json().get("details",{}).get("malicious_activity_recent"),
-                        "credential_leaked": response.json().get("details",{}).get("credentials_leaked"),
-                        "credentials_leaked_recent": response.json().get("details",{}).get("credentials_leaked_recent"),
-                        "data_breach": response.json().get("details",{}).get("data_breach"),
-                        "first_seen": response.json().get("details",{}).get("first_seen"),
-                        "last_seen": response.json().get("details",{}).get("last_seen"),
-                        "domain_exists": response.json().get("details",{}).get("domain_exists"),
-                        "domain_reputation": response.json().get("details",{}).get("domain_reputation"),
-                        "new_domain": response.json().get("details",{}).get("new_domain"),
-                        "days_since_domain_creation": response.json().get("details",{}).get("days_since_domain_creation"),
-                        "suspicious_tld": response.json().get("details",{}).get("suspicious_tld"),
-                        "spam": response.json().get("details",{}).get("spam"),
-                        "free_provider": response.json().get("details",{}).get("free_provider"),
-                        "disposable": response.json().get("details",{}).get("disposable"),
-                        "deliverable": response.json().get("details",{}).get("deliverable"),
-                        "accept_all": response.json().get("details",{}).get("accept_all"),
-                        "valid_mx": response.json().get("details",{}).get("valid_mx"),
-                        "primary_mx": response.json().get("details",{}).get("primary_mx"),
-                        "spoofable": response.json().get("details",{}).get("spoofable"),
-                        "spf_strict": response.json().get("details",{}).get("spf_strict"),
-                        "dmar_enforced": response.json().get("details",{}).get("dmarc_enforced"),
-                        "profiles": response.json().get("details",{}).get("profiles",[]),
-                    },
+                    "results": response.json()
                 },
             # fmt: on
         )
@@ -804,16 +681,7 @@ def urlscanio(indicator):
             # fmt: off
                 {
                     "site": "urlscan.io",
-                    "results": {
-                        "last_scan_guid": last_scan_response.json().get("task").get("uuid"),
-                        "last_scan_url": last_scan_response.json().get("task").get("reportURL"),
-                        "last_scan_time": last_scan_response.json().get("task").get("time"),
-                        "last_scan_score": last_scan_response.json().get("verdicts").get("overall").get("score"),
-                        "categories": last_scan_response.json().get("verdicts").get("overall").get("categories"),
-                        "malicious": last_scan_response.json().get("verdicts").get("overall").get("malicious"),
-                        "tags": last_scan_response.json().get("verdicts").get("overall").get("tags"),
-                        "last_scan_screenshot": last_scan_response.json().get("task").get("screenshotURL"),
-                    },
+                    "results": last_scan_response.json()
                 },
             # fmt: on
         )
@@ -846,13 +714,7 @@ def circl_lu(indicator):
             # fmt: off
                 {
                     "site": "circl.lu",
-                    "results": {
-                        "file_name": response.json().get("FileName"),
-                        "file_size_kb": response.json().get("FileSize"),
-                        "product_code": response.json().get("ProductCode"),
-                        "mimetype": response.json().get("mimetype"),
-                        "source": response.json().get("source"),
-                    },
+                    "results": response.json()
                 },
             # fmt: on
         )
@@ -914,13 +776,7 @@ def echo_trail(indicator):
             # fmt: off
                 {
                     "site": "echo_trail",
-                    "results": {
-                        "file_name": response.json().get("filenames"),
-                        "description": response.json().get("description"),
-                        "intel": response.json().get("intel"),
-                        "parents": response.json().get("parents"),
-                        "children": response.json().get("children"),
-                    },
+                    "results": response.json()
                 },
             # fmt: on
         )
@@ -958,20 +814,7 @@ def hybrid_analysis(indicator):
             # fmt: off
                 {
                     "site": "hybrid_analysis",
-                    "results": {
-                        "file_name": response.get("submissions")[0].get("filename"),
-                        "type": response.get("type"),
-                        "job_environment": response.get("environment_description"),
-                        "av_detect": response.get("av_detect"),
-                        "vx_family": response.get("vx_family"),
-                        "verdict": response.get("verdict"),
-                        "threat_score": response.get("threat_score"),
-                        "sha1": response.get("sha1"),
-                        "sha256": response.get("sha256"),
-                        "sha512": response.get("sha512"),
-                        "classification": response.get("classification_tags"),
-                        "tags": response.get("tags"),
-                    },
+                    "results": response
                 },
             # fmt: on
         )
@@ -1005,10 +848,7 @@ def breach_directory(indicator):
             # fmt: off
                 {
                     "site": "breach_directory",
-                    "results": {
-                        "found": response.json().get("found", {}),
-                        "frequency": response.json().get("result", [])
-                    },
+                    "results": response.json()
                 },
             # fmt: on
         )
@@ -1031,21 +871,7 @@ def shodan(indicator):
             # fmt: off
                 {
                     "site": "shodan",
-                    "results": {
-                        "hostnames": host.get("hostnames"),
-                        "domains": host.get("domains"),
-                        "tags": host.get("tags"),
-                        "last_update": host.get("last_update"),
-                        "city": host.get("city"),
-                        "asn": host.get("asn"),
-                        "isp": host.get("isp"),
-                        "country": host.get("country_name"),
-                        "region": host.get("region_code"),
-                        "os": host.get("os"),
-                        "ports": host.get("ports"),
-                        "vulns": host.get("vulns"),
-                        "url": f"https://www.shodan.io/host/{indicator.indicator}",
-                    },
+                    "results": host
                 },
             # fmt: on
         )
@@ -1072,13 +898,7 @@ def malware_bazzar(indicator):
             # fmt: off
                 {
                     "site": "malware_bazzar",
-                    "results": {
-                        "file_type": response.json().get("data")[0].get("file_type"),
-                        "signature": response.json().get("data")[0].get("signature"),
-                        "file_name": response.json().get("data")[0].get("file_name"),
-                        "delivery_method": response.json().get("delivery_method"),
-                        "tags": response.json().get("tags"),
-                    },
+                    "results": response.json()
                 },
             # fmt: on
         )
@@ -1139,16 +959,7 @@ def inquestlabs(indicator):
             # fmt: off
                 {
                     "site": "inquest_labs",
-                    "results": {
-                        "classification": response.json().get("data", [])[0].get("classification"),
-                        "file_type": response.json().get("data", [])[0].get("file_type"),
-                        "first_seen": response.json().get("data", [])[0].get("first_seen"),
-                        "inquest_alerts": response.json().get("data", [])[0].get("inquest_alerts"),
-                        "mime_type": response.json().get("data", [])[0].get("mime_type"),
-                        "subcategory": response.json().get("data", [])[0].get("subcategory"),
-                        "subcategory_url": response.json().get("data", [])[0].get("subcategory_url"),
-                        "tags": response.json().get("data", [])[0].get("tags"),
-                    },
+                    "results": response.json()
                 },
             # fmt: on
         )
@@ -1323,7 +1134,7 @@ def kickbox_disposible_email(indicator):
             # fmt: off
                 {
                     "site": "kickbox_disposible_email",
-                    "results": response.json().get("disposable", {})
+                    "results": response.json()
                 },
             # fmt: on
         )
@@ -1358,17 +1169,7 @@ def whatsmybrowser_ua(indicator):
             # fmt: off
                 {
                     "site": "whatsmybrowser_ua",
-                    "results": {
-                        "is_abusive": response.json().get("parse", {}).get("is_abusive"),
-                        "simple_software_string": response.json().get("parse", {}).get("simple_software_string"),
-                        "software": response.json().get("parse", {}).get("software"),
-                        "software_name": response.json().get("parse", {}).get("software_name"),
-                        "software_version": response.json().get("parse", {}).get("software_version"),
-                        "software_version_full": response.json().get("parse", {}).get("software_version_full"),
-                        "operating_system": response.json().get("parse", {}).get("operating_system"),
-                        "operating_system_name": response.json().get("parse", {}).get("operating_system_name"),
-                        "operating_system_version_full": response.json().get("parse", {}).get("operating_system_version_full"),
-                    }
+                    "results": response.json().get("parse", {})
                 },
             # fmt: on
         )

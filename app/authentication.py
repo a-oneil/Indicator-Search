@@ -39,9 +39,9 @@ def check_user_login(username, password, db: Session):
     user = User_Accounts.get_user_by_username(username, db)
     if not user:
         return False
-    if not bcrypt.checkpw(password.encode("utf-8"), user.password_hash):
-        return False
-    return user
+    if bcrypt.checkpw(password.encode(), user.password_hash):
+        return user
+    return False
 
 
 def verify_password(plain_password, hashed_password):

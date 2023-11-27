@@ -1,3 +1,6 @@
+from .. import config
+
+
 def links_handler(indicator):
     links = {}
     if indicator.indicator_type == "ipv4":
@@ -8,7 +11,7 @@ def links_handler(indicator):
                 "greynoise": f"https://viz.greynoise.io/ip/{indicator.indicator}",
                 "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "twitter": f"https://twitter.com/search?q={indicator.indicator}&src=typed_query",
-                "json": f"/api/indicator/{indicator.id}",
+                "json": f"{config['SERVER_ADDRESS']}/api/indicator/{indicator.id}",
             },
         )
     if indicator.indicator_type == "ipv6":
@@ -17,7 +20,7 @@ def links_handler(indicator):
                 "abuseipdb": f"https://www.abuseipdb.com/check/{indicator.indicator}",
                 "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "twitter": f"https://twitter.com/search?q={indicator.indicator}&src=typed_query",
-                "json": f"/api/indicator/{indicator.id}",
+                "json": f"{config['SERVER_ADDRESS']}/api/indicator/{indicator.id}",
             },
         )
     elif indicator.indicator_type in [
@@ -33,7 +36,7 @@ def links_handler(indicator):
                 "joes_sandbox": f"https://www.joesandbotwitter/search?q={indicator.indicator}",
                 "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "twitter": f"https://twitter.com/search?q={indicator.indicator}&src=typed_query",
-                "json": f"/api/indicator/{indicator.id}",
+                "json": f"{config['SERVER_ADDRESS']}/api/indicator/{indicator.id}",
             },
         )
     elif indicator.indicator_type == "fqdn":
@@ -44,7 +47,7 @@ def links_handler(indicator):
                 "urlscan.io": f"https://urlscan.io/search/#{indicator.indicator.replace('https://', '').replace('http://', '')}",
                 "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "twitter": f"https://twitter.com/search?q={indicator.indicator}&src=typed_query",
-                "json": f"/api/indicator/{indicator.id}",
+                "json": f"{config['SERVER_ADDRESS']}/api/indicator/{indicator.id}",
             },
         )
     elif indicator.indicator_type == "url":
@@ -55,7 +58,7 @@ def links_handler(indicator):
                 "urlscan.io": f"https://urlscan.io/search/#{indicator.indicator.replace('https://', '').replace('http://', '')}",
                 "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "twitter": f"https://twitter.com/search?q={indicator.indicator}&src=typed_query",
-                "json": f"/api/indicator/{indicator.id}",
+                "json": f"{config['SERVER_ADDRESS']}/api/indicator/{indicator.id}",
             },
         )
     elif indicator.indicator_type == "email":
@@ -65,7 +68,7 @@ def links_handler(indicator):
                 "mx_toolbox": f"https://mxtoolbotwitter/SuperTool.aspx?action=mx%3a{indicator.indicator.split('@')[1]}&run=toolpage",
                 "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "twitter": f"https://twitter.com/search?q={indicator.indicator}&src=typed_query",
-                "json": f"/api/indicator/{indicator.id}",
+                "json": f"{config['SERVER_ADDRESS']}/api/indicator/{indicator.id}",
             },
         )
     elif indicator.indicator_type == "mac":
@@ -74,7 +77,7 @@ def links_handler(indicator):
                 "mac_vendor_lookup": f"https://api.macvendors.com/{indicator.indicator}",
                 "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "twitter": f"https://twitter.com/search?q={indicator.indicator}&src=typed_query",
-                "json": f"/api/indicator/{indicator.id}",
+                "json": f"{config['SERVER_ADDRESS']}/api/indicator/{indicator.id}",
             },
         )
     elif indicator.indicator_type == "phone":
@@ -83,7 +86,7 @@ def links_handler(indicator):
                 "ip_quality_score": "https://www.ipqualityscore.com/free-phone-number-lookup",
                 "google": f"https://www.google.com/search?q={indicator.indicator}",
                 "twitter": f"https://twitter.com/search?q={indicator.indicator}&src=typed_query",
-                "json": f"/api/indicator/{indicator.id}",
+                "json": f"{config['SERVER_ADDRESS']}/api/indicator/{indicator.id}",
             },
         )
 

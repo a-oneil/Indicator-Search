@@ -1,16 +1,14 @@
 import secrets
 import bcrypt
-from fastapi import APIRouter, Depends
-from .. import config, schemas
-from ..models import User_Accounts
-from ..database import get_db
+from ... import config, schemas
+from ...models import User_Accounts
+from ...database import get_db
 from sqlalchemy.orm import Session
 from fastapi import (
     APIRouter,
     Depends,
     HTTPException,
 )
-
 
 router = APIRouter(prefix="/api")
 

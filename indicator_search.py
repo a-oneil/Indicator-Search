@@ -47,17 +47,16 @@ def menu():
         print(f"{color.BLUE}1.{color.ENDCOLOR}  Setup enviroment")
         print(f"{color.BLUE}2.{color.ENDCOLOR}  Build docker-compose and run locally with SSL proxy")
         print(f"{color.YELLOW} 2a.{color.ENDCOLOR}  Docker compose up")
-        print(f"{color.YELLOW} 2b.{color.ENDCOLOR}  Docker compose down")
-        print(f"{color.YELLOW}{'='*22} Dev {'='*23}{color.ENDCOLOR}")
+        print(f"{color.YELLOW} 2b.{color.ENDCOLOR}  Docker compose stop")
+        print(f"{color.YELLOW} 2c.{color.ENDCOLOR}  Docker compose logs")
         print(f"{color.BLUE}3.{color.ENDCOLOR}  Run local instance reachable at 127.0.0.1:8000 - Change reload enabled")
-        print(f"{color.BLUE}4.{color.ENDCOLOR}  Run local instance reachable at 0.0.0.0:80 - Change reload disabled")
-        print(f"{color.BLUE}5.{color.ENDCOLOR}  Build a docker image and push to a container registry")
-        print(f"{color.BLUE}6.{color.ENDCOLOR}  Delete local sqlite database, will require restart of the app to rebuild")
+        print(f"{color.BLUE}4.{color.ENDCOLOR}  Build a docker image and push to a container registry")
         print(f"{color.YELLOW}{'='*22} API {'='*23}{color.ENDCOLOR}")
-        print(f"{color.BLUE}7.{color.ENDCOLOR}  Seed feedlists database")
-        print(f"{color.BLUE}8.{color.ENDCOLOR}  Seed indicators")
-        print(f"{color.BLUE}9.{color.ENDCOLOR}  Create user")
-        print(f"{color.YELLOW}  9a.{color.ENDCOLOR} Create admin user")
+        print(f"{color.BLUE}5.{color.ENDCOLOR}  Seed feedlists database")
+        print(f"{color.BLUE}6.{color.ENDCOLOR}  Seed indicators")
+        print(f"{color.BLUE}7.{color.ENDCOLOR}  Create user")
+        print(f"{color.BLUE}8.{color.ENDCOLOR}  Create admin user")
+        print(f"{color.BLUE}9.{color.ENDCOLOR}  Search indicator")
         # fmt: on
         menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
     except KeyboardInterrupt:
@@ -71,42 +70,40 @@ def menu_switch(choice):
     try:
         if choice == "1":
             reconfig()
-            menu()
         elif choice == "2":
             create_self_signed_cert()
             docker_compose_build()
             docker_compose_up()
-            menu()
         elif choice == "2a":
             docker_compose_up()
-            menu()
         elif choice == "2b":
-            docker_compose_down()
-            menu()
+            docker_compose_stop()
+        elif choice == "2c":
+            docker_compose_logs()
         elif choice == "3":
+            launch_postgres()
+            time.sleep(15)
             run_dev()
         elif choice == "4":
-            run_global()
-        elif choice == "5":
             push_docker_to_registry()
-            menu()
-        elif choice == "6":
-            delete_sqlite()
-            menu()
-        elif choice == "7":
+        elif choice == "5":
             seed_feedlists()
-            menu()
-        elif choice == "8":
+            input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
+        elif choice == "6":
             seed_indicators()
-            menu()
-        elif choice == "9":
+            input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
+        elif choice == "7":
             create_user()
-            menu()
-        elif choice == "9a":
+            input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
+        elif choice == "8":
             create_admin_user()
-            menu()
+            input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
+        elif choice == "9":
+            search_indicator()
+            input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
         else:
             menu()
+        menu()
     except KeyboardInterrupt:
         print(f"{color.RED}Exiting...{color.ENDCOLOR}")
         menu()
@@ -189,7 +186,7 @@ def run_global():
             "./venv/bin/uvicorn",
             "app.main:app",
             "--host=0.0.0.0",
-            "--port=80",
+            "--port=8000",
         ],
         check=True,
     )
@@ -277,10 +274,10 @@ def seed_feedlists():
                         f"{color.BLUE}Successfully seeded {response.json().get('list_type')} feedlist: {color.ENDCOLOR}{response.json().get('name')}"
                     )
 
-    seed("./config/feedlist_examples/iplists.json", list_type="ip")
-    seed("./config/feedlist_examples/hashlists.json", list_type="hash")
-    seed("./config/feedlist_examples/domainlists.json", list_type="fqdn")
-    seed("./config/feedlist_examples/anylists.json", list_type="any")
+    seed("./config/feedlist_examples/ip.json", list_type="ip")
+    seed("./config/feedlist_examples/hash.json", list_type="hash")
+    seed("./config/feedlist_examples/fqdn.json", list_type="fqdn")
+    seed("./config/feedlist_examples/any.json", list_type="any")
 
 
 def seed_indicators():
@@ -353,19 +350,50 @@ def create_admin_user():
         )
 
 
-def delete_sqlite():
-    confirm = input(
-        f"{color.RED}Are you sure you want to delete the local database? (y/n) ~> {color.ENDCOLOR}"
-    )
-    if confirm.lower() != "y":
-        menu()
+def search_indicator():
+    import time
+    import json
 
-    if os.path.exists("./db.sqlite"):
-        os.remove("./db.sqlite")
-        os.close(os.open("./db.sqlite", os.O_CREAT))
-        print(f"{color.BLUE}Successfully deleted local database{color.ENDCOLOR}")
-    else:
-        print(f"{color.RED}Local database does not exist{color.ENDCOLOR}")
+    try:
+        indicator = input(f"{color.YELLOW}Enter indicator: {color.ENDCOLOR}").strip()
+        response = requests.post(
+            f"{config['SERVER_ADDRESS']}/api/indicator",
+            headers={"Content-Type": "application/json", "Accept": "application/json"},
+            json={"indicator": indicator, "api_key": config["ADMIN_API_KEY"]},
+            verify=False,
+        )
+
+        if response.status_code != 200:
+            raise Exception(response.text)
+
+        print(json.dumps(response.json(), indent=2))
+        print(f"{color.BLUE}Waiting for search to complete!{color.ENDCOLOR}")
+        count = 0
+        complete = False
+        while not complete:
+            complete = response.json().get("complete")
+            if complete:
+                print(json.dumps(response.json(), indent=2))
+                break
+
+            response = requests.get(
+                f"{config['SERVER_ADDRESS']}/api/indicator/{response.json().get('id')}",
+                headers={
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
+                verify=False,
+            )
+            if response.status_code != 200:
+                raise Exception(response.text)
+
+            if count > 12:
+                raise Exception("Timed out after 12 attempts")
+
+            count += 1
+            time.sleep(5)
+    except Exception as e:
+        print(color.RED + str(e) + color.ENDCOLOR)
 
 
 def create_self_signed_cert():
@@ -395,12 +423,12 @@ def create_self_signed_cert():
 
 
 def docker_compose_build():
-    if not os.path.exists("./db.sqlite"):
-        os.close(os.open("./db.sqlite", os.O_CREAT))
-
     env = {
         **os.environ,
         "HOSTNAME": config["HOSTNAME"],
+        "POSTGRES_USER": config["POSTGRES_USER"],
+        "POSTGRES_PASSWORD": config["POSTGRES_PASSWORD"],
+        "POSTGRES_DB": config["POSTGRES_DB"],
     }
 
     subprocess.run(
@@ -426,7 +454,7 @@ def docker_compose_up():
     )
 
 
-def docker_compose_down():
+def docker_compose_stop():
     env = {
         **os.environ,
         "HOSTNAME": config["HOSTNAME"],
@@ -434,7 +462,34 @@ def docker_compose_down():
     subprocess.run(
         [
             "docker-compose",
-            "down",
+            "stop",
+        ],
+        env=env,
+        check=True,
+    )
+
+
+def docker_compose_logs():
+    subprocess.run(
+        ["docker-compose", "logs", "-f"],
+        check=True,
+    )
+
+
+def launch_postgres():
+    env = {
+        **os.environ,
+        "HOSTNAME": config["HOSTNAME"],
+        "POSTGRES_USER": config["POSTGRES_USER"],
+        "POSTGRES_PASSWORD": config["POSTGRES_PASSWORD"],
+        "POSTGRES_DB": config["POSTGRES_DB"],
+    }
+    subprocess.run(
+        [
+            "docker-compose",
+            "up",
+            "-d",
+            "db",
         ],
         env=env,
         check=True,
@@ -449,7 +504,7 @@ if __name__ == "__main__":
         "-r",
         "--run",
         action="store_true",
-        help="Run instance reachable at 0.0.0.0:80",
+        help="Run instance reachable at 0.0.0.0:8000",
     )
 
     parser.add_argument(
@@ -467,6 +522,8 @@ if __name__ == "__main__":
         run_global()
 
     if parser.parse_args().dev:
+        launch_postgres()
+        time.sleep(15)
         run_dev()
 
     if not os.path.exists("./venv"):

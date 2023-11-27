@@ -6,11 +6,11 @@ from fastapi import (
     BackgroundTasks,
     Cookie,
 )
-from .. import templates
-from ..models import Indicators, Iocs
-from ..database import get_db
-from ..osint import new_indicator_handler, get_type, refang
-from ..authentication import frontend_auth_required
+from ... import templates
+from ...models import Indicators, Iocs
+from ...database import get_db
+from ...osint import new_indicator_handler, get_type, refang
+from ...authentication import frontend_auth_required
 from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse, HTMLResponse
 from typing import Optional
@@ -86,8 +86,6 @@ def home(request: Request, db: Session = Depends(get_db)):
         {
             "request": request,
             "recent_indicators": Indicators.get_recent_scans(db),
-            "count_of_successful_scans": Indicators.successful_scans(db),
-            "count_of_failed_scans": Indicators.failed_scans(db),
         },
     )
 
@@ -184,8 +182,6 @@ async def create_indicator(
                 "_message_header": "Error!",
                 "_message_color": "red",
                 "_message": "Must be a valid: IPv4 Address, IPv6 Address, Hash, FQDN, URL, Email, Phone Number, User Agent, or MAC Address",
-                "count_of_successful_scans": Indicators.successful_scans(db),
-                "count_of_failed_scans": Indicators.failed_scans(db),
             },
         )
 
@@ -216,8 +212,6 @@ def get_indicator_results(
                 "_message_header": "Error!",
                 "_message_color": "red",
                 "_message": "Indicator not found!",
-                "count_of_successful_scans": Indicators.successful_scans(db),
-                "count_of_failed_scans": Indicators.failed_scans(db),
             },
         )
 
@@ -294,8 +288,6 @@ def delete_indicator(
                 "_message_header": "Error!",
                 "_message_color": "red",
                 "_message": "Indicator not found!",
-                "count_of_successful_scans": Indicators.successful_scans(db),
-                "count_of_failed_scans": Indicators.failed_scans(db),
             },
         )
 
@@ -312,8 +304,6 @@ def delete_indicator(
         {
             "request": request,
             "recent_indicators": Indicators.get_recent_scans(db),
-            "count_of_successful_scans": Indicators.successful_scans(db),
-            "count_of_failed_scans": Indicators.failed_scans(db),
             "_message": "Indicator deleted!",
             "_message_color": "blue",
         },
@@ -348,8 +338,6 @@ def delete_indicator_from_search(
                 "_message_header": "Error!",
                 "_message_color": "red",
                 "_message": "Indicator not found!",
-                "count_of_successful_scans": Indicators.successful_scans(db),
-                "count_of_failed_scans": Indicators.failed_scans(db),
             },
         )
 

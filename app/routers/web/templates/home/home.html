@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block content %} {{
+render_partial("shared/_add_indicator_form.html", _message_color=_message_color,
+_message_header=_message_header, _message=_message)}}
+
+<div class="ui container">
+  {{render_partial("shared/_divider.html", text="Recent Searches",
+  icon="fa-solid fa-search")}} {{render_partial("shared/_refresh_button.html")}}
+  {% if recent_indicators %} {% for indicator in recent_indicators %}
+  {{render_partial("shared/_indicator_info.html", indicator=indicator)}} {%
+  endfor %} {% endif %}
+</div>
+{% endblock %}

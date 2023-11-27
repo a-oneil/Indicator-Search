@@ -6,9 +6,9 @@ from fastapi import (
     Cookie,
 )
 import requests
-from .. import templates
-from ..database import get_db
-from ..authentication import frontend_auth_required
+from ... import templates
+from ...database import get_db
+from ...authentication import frontend_auth_required
 from sqlalchemy.orm import Session
 from starlette.responses import HTMLResponse
 from typing import Optional
