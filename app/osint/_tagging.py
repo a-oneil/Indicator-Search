@@ -50,7 +50,7 @@ def tagging_handler(indicator, db):
         pass
 
     # If the indicator is tagged as malicious AND suspicious, remove the suspicious tag
-    if tags and ("malicious" in tags or "suspicious" in tags):
+    if tags and ("malicious" in tags and "suspicious" in tags):
         tags.pop("suspicious", None)
 
     return remove_duplicate_keys(tags) if tags else {}
