@@ -3,13 +3,13 @@ import xmltodict
 import datetime
 import ipwhois
 import httpbl
-import time
 import base64
 import json
 from .. import config, notifications
 from ..models import FeedLists, Indicators
 from maltiverse import Maltiverse
 from shodan import Shodan
+from urllib.parse import quote
 from .utils import (
     no_results_found,
     failed_to_run,
@@ -1374,3 +1374,36 @@ def whatsmybrowser_ua(indicator):
         )
     except Exception as e:
         return failed_to_run("whatsmybrowser_ua", e)
+
+
+def shimon(indicator):
+    try:
+        if indicator.indicator_type == "fqdn":
+            encoded_url = quote(convert_fqdn_to_url(indicator.indicator), safe="")
+        elif indicator.indicator_type == "url":
+            encoded_url = quote(indicator.indicator, safe="")
+        else:
+            raise Exception("Invalid indicator type for shimon")
+
+        print(encoded_url)
+
+        response = requests.get(
+            f"https://shimon-6983d71a338d.herokuapp.com/api/fingerprint/calculate?url={encoded_url}",
+            headers={"accept": "application/json"},
+        )
+
+        if response.status_code == 500:
+            return no_results_found("shimon")
+        if response.status_code != 200:
+            return status_code_error("shimon", response.status_code, response.reason)
+
+        return (
+            # fmt: off
+                {
+                    "site": "shimon",
+                    "results": response.json()
+                },
+            # fmt: on
+        )
+    except Exception as e:
+        return failed_to_run("shimon", e)

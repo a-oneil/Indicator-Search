@@ -72,6 +72,7 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.maltiverse(indicator)
             indicator.results += tools.wayback_machine(indicator)
             indicator.results += tools.kickbox_disposible_email(indicator)
+            indicator.results += tools.shimon(indicator)
 
         elif indicator.indicator_type == "url":
             indicator.results += tools.tweetfeed_live(indicator)
@@ -82,6 +83,7 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.inquestlabs(indicator)
             indicator.results += tools.maltiverse(indicator)
             indicator.results += tools.wayback_machine(indicator)
+            indicator.results += tools.shimon(indicator)
 
         elif indicator.indicator_type == "email":
             indicator.results += tools.emailrepio(indicator)

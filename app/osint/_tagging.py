@@ -49,6 +49,10 @@ def tagging_handler(indicator, db):
     elif indicator.indicator_type == "mac":
         pass
 
+    # If the indicator is tagged as malicious AND suspicious, remove the suspicious tag
+    if tags and ("malicious" in tags or "suspicious" in tags):
+        tags.pop("suspicious", None)
+
     return remove_duplicate_keys(tags) if tags else {}
 
 
