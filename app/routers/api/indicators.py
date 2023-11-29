@@ -56,6 +56,7 @@ def get_indicator_results(indicator_id: int, db: Session = Depends(get_db)):
 def search_for_indicator(
     request: schemas.SearchIndicators, db: Session = Depends(get_db)
 ):
+    auth_api_key(request, db)
     results = Indicators.get_search_results(
         db,
         request.indicator_id,

@@ -3,6 +3,7 @@ from typing import Optional
 
 
 class SearchIocs(BaseModel):
+    api_key: str
     ioc_id: Optional[str] = None
     ioc_name: Optional[str] = None
     ioc_type: Optional[str] = None
