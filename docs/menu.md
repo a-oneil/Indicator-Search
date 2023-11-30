@@ -29,7 +29,5 @@ Menu `option 6` provides 8 example indicators to quickly test that all the API t
 ## Creating A User
 Menu `option 7` will use the `USER_INVITE_KEY` from the config file to create a new user.
 
-Menu `option 8` will use the `USER_INVITE_KEY` from the config file to create a new "Admin" user. Once completed, it will display an API key for the Admin user. Save this API key to the .env file to enable the IOC ageout automation that runs hourly to prune expired IOCs.
-
 ## Searching an indicator
-Menu `option 9` will allow you to punch in an indicator to search.
+Menu `option 8` will allow you to punch in an indicator to search.

@@ -14,16 +14,14 @@ Follow these steps:
 3. Adjust the settings in the `./config/.env` file.
 4. Re-run `python3 indicator_search.py` to set up the environment and access the Indicator Search menu.
 5. Choose your preferred method for running Indicator Search from the menu.
-6. Create an admin user and save the API to the .env file for the api menu options to work. This API key is also used for the IOC ageout automation that runs every hour.
 
 ## Env File
-The env file located at `./config/.env` is used to configure the applications api keys and tweakable settings. 
+The env file located at `./config/.env` is used to configure the application's API keys and customizable settings.
 
 * `SERVER_ADDRESS`: Used for seeding API calls, slack notifications, and result links.
 * `HOSTNAME`: Required for docker https proxy, this must be the same as the hostname on the SSL cert. 
-* `ADMIN_API_KEY`: A user's api key for the ageout ioc automation that is ran every hour.
-* `USER_INVITE_KEY`: Required for user signup.
-* `ENABLE_SLACK`: True/False
+* `USER_INVITE_KEY`: Required for user registration.
+* `ENABLE_SLACK`: true/false
 * `SLACK_BOT_TOKEN`: Slack bot token with message permissions.
 * `SLACK_CHANNEL`: Channel to post slack updates to.
 * `DOCKER_IMAGE_TAG`: indicator_search:latest
