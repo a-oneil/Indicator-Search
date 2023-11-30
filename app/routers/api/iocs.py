@@ -29,6 +29,7 @@ def delete(request: schemas.DeleteIOC, db: Session = Depends(get_db)):
 
 @router.post("/iocs/search", name="Search for Iocs", tags=["IOCs"])
 def search_iocs(request: schemas.SearchIocs, db: Session = Depends(get_db)):
+    auth_api_key(request, db)
     iocs = Iocs.get_search_results(
         db,
         request.ioc_id,

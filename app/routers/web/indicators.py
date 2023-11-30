@@ -102,8 +102,20 @@ def search_for_indicator(
     indicator_results: str | None = None,
     indicator_ioc_id: str | None = None,
     created_by: str | None = None,
+    access_token: Optional[str] = Cookie(None),
 ):
     try:
+        user = frontend_auth_required(access_token, db)
+        if not user:
+            return templates.TemplateResponse(
+                "user/login.html",
+                {
+                    "request": request,
+                    "_message_header": "",
+                    "_message_color": "red",
+                    "_message": "Please log in!",
+                },
+            )
         results = Indicators.get_search_results(
             db,
             indicator_id,

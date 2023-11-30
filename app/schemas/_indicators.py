@@ -23,6 +23,7 @@ class CreateNote(BaseModel):
 
 
 class SearchIndicators(BaseModel):
+    api_key: str
     indicator_id: Optional[str] = None
     indicator_name: Optional[str] = None
     indicator_type: Optional[str] = None

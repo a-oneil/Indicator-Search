@@ -29,9 +29,21 @@ def search_iocs(
     ioc_name: str | None = None,
     ioc_type: str | None = None,
     indicator_id: str | None = None,
+    access_token: Optional[str] = Cookie(None),
 ):
     _message = None
     try:
+        user = frontend_auth_required(access_token, db)
+        if not user:
+            return templates.TemplateResponse(
+                "user/login.html",
+                {
+                    "request": request,
+                    "_message_header": "",
+                    "_message_color": "red",
+                    "_message": "Please log in!",
+                },
+            )
         results = Iocs.get_search_results(db, ioc_id, ioc_name, ioc_type, indicator_id)
 
         return templates.TemplateResponse(
