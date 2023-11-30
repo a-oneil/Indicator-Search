@@ -40,23 +40,19 @@ def load_config():
 def menu():
     try:
         # fmt: off
+        print(f"{color.RED}{'='*16} {color.BLUE}Indicator Search {color.RED}{'='*16}{color.ENDCOLOR}")
+        print(f"{color.BLUE}1:{color.ENDCOLOR}  Setup enviroment")
+        print(f"{color.BLUE}2:{color.ENDCOLOR}  Build docker-compose and run locally with SSL proxy")
+        print(f"{color.BLUE}2a:{color.ENDCOLOR} Docker compose up")
+        print(f"{color.BLUE}2b:{color.ENDCOLOR} Docker compose stop")
+        print(f"{color.BLUE}2c:{color.ENDCOLOR} Docker compose logs")
+        print(f"{color.BLUE}3:{color.ENDCOLOR}  Run local instance reachable at 127.0.0.1:8000 - Change reload enabled")
+        print(f"{color.BLUE}4:{color.ENDCOLOR}  Build a docker image and push to a container registry")
+        print(f"{color.BLUE}5:{color.ENDCOLOR}  Seed feedlists database")
+        print(f"{color.BLUE}6:{color.ENDCOLOR}  Seed indicators")
+        print(f"{color.BLUE}7:{color.ENDCOLOR}  Create user")
+        print(f"{color.BLUE}8:{color.ENDCOLOR}  Search indicator")
         print(f"{color.YELLOW}Ctrl + c to exit{color.ENDCOLOR}")
-        print(f"{color.BLUE}To configure API tokens, modify the ./config/.env file\nThen, restart the app or rebuild the container{color.ENDCOLOR}")
-        print("")
-        print(f"{color.RED}{'='*16} Indicator Search {'='*16}{color.ENDCOLOR}")
-        print(f"{color.BLUE}1.{color.ENDCOLOR}  Setup enviroment")
-        print(f"{color.BLUE}2.{color.ENDCOLOR}  Build docker-compose and run locally with SSL proxy")
-        print(f"{color.YELLOW} 2a.{color.ENDCOLOR}  Docker compose up")
-        print(f"{color.YELLOW} 2b.{color.ENDCOLOR}  Docker compose stop")
-        print(f"{color.YELLOW} 2c.{color.ENDCOLOR}  Docker compose logs")
-        print(f"{color.BLUE}3.{color.ENDCOLOR}  Run local instance reachable at 127.0.0.1:8000 - Change reload enabled")
-        print(f"{color.BLUE}4.{color.ENDCOLOR}  Build a docker image and push to a container registry")
-        print(f"{color.YELLOW}{'='*22} API {'='*23}{color.ENDCOLOR}")
-        print(f"{color.BLUE}5.{color.ENDCOLOR}  Seed feedlists database")
-        print(f"{color.BLUE}6.{color.ENDCOLOR}  Seed indicators")
-        print(f"{color.BLUE}7.{color.ENDCOLOR}  Create user")
-        print(f"{color.BLUE}8.{color.ENDCOLOR}  Create admin user")
-        print(f"{color.BLUE}9.{color.ENDCOLOR}  Search indicator")
         # fmt: on
         menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
     except KeyboardInterrupt:
@@ -69,7 +65,7 @@ def menu():
 def menu_switch(choice):
     try:
         if choice == "1":
-            reconfig()
+            config_venv()
         elif choice == "2":
             create_self_signed_cert()
             docker_compose_build()
@@ -96,13 +92,8 @@ def menu_switch(choice):
             create_user()
             input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
         elif choice == "8":
-            create_admin_user()
-            input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
-        elif choice == "9":
             search_indicator()
             input(f"{color.YELLOW}Press enter to continue{color.ENDCOLOR}")
-        else:
-            menu()
         menu()
     except KeyboardInterrupt:
         print(f"{color.RED}Exiting...{color.ENDCOLOR}")
@@ -110,42 +101,30 @@ def menu_switch(choice):
 
 
 def ioc_ageout_automation():
-    import requests
-    from urllib3.exceptions import InsecureRequestWarning
-
-    requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
-    if not api_key:
-        print(
-            f"{color.RED}IOC Ageout automation failed to run due to no ADMIN_API_KEY being set in the env file.\nPlease either create a user from the menu or use an existing user's api key.{color.ENDCOLOR}"
-        )
-        return
-
-    first_run = True
+    time.sleep(10)
     while True:
-        if not first_run:
+        try:
             response = requests.post(
                 f"{config['SERVER_ADDRESS']}/api/iocs/ageout",
                 headers={
                     "Content-Type": "application/json",
                     "Accept": "application/json",
                 },
-                json={"api_key": api_key},
                 verify=False,
             )
-            detail = response.json().get("detail")
-            for value in (
-                response.json().values() if detail != "No IOCs to age out" else False
-            ):
-                print(f"{color.YELLOW}IOC Automation: {color.ENDCOLOR}{value}")
-        else:
             print(
-                f"{color.YELLOW}IOC Automation: {color.ENDCOLOR} Automation started, waiting 1 hour before first run"
+                f"{color.YELLOW}IOC Automation:{color.ENDCOLOR} {response.json().get('detail')}"
             )
-            first_run = False
-        time.sleep(3600)
+        except Exception as error:
+            print(
+                f"{color.RED}IOC ageout automation failed to run due to an error:{color.ENDCOLOR} {error}"
+            )
+            break
+        finally:
+            time.sleep(3600)
 
 
-def reconfig():
+def config_venv():
     if os.path.exists("./venv/"):
         print(f"{color.YELLOW}Removing existing environment{color.ENDCOLOR}")
         shutil.rmtree("./venv")
@@ -166,6 +145,8 @@ def reconfig():
 
 
 def run_dev():
+    launch_postgres()
+    time.sleep(15)
     Thread(target=ioc_ageout_automation).start()
     subprocess.run(
         [
@@ -238,8 +219,12 @@ def push_docker_to_registry():
         )
 
 
+def request_api_key():
+    return str(input(f"{color.YELLOW}Enter API key: {color.ENDCOLOR}")).strip()
+
+
 def seed_feedlists():
-    def seed(json_file_path, list_type):
+    def seed(api_key, json_file_path, list_type):
         with open(json_file_path, "r") as json_file:
             json_input = json.load(json_file)
         json_file.close()
@@ -274,13 +259,15 @@ def seed_feedlists():
                         f"{color.BLUE}Successfully seeded {response.json().get('list_type')} feedlist: {color.ENDCOLOR}{response.json().get('name')}"
                     )
 
-    seed("./config/feedlist_examples/ip.json", list_type="ip")
-    seed("./config/feedlist_examples/hash.json", list_type="hash")
-    seed("./config/feedlist_examples/fqdn.json", list_type="fqdn")
-    seed("./config/feedlist_examples/any.json", list_type="any")
+    api_key = request_api_key()
+    seed(api_key, "./config/feedlist_examples/ip.json", list_type="ip")
+    seed(api_key, "./config/feedlist_examples/hash.json", list_type="hash")
+    seed(api_key, "./config/feedlist_examples/fqdn.json", list_type="fqdn")
+    seed(api_key, "./config/feedlist_examples/any.json", list_type="any")
 
 
 def seed_indicators():
+    api_key = request_api_key()
     indicator_list = [
         "a3cb3b02a683275f7e0a0f8a9a5c9e07",
         "124.89.118.9",
@@ -329,37 +316,17 @@ def create_user():
         )
 
 
-def create_admin_user():
-    password = str(input(f"{color.YELLOW}Enter password: {color.ENDCOLOR}")).strip()
-
-    response = requests.post(
-        f"{config['SERVER_ADDRESS']}/api/user",
-        headers={"Content-Type": "application/json", "Accept": "application/json"},
-        json={
-            "username": "Admin",
-            "password": password,
-            "invite_key": config["USER_INVITE_KEY"],
-        },
-        verify=False,
-    )
-    if response.status_code != 200:
-        print(color.RED + response.text + color.ENDCOLOR)
-    else:
-        print(
-            f"{color.BLUE}Successfully created admin user.{color.ENDCOLOR}\nUsername: Admin\nPassword: {password}\nAPI Key: {response.json().get('api_key')}"
-        )
-
-
 def search_indicator():
     import time
     import json
 
+    api_key = request_api_key()
     try:
         indicator = input(f"{color.YELLOW}Enter indicator: {color.ENDCOLOR}").strip()
         response = requests.post(
             f"{config['SERVER_ADDRESS']}/api/indicator",
             headers={"Content-Type": "application/json", "Accept": "application/json"},
-            json={"indicator": indicator, "api_key": config["ADMIN_API_KEY"]},
+            json={"indicator": indicator, "api_key": api_key},
             verify=False,
         )
 
@@ -516,22 +483,20 @@ if __name__ == "__main__":
 
     color = terminalColors()
     config = load_config()
-    api_key = config["ADMIN_API_KEY"]
-
-    if parser.parse_args().run:
-        run_global()
-
-    if parser.parse_args().dev:
-        launch_postgres()
-        time.sleep(15)
-        run_dev()
 
     if not os.path.exists("./venv"):
-        reconfig()
+        config_venv()
 
     import requests
     import psutil
     from urllib3.exceptions import InsecureRequestWarning
 
     requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+
+    if parser.parse_args().run:
+        run_global()
+
+    if parser.parse_args().dev:
+        run_dev()
+
     menu()
