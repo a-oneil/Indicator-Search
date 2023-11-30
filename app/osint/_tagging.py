@@ -81,7 +81,8 @@ def geo_data(indicator):
                 tags.update({"proxy": site.get("results").get("proxy")})
                 
             if site.get("results").get("connection_type"):
-                tags.update({"connection_type": site.get("results").get("connection_type")})
+                if not site.get("results").get("connection_type") == "Premium required.":
+                    tags.update({"connection_type": site.get("results").get("connection_type")})
 
         # fmt: on
     return tags
