@@ -149,3 +149,13 @@ def convert_url_to_fqdn(url):
         return domain_match.group(1)
     else:
         raise Exception("Invalid URL")
+
+
+def sort_results(item):
+    """This function is used to sort indicator.results. It places items with results at the top and items with "No results found" at the bottom. The tools will be sorted alphabetically within each group."""
+    if "error" in item["results"] and item["results"]["error"] == "No results found":
+        # Place sites with "No results found" at the bottom
+        return (float("inf"), item["tool"])
+    else:
+        # Place sites with results at the top
+        return (float("-inf"), item["tool"])
