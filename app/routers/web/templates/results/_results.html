@@ -57,13 +57,13 @@
   }
 </script>
 
-{%for site in indicator.results %}
+{%for tool in indicator.results %}
 
-{% if "is not set in .env file" in site.results.error %}
+{% if "is not set in .env file" in tool.results.error %}
 
-{% elif "No results found" in site.results.error %}
+{% elif "No results found" in tool.results.error %}
 <div class="ui segment">
-  <p class="ui small header"><i class="fa-solid fa-circle-xmark"></i> {{site.site|snakecase_to_title}}: No results found
+  <p class="ui small header"><i class="fa-solid fa-circle-xmark"></i> {{tool.tool|snakecase_to_title}}: No results found
   </p>
 </div>
 
@@ -74,13 +74,13 @@
   top: 0px;
   right:-3.5px; 
   width: 50px;
-  border-radius: 0px 4px 0px 4px;" onclick='CopyTextToClipboard("{{site.results}}", this)'><i
+  border-radius: 0px 4px 0px 4px;" onclick='CopyTextToClipboard("{{tool.results}}", this)'><i
       class="fa-solid fa-copy"></i></button>
   <p class="ui small header">
-    <i class="fa-solid fa-circle-check"></i> <a id="{{site.site}}"></a>{{site.site|snakecase_to_title}}</i>
+    <i class="fa-solid fa-circle-check"></i> <a id="{{tool.tool}}"></a>{{tool.tool|snakecase_to_title}}</i>
   </p>
   <div class="ui two column grid">
-    {% for key,value in site.results.items() %}
+    {% for key,value in tool.results.items() %}
     <div class="column" style="padding: 14px; word-wrap: break-word">
       <div class="ui raised fluid card">
         <div class="content">

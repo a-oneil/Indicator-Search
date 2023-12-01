@@ -65,24 +65,24 @@ def feedlist_results(indicator):
 
 def geo_data(indicator):
     tags = {}
-    for site in indicator.results if indicator.results else []:
+    for result in indicator.results if indicator.results else []:
         # fmt: off
-        if site.get("site") == "ip_whois":
-            tags.update({"country": site.get("results").get("country")})
+        if result.get("tool") == "ip_whois":
+            tags.update({"country": result.get("results").get("country")})
         
-        if site.get("site") == "ip_quality_score":
-            if site.get("results").get("mobile"):
-                tags.update({"mobile": site.get("results").get("mobile")})
+        if result.get("tool") == "ip_quality_score":
+            if result.get("results").get("mobile"):
+                tags.update({"mobile": result.get("results").get("mobile")})
             
-            if site.get("results").get("tor"):
-                tags.update({"tor": site.get("results").get("tor")})
+            if result.get("results").get("tor"):
+                tags.update({"tor": result.get("results").get("tor")})
             
-            if site.get("results").get("proxy"):
-                tags.update({"proxy": site.get("results").get("proxy")})
+            if result.get("results").get("proxy"):
+                tags.update({"proxy": result.get("results").get("proxy")})
                 
-            if site.get("results").get("connection_type"):
-                if not site.get("results").get("connection_type") == "Premium required.":
-                    tags.update({"connection_type": site.get("results").get("connection_type")})
+            if result.get("results").get("connection_type"):
+                if not result.get("results").get("connection_type") == "Premium required.":
+                    tags.update({"connection_type": result.get("results").get("connection_type")})
 
         # fmt: on
     return tags
@@ -90,20 +90,20 @@ def geo_data(indicator):
 
 def virustotal(indicator):
     tags = {}
-    for site in indicator.results if indicator.results else []:
+    for result in indicator.results if indicator.results else []:
         # fmt: off
-        if site.get("site") == "virustotal_hash":
-            if site.get("results").get("suggested_threat_label"):
-                tags.update({"signature": site.get("results").get("suggested_threat_label")})
+        if result.get("tool") == "virustotal_hash":
+            if result.get("results").get("suggested_threat_label"):
+                tags.update({"signature": result.get("results").get("suggested_threat_label")})
             
-            if site.get("results").get("popular_threat_category"):
-                tags.update({"category": site.get("results").get("popular_threat_category")})
+            if result.get("results").get("popular_threat_category"):
+                tags.update({"category": result.get("results").get("popular_threat_category")})
 
-        if site.get("site") in ["virustotal_url", "virustotal_hash", "virustotal_domain", "virustotal_ip"]: 
-            malicious_hits = site.get("results").get("malicious", 0)
-            undetected_hits = site.get("results").get("undetected", 0)
-            suspicious_hits = site.get("results").get("suspicious", 0)
-            harmless_hits = site.get("results").get("harmless", 0)
+        if result.get("tool") in ["virustotal_url", "virustotal_hash", "virustotal_domain", "virustotal_ip"]: 
+            malicious_hits = result.get("results").get("malicious", 0)
+            undetected_hits = result.get("results").get("undetected", 0)
+            suspicious_hits = result.get("results").get("suspicious", 0)
+            harmless_hits = result.get("results").get("harmless", 0)
             total_hits = int(malicious_hits) + int(undetected_hits) + int(suspicious_hits) + int(harmless_hits)
 
             if malicious_hits:
@@ -112,9 +112,9 @@ def virustotal(indicator):
                     tags.update({"suspicious": True})
                 if malicious_hits >= 10:
                     tags.update({"malicious": True})
-            if site.get("results").get("creation_date"):
+            if result.get("results").get("creation_date"):
                 # Parse the input time string into a datetime object
-                date_object = datetime.strptime(site.get("results").get("creation_date"), "%a %b %d %H:%M:%S %Y")
+                date_object = datetime.strptime(result.get("results").get("creation_date"), "%a %b %d %H:%M:%S %Y")
                 # Calculate the current date
                 current_date = datetime.now()
                 # Calculate the date 3 months ago from the current date
@@ -128,18 +128,20 @@ def virustotal(indicator):
 
 def tweetfeed(indicator):
     tags = {}
-    for site in indicator.results if indicator.results else []:
-        if site.get("site") == "tweetfeed.live" and site.get("results").get("value"):
+    for result in indicator.results if indicator.results else []:
+        if result.get("tool") == "tweetfeed.live" and result.get("results").get(
+            "value"
+        ):
             tags.update({"tweetfeed_match": True})
     return tags
 
 
 def greynoise(indicator):
     tags = {}
-    for site in indicator.results if indicator.results else []:
+    for result in indicator.results if indicator.results else []:
         if (
-            site.get("site") == "greynoise_community"
-            and site.get("results").get("classification", "") == "malicious"
+            result.get("tool") == "greynoise_community"
+            and result.get("results").get("classification", "") == "malicious"
         ):
             tags.update({"malicious": True})
     return tags
@@ -147,10 +149,10 @@ def greynoise(indicator):
 
 def urlscan(indicator):
     tags = {}
-    for site in indicator.results if indicator.results else []:
+    for result in indicator.results if indicator.results else []:
         if (
-            site.get("site") == "urlscan.io"
-            and site.get("results").get("malicious", "") == "malicious"
+            result.get("tool") == "urlscan.io"
+            and result.get("results").get("malicious", "") == "malicious"
         ):
             tags.update({"malicious": True})
     return tags
@@ -158,18 +160,18 @@ def urlscan(indicator):
 
 def known_binaries(indicator):
     tags = {}
-    for site in indicator.results if indicator.results else []:
-        if site.get("site") in ["circl.lu", "echo_trail"] and site.get("results").get(
-            "file_name", ""
-        ):
+    for result in indicator.results if indicator.results else []:
+        if result.get("tool") in ["circl.lu", "echo_trail"] and result.get(
+            "results"
+        ).get("file_name", ""):
             tags.update({"known_binary": True})
     return tags
 
 
 def breach_directory(indicator):
     tags = {}
-    for site in indicator.results if indicator.results else []:
-        if site.get("site") == "breach_directory":
-            if site.get("results").get("found"):
+    for result in indicator.results if indicator.results else []:
+        if result.get("tool") == "breach_directory":
+            if result.get("results").get("found"):
                 tags.update({"data_breach": True})
     return tags

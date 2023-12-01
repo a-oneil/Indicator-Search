@@ -81,7 +81,7 @@ def get_type(indicator):
 def no_results_found(tool_name):
     return (
         {
-            "site": tool_name,
+            "tool": tool_name,
             "results": {"error": "No results found"},
         },
     )
@@ -90,7 +90,7 @@ def no_results_found(tool_name):
 def failed_to_run(tool_name, error):
     return (
         {
-            "site": tool_name,
+            "tool": tool_name,
             "results": {"error": f"{tool_name} failed to run: {str(error)}"},
         },
     )
@@ -99,7 +99,7 @@ def failed_to_run(tool_name, error):
 def status_code_error(tool_name, status_code, reason):
     return (
         {
-            "site": tool_name,
+            "tool": tool_name,
             "results": {"error": f"{tool_name} failed to run: {status_code} {reason}"},
         },
     )
@@ -154,8 +154,8 @@ def convert_url_to_fqdn(url):
 def sort_results(item):
     """This function is used to sort indicator.results. It places items with results at the top and items with "No results found" at the bottom. The tools will be sorted alphabetically within each group."""
     if "error" in item["results"] and item["results"]["error"] == "No results found":
-        # Place sites with "No results found" at the bottom
+        # Place tools with "No results found" at the bottom
         return (float("inf"), item["tool"])
     else:
-        # Place sites with results at the top
+        # Place tools with results at the top
         return (float("-inf"), item["tool"])

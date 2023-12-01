@@ -124,7 +124,7 @@ def ipinfoio(indicator):
         return (
             # fmt: off
             {
-                "site": "ipinfo.io",
+                "tool": "ipinfo.io",
                 "results": {
                     "city": response.json().get("city"),
                     "region": response.json().get("region"),
@@ -145,7 +145,7 @@ def search_ipwhois(indicator):
         obj = ipwhois.IPWhois(indicator.indicator)
         return (
             {
-                "site": "ip_whois",
+                "tool": "ip_whois",
                 "results": {
                     "asn_number": obj.lookup_rws().get("asn"),
                     "asn_registry": obj.lookup_rws().get("asn_registry"),
@@ -184,7 +184,7 @@ def ipqualityscore(indicator):
         return (
             # fmt: off
                 {
-                    "site": "ip_quality_score",
+                    "tool": "ip_quality_score",
                     "results": {
                         "isp": response.json().get("ISP", ""),
                         "organization": response.json().get("organization", ""),
@@ -232,7 +232,7 @@ def virustotal_ip(indicator):
         return (
             # fmt: off
                 {
-                    "site": "virustotal_ip",
+                    "tool": "virustotal_ip",
                     "results": {
                         "last analysis date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("last_analysis_date")).strftime('%c') if response.json().get("data").get("attributes").get("last_analysis_date") else "",
                         "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
@@ -280,7 +280,7 @@ def virustotal_domain(indicator):
         return (
             # fmt: off
                 {
-                    "site": "virustotal_domain",
+                    "tool": "virustotal_domain",
                     "results": {
                         "whois": response.json().get("data").get("attributes").get("whois"),
                         "creation_date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("creation_date")).strftime('%c') if response.json().get("data").get("attributes").get("creation_date") else "",
@@ -342,7 +342,7 @@ def virustotal_url(indicator):
         return (
             # fmt: off
                 {
-                    "site": "virustotal_url",
+                    "tool": "virustotal_url",
                     "results": {
                         "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
                         "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
@@ -390,7 +390,7 @@ def virustotal_hash(indicator):
         return (
             # fmt: off
                 {
-                    "site": "virustotal_hash",
+                    "tool": "virustotal_hash",
                     "results": {
                         "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
                         "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
@@ -441,7 +441,7 @@ def greynoise_community(indicator):
         return (
             # fmt: off
                 {
-                    "site": "greynoise_community",
+                    "tool": "greynoise_community",
                     "results": {
                         "classification": response.json().get("classification"),
                         "noise": response.json().get("noise"),
@@ -478,7 +478,7 @@ def hacked_ip_threatlist(indicator):
         return (
             # fmt: off
                 {
-                    "site": "hacked_ip",
+                    "tool": "hacked_ip",
                     "results": {
                         "active_threatlists": results_list
                     },
@@ -540,7 +540,7 @@ def urlvoid(indicator):
             return (
                 # fmt: off
                     {
-                        "site": "url_void",
+                        "tool": "url_void",
                         "results": {
                             "dns_records": response.json().get("data", {}).get("report", {}).get("dns_records", {}).get("mx", {}).get("records", []),
                             "detections": response.json().get("data", {}).get("report", {}).get("domain_blacklist", {}).get("detections"),
@@ -570,7 +570,7 @@ def macvendors(indicator):
 
         return (
             {
-                "site": "mac_vendors",
+                "tool": "mac_vendors",
                 "results": {
                     "manufacturer": response.text,
                 },
@@ -595,7 +595,7 @@ def stopforumspam_email(indicator):
         return (
             # fmt: off
                 {
-                    "site": "stop_forum_spam_email",
+                    "tool": "stop_forum_spam_email",
                     "results": {
                         "appears": results.get("response", {}).get("appears"),
                         "frequency": results.get("response", {}).get("frequency")
@@ -622,7 +622,7 @@ def stopforumspam_ip(indicator):
         return (
             # fmt: off
                 {
-                    "site": "stop_forum_spam_ip",
+                    "tool": "stop_forum_spam_ip",
                     "results": {
                         "appears": results.get("response", {}).get("appears"),
                         "frequency": results.get("response", {}).get("frequency")
@@ -655,7 +655,7 @@ def abuse_ipdb(indicator):
         # fmt: off
         return (
             {
-                "site": "abuseipdb",
+                "tool": "abuseipdb",
                 "results": {
                     "reports": response.json().get("data", {}).get("totalReports"),
                     "abuse_score": response.json().get("data", {}).get("abuseConfidenceScore"),
@@ -687,7 +687,7 @@ def emailrepio(indicator):
         return (
             # fmt: off
                 {
-                    "site": "emailrep.io",
+                    "tool": "emailrep.io",
                     "results": {
                         "reputation": response.json().get("reputation"),
                         "suspicious": response.json().get("suspicious"),
@@ -762,7 +762,7 @@ def tweetfeed_live(indicator):
 
         return (
             {
-                "site": "tweetfeed.live",
+                "tool": "tweetfeed.live",
                 "results": results,
             },
         )
@@ -803,7 +803,7 @@ def urlscanio(indicator):
         return (
             # fmt: off
                 {
-                    "site": "urlscan.io",
+                    "tool": "urlscan.io",
                     "results": {
                         "last_scan_guid": last_scan_response.json().get("task").get("uuid"),
                         "last_scan_url": last_scan_response.json().get("task").get("reportURL"),
@@ -845,7 +845,7 @@ def circl_lu(indicator):
         return (
             # fmt: off
                 {
-                    "site": "circl.lu",
+                    "tool": "circl.lu",
                     "results": {
                         "file_name": response.json().get("FileName"),
                         "file_size_kb": response.json().get("FileSize"),
@@ -875,7 +875,7 @@ def project_honeypot(indicator):
         return (
             # fmt: off
                 {
-                    "site": "project_honeypot",
+                    "tool": "project_honeypot",
                     "results": {
                         "days_since_last_activity": response.get("days_since_last_activity"),
                         "name": response.get("name"),
@@ -913,7 +913,7 @@ def echo_trail(indicator):
         return (
             # fmt: off
                 {
-                    "site": "echo_trail",
+                    "tool": "echo_trail",
                     "results": {
                         "file_name": response.json().get("filenames"),
                         "description": response.json().get("description"),
@@ -957,7 +957,7 @@ def hybrid_analysis(indicator):
         return (
             # fmt: off
                 {
-                    "site": "hybrid_analysis",
+                    "tool": "hybrid_analysis",
                     "results": {
                         "file_name": response.get("submissions")[0].get("filename"),
                         "type": response.get("type"),
@@ -1004,7 +1004,7 @@ def breach_directory(indicator):
         return (
             # fmt: off
                 {
-                    "site": "breach_directory",
+                    "tool": "breach_directory",
                     "results": {
                         "found": response.json().get("found", {}),
                         "frequency": response.json().get("result", [])
@@ -1030,7 +1030,7 @@ def shodan(indicator):
         return (
             # fmt: off
                 {
-                    "site": "shodan",
+                    "tool": "shodan",
                     "results": {
                         "hostnames": host.get("hostnames"),
                         "domains": host.get("domains"),
@@ -1071,7 +1071,7 @@ def malware_bazzar(indicator):
         return (
             # fmt: off
                 {
-                    "site": "malware_bazzar",
+                    "tool": "malware_bazzar",
                     "results": {
                         "file_type": response.json().get("data")[0].get("file_type"),
                         "signature": response.json().get("data")[0].get("signature"),
@@ -1138,7 +1138,7 @@ def inquestlabs(indicator):
         return (
             # fmt: off
                 {
-                    "site": "inquest_labs",
+                    "tool": "inquest_labs",
                     "results": {
                         "classification": response.json().get("data", [])[0].get("classification"),
                         "file_type": response.json().get("data", [])[0].get("file_type"),
@@ -1203,7 +1203,7 @@ def maltiverse(indicator):
         return (
             # fmt: off
                 {
-                    "site": "maltiverse",
+                    "tool": "maltiverse",
                     "results": {
                         "classification": result.get("classification", ""),
                         "blacklist": result.get("blacklist", []),
@@ -1232,7 +1232,7 @@ def numverify(indicator):
         return (
             # fmt: off
                 {
-                    "site": "numverify",
+                    "tool": "numverify",
                     "results": response.json()
                 },
             # fmt: on
@@ -1259,7 +1259,7 @@ def ipqualityscore_phone(indicator):
         return (
             # fmt: off
                 {
-                    "site": "ip_quality_score_phone",
+                    "tool": "ip_quality_score_phone",
                     "results": response.json()
                 },
             # fmt: on
@@ -1296,7 +1296,7 @@ def wayback_machine(indicator):
         return (
             # fmt: off
                 {
-                    "site": "wayback_machine",
+                    "tool": "wayback_machine",
                     "results": response.json().get("archived_snapshots", {}).get("closest")
                 },
             # fmt: on
@@ -1322,7 +1322,7 @@ def kickbox_disposible_email(indicator):
         return (
             # fmt: off
                 {
-                    "site": "kickbox_disposible_email",
+                    "tool": "kickbox_disposible_email",
                     "results": response.json().get("disposable", {})
                 },
             # fmt: on
@@ -1357,7 +1357,7 @@ def whatsmybrowser_ua(indicator):
         return (
             # fmt: off
                 {
-                    "site": "whatsmybrowser_ua",
+                    "tool": "whatsmybrowser_ua",
                     "results": {
                         "is_abusive": response.json().get("parse", {}).get("is_abusive"),
                         "simple_software_string": response.json().get("parse", {}).get("simple_software_string"),
@@ -1398,7 +1398,7 @@ def shimon(indicator):
         return (
             # fmt: off
                 {
-                    "site": "shimon",
+                    "tool": "shimon",
                     "results": response.json()
                 },
             # fmt: on

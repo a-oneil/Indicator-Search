@@ -223,7 +223,7 @@ def new_indicator_handler(indicator, user, db: Session):
         indicator.complete = True
         indicator.results = (
             {
-                "site": "Error",
+                "tool": "Error",
                 "results": {"error": str(e)},
             },
         )
