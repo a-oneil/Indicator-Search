@@ -38,22 +38,22 @@ def enrichments_handler(indicator):
 
 
 def geo_data(indicator):
-    results = {}
-    for site in indicator.results if indicator.results else []:
-        if site.get("site") == "ipinfo.io":
-            if site.get("results").get("geolocation"):
-                geo = site.get("results").get("geolocation")
+    enrichment = {}
+    for result in indicator.results if indicator.results else []:
+        if result.get("tool") == "ipinfo.io":
+            if result.get("results").get("geolocation"):
+                geo = result.get("results").get("geolocation")
                 geo = geo.split(",")
-                results.update({"geo_data": [geo[0], geo[1]]})
-    return results
+                enrichment.update({"geo_data": [geo[0], geo[1]]})
+    return enrichment
 
 
 def urlscan(indicator):
-    results = {}
-    for site in indicator.results if indicator.results else []:
-        if site.get("site") == "urlscan.io":
-            if site.get("results").get("last_scan_screenshot"):
+    enrichment = {}
+    for result in indicator.results if indicator.results else []:
+        if result.get("tool") == "urlscan.io":
+            if result.get("results").get("last_scan_screenshot"):
                 # fmt: off
-                results.update({"last_scan_screenshot": site.get("results").get("last_scan_screenshot")})
+                enrichment.update({"last_scan_screenshot": result.get("results").get("last_scan_screenshot")})
                 # fmt: on
-    return results
+    return enrichment

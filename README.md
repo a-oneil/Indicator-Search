@@ -80,7 +80,7 @@ See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/me
   "processing_time": 13.17,
   "results": [
     {
-      "site": "tweetfeed.live",
+      "tool": "tweetfeed.live",
       "results": {
         "date": "2023-07-19 13:33:54",
         "user": "CarlyGriggs13",
@@ -95,7 +95,7 @@ See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/me
       }
     },
     {
-      "site": "virustotal_domain",
+      "tool": "virustotal_domain",
       "results": {
         "harmless": 60,
         "malicious": 5,
@@ -116,7 +116,7 @@ See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/me
       }
     },
     {
-      "site": "virustotal_url",
+      "tool": "virustotal_url",
       "results": {
         "harmless": 63,
         "malicious": 6,
@@ -141,13 +141,13 @@ See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/me
       }
     },
     {
-      "site": "url_void",
+      "tool": "url_void",
       "results": {
         "error": "No results found"
       }
     },
     {
-      "site": "urlscan.io",
+      "tool": "urlscan.io",
       "results": {
         "last_scan_guid": "7e27ee56-5caa-4227-841a-1121cf65b692",
         "last_scan_url": "https://urlscan.io/result/7e27ee56-5caa-4227-841a-1121cf65b692/",
@@ -156,19 +156,19 @@ See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/me
       }
     },
     {
-      "site": "inquest_labs",
+      "tool": "inquest_labs",
       "results": {
         "error": "No results found"
       }
     },
     {
-      "site": "maltiverse",
+      "tool": "maltiverse",
       "results": {
         "error": "No results found"
       }
     },
     {
-      "site": "wayback_machine",
+      "tool": "wayback_machine",
       "results": {
         "error": "No results found"
       }

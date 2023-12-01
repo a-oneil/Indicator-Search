@@ -5,6 +5,7 @@ from . import tools, enrichments_handler, tagging_handler, links_handler
 from .. import notifications
 from ..models import Iocs
 from sqlalchemy.orm import Session
+from .utils import sort_results
 
 
 def new_indicator_handler(indicator, user, db: Session):
@@ -139,10 +140,12 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.results += tools.whatsmybrowser_ua(indicator)
         # fmt: on
 
+        # Wait for feedlist thread to finish
         if threads_to_wait_for:
             for thread in threads_to_wait_for:
                 thread.join()
 
+        # Remove results that have no data or tools that did not have an API key set
         for each in indicator.results:
             keys_to_remove = []
             for key, value in each["results"].items():
@@ -155,6 +158,9 @@ def new_indicator_handler(indicator, user, db: Session):
 
             if not each["results"]:
                 each["results"] = {"error": "No results found"}
+
+        # Sort results based on if the tool had results or not
+        indicator.results = sorted(indicator.results, key=sort_results)
 
         notifications.console_output(
             "OSINT Scan complete",
@@ -217,7 +223,7 @@ def new_indicator_handler(indicator, user, db: Session):
         indicator.complete = True
         indicator.results = (
             {
-                "site": "Error",
+                "tool": "Error",
                 "results": {"error": str(e)},
             },
         )

@@ -84,7 +84,7 @@
           <div class="ui list">
             {% for result in indicator.results %}
             {% if not result.results.error %}
-            <div class="item">• <a href="#{{result.site}}">{{result.site|snakecase_to_title}}</a></div>
+            <div class="item">• <a href="#{{result.tool}}">{{result.tool|snakecase_to_title}}</a></div>
             {% endif %}
             {% endfor %}
           </div>
