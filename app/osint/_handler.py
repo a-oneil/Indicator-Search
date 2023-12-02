@@ -1,11 +1,12 @@
 import time
 import traceback
 import threading
-from . import tools, enrichments_handler, tagging_handler, links_handler
+from . import enrichments_handler, tagging_handler, links_handler
 from .. import notifications
 from ..models import Iocs
 from sqlalchemy.orm import Session
 from .utils import sort_results
+from .tools import *
 
 
 def new_indicator_handler(indicator, user, db: Session):
@@ -34,7 +35,7 @@ def new_indicator_handler(indicator, user, db: Session):
             ]
         ):
             thread = threading.Thread(
-                target=tools.search_feedlists, daemon=False, args=(indicator, db)
+                target=search_feedlists, daemon=False, args=(indicator, db)
             )
             threads_to_wait_for.append(thread)
             threads_to_wait_for[0].start()
@@ -44,102 +45,102 @@ def new_indicator_handler(indicator, user, db: Session):
 
         # fmt: off
         if indicator.indicator_type == "ipv4":
-            indicator.results += tools.tweetfeed_live(indicator)
-            indicator.results += tools.search_ipwhois(indicator)
-            indicator.results += tools.ipinfoio(indicator)
-            indicator.results += tools.abuse_ipdb(indicator)
-            indicator.results += tools.ipqualityscore(indicator)
-            indicator.results += tools.greynoise_community(indicator)
-            indicator.results += tools.virustotal_ip(indicator)
-            indicator.results += tools.project_honeypot(indicator)
-            indicator.results += tools.hacked_ip_threatlist(indicator)
-            indicator.results += tools.stopforumspam_ip(indicator)
-            indicator.results += tools.shodan(indicator)
-            indicator.results += tools.inquestlabs(indicator)
-            indicator.results += tools.maltiverse(indicator)
-        
+            indicator.results += tweetfeed_live(indicator)
+            indicator.results += ipwhois(indicator)
+            indicator.results += ipinfoio(indicator)
+            indicator.results += abuseipdb(indicator)
+            indicator.results += ipqualityscore_ip(indicator)
+            indicator.results += greynoise_community(indicator)
+            indicator.results += virustotal_ip(indicator)
+            indicator.results += project_honeypot(indicator)
+            indicator.results += hacked_ip(indicator)
+            indicator.results += stopforumspam_ip(indicator)
+            indicator.results += shodan(indicator)
+            indicator.results += inquestlabs(indicator)
+            indicator.results += maltiverse(indicator)
+
         elif indicator.indicator_type == "ipv6":
-            indicator.results += tools.ipinfoio(indicator)
-            indicator.results += tools.abuse_ipdb(indicator)
-            indicator.results += tools.ipqualityscore(indicator)
-            indicator.results += tools.virustotal_ip(indicator)
-            indicator.results += tools.stopforumspam_ip(indicator)
+            indicator.results += ipinfoio(indicator)
+            indicator.results += abuseipdb(indicator)
+            indicator.results += ipqualityscore_ip(indicator)
+            indicator.results += virustotal_ip(indicator)
+            indicator.results += stopforumspam_ip(indicator)
 
         elif indicator.indicator_type == "fqdn":
-            indicator.results += tools.tweetfeed_live(indicator)
-            indicator.results += tools.virustotal_domain(indicator)
-            indicator.results += tools.virustotal_url(indicator)
-            indicator.results += tools.urlvoid(indicator)
-            indicator.results += tools.urlscanio(indicator)
-            indicator.results += tools.inquestlabs(indicator)
-            indicator.results += tools.maltiverse(indicator)
-            indicator.results += tools.wayback_machine(indicator)
-            indicator.results += tools.kickbox_disposible_email(indicator)
-            indicator.results += tools.shimon(indicator)
+            indicator.results += tweetfeed_live(indicator)
+            indicator.results += virustotal_domain(indicator)
+            indicator.results += virustotal_url(indicator)
+            indicator.results += urlvoid(indicator)
+            indicator.results += urlscanio(indicator)
+            indicator.results += inquestlabs(indicator)
+            indicator.results += maltiverse(indicator)
+            indicator.results += wayback_machine(indicator)
+            indicator.results += kickbox_disposible_email(indicator)
+            indicator.results += shimon(indicator)
 
         elif indicator.indicator_type == "url":
-            indicator.results += tools.tweetfeed_live(indicator)
-            indicator.results += tools.virustotal_domain(indicator)
-            indicator.results += tools.virustotal_url(indicator)
-            indicator.results += tools.urlvoid(indicator)
-            indicator.results += tools.urlscanio(indicator)
-            indicator.results += tools.inquestlabs(indicator)
-            indicator.results += tools.maltiverse(indicator)
-            indicator.results += tools.wayback_machine(indicator)
-            indicator.results += tools.shimon(indicator)
+            indicator.results += tweetfeed_live(indicator)
+            indicator.results += virustotal_domain(indicator)
+            indicator.results += virustotal_url(indicator)
+            indicator.results += urlvoid(indicator)
+            indicator.results += urlscanio(indicator)
+            indicator.results += inquestlabs(indicator)
+            indicator.results += maltiverse(indicator)
+            indicator.results += wayback_machine(indicator)
+            indicator.results += shimon(indicator)
 
         elif indicator.indicator_type == "email":
-            indicator.results += tools.emailrepio(indicator)
-            indicator.results += tools.breach_directory(indicator)
-            indicator.results += tools.stopforumspam_email(indicator)
-            indicator.results += tools.virustotal_domain(indicator)
-            indicator.results += tools.urlvoid(indicator)
-            indicator.results += tools.inquestlabs(indicator)
-            indicator.results += tools.wayback_machine(indicator)
-            indicator.results += tools.kickbox_disposible_email(indicator)
+            indicator.results += emailrepio(indicator)
+            indicator.results += breach_directory(indicator)
+            indicator.results += stopforumspam_email(indicator)
+            indicator.results += virustotal_domain(indicator)
+            indicator.results += urlvoid(indicator)
+            indicator.results += inquestlabs(indicator)
+            indicator.results += wayback_machine(indicator)
+            indicator.results += kickbox_disposible_email(indicator)
 
         elif indicator.indicator_type == "hash.md5":
-            indicator.results += tools.circl_lu(indicator)
-            indicator.results += tools.echo_trail(indicator)
-            indicator.results += tools.tweetfeed_live(indicator)
-            indicator.results += tools.virustotal_hash(indicator)
-            indicator.results += tools.hybrid_analysis(indicator)
-            indicator.results += tools.malware_bazzar(indicator)
-            indicator.results += tools.inquestlabs(indicator)
-            indicator.results += tools.maltiverse(indicator)
+            indicator.results += circl_lu(indicator)
+            indicator.results += echo_trail(indicator)
+            indicator.results += tweetfeed_live(indicator)
+            indicator.results += virustotal_hash(indicator)
+            indicator.results += hybrid_analysis(indicator)
+            indicator.results += malware_bazzar(indicator)
+            indicator.results += inquestlabs(indicator)
+            indicator.results += maltiverse(indicator)
 
         elif indicator.indicator_type == "hash.sha1":
-            indicator.results += tools.circl_lu(indicator)
-            indicator.results += tools.virustotal_hash(indicator)
-            indicator.results += tools.hybrid_analysis(indicator)
-            indicator.results += tools.malware_bazzar(indicator)
-            indicator.results += tools.inquestlabs(indicator)
-            indicator.results += tools.maltiverse(indicator)
+            indicator.results += circl_lu(indicator)
+            indicator.results += virustotal_hash(indicator)
+            indicator.results += hybrid_analysis(indicator)
+            indicator.results += malware_bazzar(indicator)
+            indicator.results += inquestlabs(indicator)
+            indicator.results += maltiverse(indicator)
 
         elif indicator.indicator_type == "hash.sha256":
-            indicator.results += tools.circl_lu(indicator)
-            indicator.results += tools.echo_trail(indicator)
-            indicator.results += tools.tweetfeed_live(indicator)
-            indicator.results += tools.virustotal_hash(indicator)
-            indicator.results += tools.hybrid_analysis(indicator)
-            indicator.results += tools.malware_bazzar(indicator)
-            indicator.results += tools.inquestlabs(indicator)
-            indicator.results += tools.maltiverse(indicator)
+            indicator.results += circl_lu(indicator)
+            indicator.results += echo_trail(indicator)
+            indicator.results += tweetfeed_live(indicator)
+            indicator.results += virustotal_hash(indicator)
+            indicator.results += hybrid_analysis(indicator)
+            indicator.results += malware_bazzar(indicator)
+            indicator.results += inquestlabs(indicator)
+            indicator.results += maltiverse(indicator)
 
         elif indicator.indicator_type == "hash.sha512":
-            indicator.results += tools.virustotal_hash(indicator)
-            indicator.results += tools.inquestlabs(indicator)
-            indicator.results += tools.maltiverse(indicator)
+            indicator.results += virustotal_hash(indicator)
+            indicator.results += inquestlabs(indicator)
+            indicator.results += maltiverse(indicator)
 
         elif indicator.indicator_type == "mac":
-            indicator.results += tools.macvendors(indicator)
+            indicator.results += macvendors(indicator)
 
         elif indicator.indicator_type == "phone":
-            indicator.results += tools.numverify(indicator)
-            indicator.results += tools.ipqualityscore_phone(indicator)
+            indicator.results += numverify(indicator)
+            indicator.results += ipqualityscore_phone(indicator)
 
         elif indicator.indicator_type == "useragent":
-            indicator.results += tools.whatsmybrowser_ua(indicator)
+            indicator.results += whatsmybrowser_ua(indicator)
         # fmt: on
 
         # Wait for feedlist thread to finish
