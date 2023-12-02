@@ -66,21 +66,32 @@ See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/me
 
 ```
 {
-  "id": 4,
-  "time_created": "2023-11-27T04:59:54.522028+00:00",
-  "username": "aoneil",
-  "indicator": "https://injective.claims",
+  "time_updated": "2023-12-02T03:46:11.523330-05:00",
+  "time_created": "2023-12-02T03:46:11.520002-05:00",
+  "username": "demo2023",
   "indicator_type": "url",
   "feedlist_results": null,
+  "tags": {
+    "tweetfeed_match": true,
+    "vt_hits": "6/90",
+    "suspicious": true
+  },
   "enrichments": {
     "last_scan_screenshot": "https://urlscan.io/screenshots/7e27ee56-5caa-4227-841a-1121cf65b692.png"
   },
   "ioc_id": null,
-  "time_updated": "2023-11-27T04:59:54.543198+00:00",
-  "processing_time": 13.17,
+  "id": 40,
+  "processing_time": 5.54,
+  "indicator": "https://injective.claims",
   "results": [
     {
       "tool": "tweetfeed.live",
+      "outcome": {
+        "status": "results_found",
+        "error_message": null,
+        "status_code": 200,
+        "reason": "OK"
+      },
       "results": {
         "date": "2023-07-19 13:33:54",
         "user": "CarlyGriggs13",
@@ -95,8 +106,36 @@ See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/me
       }
     },
     {
-      "tool": "virustotal_domain",
+      "tool": "urlscan.io",
+      "outcome": {
+        "status": "results_found",
+        "error_message": null,
+        "status_code": 200,
+        "reason": "OK"
+      },
       "results": {
+        "last_scan_guid": "7e27ee56-5caa-4227-841a-1121cf65b692",
+        "last_scan_url": "https://urlscan.io/result/7e27ee56-5caa-4227-841a-1121cf65b692/",
+        "last_scan_time": "2023-07-20T07:15:35.447Z",
+        "last_scan_score": 0,
+        "categories": [],
+        "malicious": false,
+        "tags": [],
+        "last_scan_screenshot": "https://urlscan.io/screenshots/7e27ee56-5caa-4227-841a-1121cf65b692.png"
+      }
+    },
+    {
+      "tool": "virustotal_domain",
+      "outcome": {
+        "status": "results_found",
+        "error_message": null,
+        "status_code": 200,
+        "reason": "OK"
+      },
+      "results": {
+        "whois": null,
+        "creation_date": "",
+        "whois_date": "",
         "harmless": 60,
         "malicious": 5,
         "suspicious": 1,
@@ -108,6 +147,7 @@ See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/me
           "alphaMountain.ai": "Suspicious (alphaMountain.ai)"
         },
         "tld": "claims",
+        "tags": [],
         "community_votes": {
           "harmless": 0,
           "malicious": 0
@@ -117,17 +157,26 @@ See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/me
     },
     {
       "tool": "virustotal_url",
+      "outcome": {
+        "status": "results_found",
+        "error_message": null,
+        "status_code": 200,
+        "reason": "OK"
+      },
       "results": {
         "harmless": 63,
         "malicious": 6,
         "suspicious": 1,
         "undetected": 20,
         "url": "https://injective.claims/",
+        "final_url": null,
         "last_response_code": 200,
+        "redirection_chain": null,
         "tld": "claims",
         "threat_names": [
           "Mal/HTMLGen-A"
         ],
+        "tags": [],
         "community_votes": {
           "harmless": 0,
           "malicious": 0
@@ -141,37 +190,54 @@ See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/me
       }
     },
     {
-      "tool": "url_void",
-      "results": {
-        "error": "No results found"
-      }
-    },
-    {
-      "tool": "urlscan.io",
-      "results": {
-        "last_scan_guid": "7e27ee56-5caa-4227-841a-1121cf65b692",
-        "last_scan_url": "https://urlscan.io/result/7e27ee56-5caa-4227-841a-1121cf65b692/",
-        "last_scan_time": "2023-07-20T07:15:35.447Z",
-        "last_scan_screenshot": "https://urlscan.io/screenshots/7e27ee56-5caa-4227-841a-1121cf65b692.png"
-      }
-    },
-    {
       "tool": "inquest_labs",
-      "results": {
-        "error": "No results found"
-      }
+      "outcome": {
+        "status": "no_results_found",
+        "error_message": null,
+        "status_code": null,
+        "reason": null
+      },
+      "results": {}
     },
     {
       "tool": "maltiverse",
-      "results": {
-        "error": "No results found"
-      }
+      "outcome": {
+        "status": "no_results_found",
+        "error_message": null,
+        "status_code": null,
+        "reason": null
+      },
+      "results": {}
+    },
+    {
+      "tool": "shimon",
+      "outcome": {
+        "status": "no_results_found",
+        "error_message": null,
+        "status_code": null,
+        "reason": null
+      },
+      "results": {}
+    },
+    {
+      "tool": "url_void",
+      "outcome": {
+        "status": "no_results_found",
+        "error_message": null,
+        "status_code": null,
+        "reason": null
+      },
+      "results": {}
     },
     {
       "tool": "wayback_machine",
-      "results": {
-        "error": "No results found"
-      }
+      "outcome": {
+        "status": "no_results_found",
+        "error_message": null,
+        "status_code": null,
+        "reason": null
+      },
+      "results": {}
     }
   ],
   "external_links": {
@@ -180,12 +246,7 @@ See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/me
     "urlscan.io": "https://urlscan.io/search/#injective.claims",
     "google": "https://www.google.com/search?q=https://injective.claims",
     "twitter": "https://twitter.com/search?q=https://injective.claims&src=typed_query",
-    "json": "https://127.0.0.1:8000/api/indicator/4"
-  },
-  "tags": {
-    "tweetfeed_match": true,
-    "vt_hits": "6/90",
-    "suspicious": true
+    "json": "https://indicatorsearch.app/api/indicator/40"
   },
   "notes": null,
   "complete": true
