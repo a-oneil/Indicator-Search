@@ -13,12 +13,12 @@ from urllib.parse import quote
 from .utils import (
     no_results_found,
     failed_to_run,
-    status_code_error,
     get_feedlist_type,
     remove_ip_address,
     convert_email_to_fqdn,
     convert_fqdn_to_url,
     convert_url_to_fqdn,
+    missing_apikey,
 )
 
 
@@ -119,12 +119,17 @@ def ipinfoio(indicator):
         response = requests.get(f"https://ipinfo.io/{indicator.indicator}")
 
         if response.status_code != 200:
-            return status_code_error("ipinfo.io", response.status_code, response.reason)
+            return failed_to_run(
+                tool_name="ipinfo.io",
+                status_code=response.status_code,
+                reason=response.reason,
+            )
 
         return (
             # fmt: off
             {
                 "tool": "ipinfo.io",
+                "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                 "results": {
                     "city": response.json().get("city"),
                     "region": response.json().get("region"),
@@ -136,16 +141,18 @@ def ipinfoio(indicator):
             },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("ipinfo.io", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="ipinfo.io", error_message=error_message)
 
 
 def search_ipwhois(indicator):
     try:
         obj = ipwhois.IPWhois(indicator.indicator)
         return (
+            # fmt: off
             {
                 "tool": "ip_whois",
+                "outcome": {"status": "results_found", "error_message": None, "status_code": None, "reason": None},
                 "results": {
                     "asn_number": obj.lookup_rws().get("asn"),
                     "asn_registry": obj.lookup_rws().get("asn_registry"),
@@ -163,28 +170,31 @@ def search_ipwhois(indicator):
             },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("ip_whois", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="ip_whois", error_message=error_message)
 
 
 def ipqualityscore(indicator):
     try:
         if config["IPQS_API_KEY"] == "":
-            raise Exception("IPQS_API_KEY is not set in .env file.")
+            return missing_apikey("ip_quality_score")
 
         response = requests.get(
             f"https://us.ipqualityscore.com/api/json/ip/{config['IPQS_API_KEY']}/{indicator.indicator}",
         )
 
         if response.status_code != 200:
-            return status_code_error(
-                "ip_quality_score", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="ip_quality_score",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         return (
             # fmt: off
                 {
                     "tool": "ip_quality_score",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "isp": response.json().get("ISP", ""),
                         "organization": response.json().get("organization", ""),
@@ -205,14 +215,14 @@ def ipqualityscore(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("ip_quality_score", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="ip_quality_score", error_message=error_message)
 
 
 def virustotal_ip(indicator):
     try:
         if config["VIRUSTOTAL_API_KEY"] == "":
-            raise Exception("VIRUSTOTAL_API_KEY is not set in .env file.")
+            return missing_apikey("virustotal_ip")
         response = requests.get(
             f"https://www.virustotal.com/api/v3/ip_addresses/{indicator.indicator}",
             headers={
@@ -225,14 +235,17 @@ def virustotal_ip(indicator):
             return no_results_found("virustotal_ip")
 
         if response.status_code != 200:
-            return status_code_error(
-                "virustotal_ip", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="virustotal_ip",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         return (
             # fmt: off
                 {
                     "tool": "virustotal_ip",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "last analysis date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("last_analysis_date")).strftime('%c') if response.json().get("data").get("attributes").get("last_analysis_date") else "",
                         "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
@@ -245,14 +258,14 @@ def virustotal_ip(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("virustotal_ip", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="virustotal_ip", error_message=error_message)
 
 
 def virustotal_domain(indicator):
     try:
         if config["VIRUSTOTAL_API_KEY"] == "":
-            raise Exception("VIRUSTOTAL_API_KEY is not set in .env file.")
+            return missing_apikey("virustotal_domain")
 
         if indicator.indicator_type == "url":
             domain = convert_url_to_fqdn(indicator.indicator)
@@ -273,14 +286,17 @@ def virustotal_domain(indicator):
             return no_results_found("virustotal_domain")
 
         if response.status_code != 200:
-            return status_code_error(
-                "virustotal_domain", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="virustotal_domain",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         return (
             # fmt: off
                 {
                     "tool": "virustotal_domain",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "whois": response.json().get("data").get("attributes").get("whois"),
                         "creation_date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("creation_date")).strftime('%c') if response.json().get("data").get("attributes").get("creation_date") else "",
@@ -293,20 +309,19 @@ def virustotal_domain(indicator):
                         "tld": response.json().get("data").get("attributes").get("tld"),
                         "tags": response.json().get("data").get("attributes").get("tags"),
                         "community_votes": response.json().get("data").get("attributes").get("total_votes"),
-                        "categories": response.json().get("data").get("attributes").get("categories"),
                         "last_analysis": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("last_analysis_date")).strftime('%c') if response.json().get("data").get("attributes").get("last_analysis_date") else ""
                     },
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("virustotal_domain", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="virustotal_domain", error_message=error_message)
 
 
 def virustotal_url(indicator):
     try:
         if config["VIRUSTOTAL_API_KEY"] == "":
-            raise Exception("VIRUSTOTAL_API_KEY is not set in .env file.")
+            return missing_apikey("virustotal_url")
 
         if indicator.indicator_type == "fqdn":
             url_id = (
@@ -335,14 +350,17 @@ def virustotal_url(indicator):
             return no_results_found("virustotal_url")
 
         if response.status_code != 200:
-            return status_code_error(
-                "virustotal_url", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="virustotal_url",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         return (
             # fmt: off
                 {
                     "tool": "virustotal_url",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
                         "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
@@ -362,14 +380,14 @@ def virustotal_url(indicator):
             # fmt: on
         )
 
-    except Exception as e:
-        return failed_to_run("virustotal_url", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="virustotal_url", error_message=error_message)
 
 
 def virustotal_hash(indicator):
     try:
         if config["VIRUSTOTAL_API_KEY"] == "":
-            raise Exception("VIRUSTOTAL_API_KEY is not set in .env file.")
+            return missing_apikey("virustotal_hash")
 
         response = requests.get(
             f"https://www.virustotal.com/api/v3/files/{indicator.indicator}",
@@ -383,14 +401,17 @@ def virustotal_hash(indicator):
             return no_results_found("virustotal_hash")
 
         if response.status_code != 200:
-            return status_code_error(
-                "virustotal_hash", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="virustotal_hash",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         return (
             # fmt: off
                 {
                     "tool": "virustotal_hash",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
                         "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
@@ -416,14 +437,14 @@ def virustotal_hash(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("virustotal_hash", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="virustotal_hash", error_message=error_message)
 
 
 def greynoise_community(indicator):
     try:
         if config["GREYNOISE_COMMUNITY_API_KEY"] == "":
-            raise Exception("GREYNOISE_COMMUNITY_API_KEY is not set in .env file.")
+            return missing_apikey("greynoise_community")
         params = {"apikey": config["GREYNOISE_COMMUNITY_API_KEY"]}
         response = requests.get(
             f"https://api.greynoise.io/v3/community/{indicator.indicator}",
@@ -434,14 +455,17 @@ def greynoise_community(indicator):
             return no_results_found("greynoise_community")
 
         if response.status_code != 200:
-            return status_code_error(
-                "greynoise_community", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="greynoise_community",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         return (
             # fmt: off
                 {
                     "tool": "greynoise_community",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "classification": response.json().get("classification"),
                         "noise": response.json().get("noise"),
@@ -452,8 +476,10 @@ def greynoise_community(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("greynoise_community", e)
+    except Exception as error_message:
+        return failed_to_run(
+            tool_name="greynoise_community", error_message=error_message
+        )
 
 
 def hacked_ip_threatlist(indicator):
@@ -463,7 +489,11 @@ def hacked_ip_threatlist(indicator):
         )
 
         if response.status_code != 200:
-            return status_code_error("hacked_ip", response.status_code, response.reason)
+            return failed_to_run(
+                tool_name="hacked_ip",
+                status_code=response.status_code,
+                reson=response.reason,
+            )
 
         results_list = []
         for item in response.json():
@@ -479,20 +509,21 @@ def hacked_ip_threatlist(indicator):
             # fmt: off
                 {
                     "tool": "hacked_ip",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "active_threatlists": results_list
                     },
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("hacked_ip", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="hacked_ip", error_message=error_message)
 
 
 def urlvoid(indicator):
     try:
         if config["APIVOID_API_KEY"] == "":
-            raise Exception("APIVOID_API_KEY is not set in .env file.")
+            return missing_apikey("url_void")
 
         if indicator.indicator_type == "fqdn":
             fqdn = convert_fqdn_to_url(indicator.indicator)
@@ -513,7 +544,11 @@ def urlvoid(indicator):
             raise Exception("Invalid indicator type for URLVoid")
 
         if response.status_code != 200:
-            return status_code_error("url_void", response.status_code, response.reason)
+            return failed_to_run(
+                tool_name="url_void",
+                status_code=response.status_code,
+                reason=response.reason,
+            )
 
         blacklists = (
             response.json()
@@ -541,6 +576,7 @@ def urlvoid(indicator):
                 # fmt: off
                     {
                         "tool": "url_void",
+                        "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                         "results": {
                             "dns_records": response.json().get("data", {}).get("report", {}).get("dns_records", {}).get("mx", {}).get("records", []),
                             "detections": response.json().get("data", {}).get("report", {}).get("domain_blacklist", {}).get("detections"),
@@ -555,8 +591,8 @@ def urlvoid(indicator):
         else:
             return no_results_found("url_void")
 
-    except Exception as e:
-        return failed_to_run("url_void", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="url_void", error_message=error_message)
 
 
 def macvendors(indicator):
@@ -564,20 +600,25 @@ def macvendors(indicator):
         response = requests.get(f"https://api.macvendors.com/{indicator.indicator}")
 
         if response.status_code != 200:
-            return status_code_error(
-                "mac_vendors", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="mac_vendors",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         return (
+            # fmt: off
             {
                 "tool": "mac_vendors",
+                "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                 "results": {
                     "manufacturer": response.text,
                 },
             },
+            # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("mac_vendors", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="mac_vendors", error_message=error_message)
 
 
 def stopforumspam_email(indicator):
@@ -588,14 +629,17 @@ def stopforumspam_email(indicator):
         results = xmltodict.parse(response.text)
 
         if response.status_code != 200:
-            return status_code_error(
-                "stop_forum_spam_email", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="stop_forum_spam_email",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         return (
             # fmt: off
                 {
                     "tool": "stop_forum_spam_email",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "appears": results.get("response", {}).get("appears"),
                         "frequency": results.get("response", {}).get("frequency")
@@ -603,8 +647,10 @@ def stopforumspam_email(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("stop_forum_spam_email", e)
+    except Exception as error_message:
+        return failed_to_run(
+            tool_name="stop_forum_spam_email", error_message=error_message
+        )
 
 
 def stopforumspam_ip(indicator):
@@ -615,14 +661,17 @@ def stopforumspam_ip(indicator):
         results = xmltodict.parse(response.text)
 
         if response.status_code != 200:
-            return status_code_error(
-                "stop_forum_spam_ip", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="stop_forum_spam_ip",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         return (
             # fmt: off
                 {
                     "tool": "stop_forum_spam_ip",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "appears": results.get("response", {}).get("appears"),
                         "frequency": results.get("response", {}).get("frequency")
@@ -630,14 +679,16 @@ def stopforumspam_ip(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("stop_forum_spam_ip", e)
+    except Exception as error_message:
+        return failed_to_run(
+            tool_name="stop_forum_spam_ip", error_message=error_message
+        )
 
 
 def abuse_ipdb(indicator):
     try:
         if config["AB_API_KEY"] == "":
-            raise Exception("AB_API_KEY is not set in .env file.")
+            return missing_apikey("abuseipdb")
 
         response = requests.request(
             method="GET",
@@ -650,12 +701,17 @@ def abuse_ipdb(indicator):
         )
 
         if response.status_code != 200:
-            return status_code_error("abuseipdb", response.status_code, response.reason)
+            return failed_to_run(
+                tool_name="abuseipdb",
+                status_code=response.status_code,
+                reason=response.reason,
+            )
 
         # fmt: off
         return (
             {
                 "tool": "abuseipdb",
+                "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                 "results": {
                     "reports": response.json().get("data", {}).get("totalReports"),
                     "abuse_score": response.json().get("data", {}).get("abuseConfidenceScore"),
@@ -665,14 +721,14 @@ def abuse_ipdb(indicator):
         )
         # fmt: on
 
-    except Exception as e:
-        return failed_to_run("abuseipdb", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="abuseipdb", error_message=error_message)
 
 
 def emailrepio(indicator):
     try:
         if config["EMAILREP_API_KEY"] == "":
-            raise Exception("EMAILREP_API_KEY is not set in .env file.")
+            return missing_apikey("emailrep.io")
         header = {"Key": config["EMAILREP_API_KEY"]}
         response = requests.get(
             f"https://emailrep.io/{indicator.indicator}",
@@ -680,14 +736,17 @@ def emailrepio(indicator):
         )
 
         if response.status_code != 200:
-            return status_code_error(
-                "emailrep.io", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="emailrep.io",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         return (
             # fmt: off
                 {
                     "tool": "emailrep.io",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "reputation": response.json().get("reputation"),
                         "suspicious": response.json().get("suspicious"),
@@ -720,15 +779,15 @@ def emailrepio(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("emailrep.io", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="emailrep.io", error_message=error_message)
 
 
 def tweetfeed_live(indicator):
     def query_api(url):
         try:
             return requests.get(url)
-        except Exception as e:
+        except Exception as error_message:
             raise Exception(f"Failed to query API {str(e)}")
 
     try:
@@ -748,8 +807,10 @@ def tweetfeed_live(indicator):
             response = None
 
         if response.status_code != 200:
-            return status_code_error(
-                "tweetfeed.live", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="tweetfeed.live",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         if response.json():
@@ -763,11 +824,17 @@ def tweetfeed_live(indicator):
         return (
             {
                 "tool": "tweetfeed.live",
+                "outcome": {
+                    "status": "results_found",
+                    "error_message": None,
+                    "status_code": response.status_code,
+                    "reason": response.reason,
+                },
                 "results": results,
             },
         )
-    except Exception as e:
-        return failed_to_run("tweetfeed.live", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="tweetfeed.live", error_message=error_message)
 
 
 def urlscanio(indicator):
@@ -782,8 +849,10 @@ def urlscanio(indicator):
         )
 
         if response.status_code != 200:
-            return status_code_error(
-                "urlscan.io", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="urlscan.io",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         if not response.json().get("results"):
@@ -804,6 +873,7 @@ def urlscanio(indicator):
             # fmt: off
                 {
                     "tool": "urlscan.io",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "last_scan_guid": last_scan_response.json().get("task").get("uuid"),
                         "last_scan_url": last_scan_response.json().get("task").get("reportURL"),
@@ -817,8 +887,8 @@ def urlscanio(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("urlscan.io", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="urlscan.io", error_message=error_message)
 
 
 def circl_lu(indicator):
@@ -840,12 +910,17 @@ def circl_lu(indicator):
             return no_results_found("circl.lu")
 
         if response.status_code != 200:
-            return status_code_error("circl.lu", response.status_code, response.reason)
+            return failed_to_run(
+                tool_name="circl.lu",
+                status_code=response.status_code,
+                reason=response.reason,
+            )
 
         return (
             # fmt: off
                 {
                     "tool": "circl.lu",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "file_name": response.json().get("FileName"),
                         "file_size_kb": response.json().get("FileSize"),
@@ -856,15 +931,15 @@ def circl_lu(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("circl.lu", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="circl.lu", error_message=error_message)
 
 
 def project_honeypot(indicator):
     # https://www.projecthoneypot.org/httpbl_api.php
     try:
         if config["PROJECT_HONEYPOT_API_KEY"] == "":
-            raise Exception("PROJECT_HONEYPOT_API_KEY is not set in .env file.")
+            return missing_apikey("project_honeypot")
 
         bl = httpbl.HttpBL(config["PROJECT_HONEYPOT_API_KEY"])
         response = bl.query(indicator.indicator)
@@ -876,6 +951,7 @@ def project_honeypot(indicator):
             # fmt: off
                 {
                     "tool": "project_honeypot",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": None, "reason": None},
                     "results": {
                         "days_since_last_activity": response.get("days_since_last_activity"),
                         "name": response.get("name"),
@@ -885,14 +961,14 @@ def project_honeypot(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("project_honeypot", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="project_honeypot", error_message=error_message)
 
 
 def echo_trail(indicator):
     try:
         if config["ECHOTRAIL_API_KEY"] == "":
-            raise Exception("ECHOTRAIL_API_KEY is not set in .env file.")
+            return missing_apikey("echo_trail")
 
         response = requests.get(
             f"https://api.echotrail.io/v1/insights/{indicator.indicator}",
@@ -903,8 +979,10 @@ def echo_trail(indicator):
         )
 
         if response.status_code != 200:
-            return status_code_error(
-                "echo_trail", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="echo_trail",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         if "EchoTrail has never observed" in response.json().get("message", ""):
@@ -914,6 +992,7 @@ def echo_trail(indicator):
             # fmt: off
                 {
                     "tool": "echo_trail",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "file_name": response.json().get("filenames"),
                         "description": response.json().get("description"),
@@ -924,15 +1003,15 @@ def echo_trail(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("echo_trail", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="echo_trail", error_message=error_message)
 
 
 def hybrid_analysis(indicator):
     # https://www.hybrid-analysis.com/docs/api/v2
     try:
         if config["HYBRID_ANALYSIS_API_KEY"] == "":
-            raise Exception("HYBRID_ANALYSIS_API_KEY is not set in .env file.")
+            return missing_apikey("hybrid_analysis")
 
         response = requests.post(
             f"https://hybrid-analysis.com/api/v2/search/hash",
@@ -946,8 +1025,10 @@ def hybrid_analysis(indicator):
         )
 
         if response.status_code != 200:
-            return status_code_error(
-                "hybrid_analysis", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="hybrid_analysis",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         if not response.json():
@@ -958,6 +1039,7 @@ def hybrid_analysis(indicator):
             # fmt: off
                 {
                     "tool": "hybrid_analysis",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": None, "reason": None},
                     "results": {
                         "file_name": response.get("submissions")[0].get("filename"),
                         "type": response.get("type"),
@@ -975,14 +1057,14 @@ def hybrid_analysis(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("hybrid_analysis", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="hybrid_analysis", error_message=error_message)
 
 
 def breach_directory(indicator):
     try:
         if config["BREACH_DIRECTORY_API_KEY"] == "":
-            raise Exception("BREACH_DIRECTORY_API_KEY is not set in .env file.")
+            return missing_apikey("breach_directory")
 
         response = requests.get(
             "https://breachdirectory.p.rapidapi.com/",
@@ -994,8 +1076,10 @@ def breach_directory(indicator):
         )
 
         if response.status_code != 200:
-            return status_code_error(
-                "breach_directory", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="breach_directory",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         if not response.json().get("result", []):
@@ -1005,6 +1089,7 @@ def breach_directory(indicator):
             # fmt: off
                 {
                     "tool": "breach_directory",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "found": response.json().get("found", {}),
                         "frequency": response.json().get("result", [])
@@ -1012,14 +1097,14 @@ def breach_directory(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("breach_directory", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="breach_directory", error_message=error_message)
 
 
 def shodan(indicator):
     try:
         if config["SHODAN_API_KEY"] == "":
-            raise Exception("SHODAN_API_KEY is not set in .env file.")
+            return missing_apikey("shodan")
 
         try:
             api = Shodan(config["SHODAN_API_KEY"])
@@ -1031,6 +1116,7 @@ def shodan(indicator):
             # fmt: off
                 {
                     "tool": "shodan",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": None, "reason": None},
                     "results": {
                         "hostnames": host.get("hostnames"),
                         "domains": host.get("domains"),
@@ -1049,8 +1135,8 @@ def shodan(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("shodan", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="shodan", error_message=error_message)
 
 
 def malware_bazzar(indicator):
@@ -1061,8 +1147,10 @@ def malware_bazzar(indicator):
         )
 
         if response.status_code != 200:
-            return status_code_error(
-                "malware_bazzar", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="malware_bazzar",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         if not response.json().get("query_status") == "ok":
@@ -1072,6 +1160,7 @@ def malware_bazzar(indicator):
             # fmt: off
                 {
                     "tool": "malware_bazzar",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "file_type": response.json().get("data")[0].get("file_type"),
                         "signature": response.json().get("data")[0].get("signature"),
@@ -1082,8 +1171,8 @@ def malware_bazzar(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("malware_bazzar", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="malware_bazzar", error_message=error_message)
 
 
 def inquestlabs(indicator):
@@ -1125,8 +1214,10 @@ def inquestlabs(indicator):
             raise Exception("Invalid indicator type for inquest_labs")
 
         if response.status_code != 200:
-            return status_code_error(
-                "inquest_labs", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="inquest_labs",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         if response.json().get("success") is False:
@@ -1139,6 +1230,7 @@ def inquestlabs(indicator):
             # fmt: off
                 {
                     "tool": "inquest_labs",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "classification": response.json().get("data", [])[0].get("classification"),
                         "file_type": response.json().get("data", [])[0].get("file_type"),
@@ -1152,14 +1244,14 @@ def inquestlabs(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("inquest_labs", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="inquest_labs", error_message=error_message)
 
 
 def maltiverse(indicator):
     try:
         if config["MALTIVERSE_API_KEY"] == "":
-            raise Exception("MALTIVERSE_API_KEY is not set in .env file.")
+            return missing_apikey("maltiverse")
 
         maltiverse = Maltiverse(auth_token=config["MALTIVERSE_API_KEY"])
 
@@ -1204,6 +1296,7 @@ def maltiverse(indicator):
             # fmt: off
                 {
                     "tool": "maltiverse",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": None, "reason": None},
                     "results": {
                         "classification": result.get("classification", ""),
                         "blacklist": result.get("blacklist", []),
@@ -1213,59 +1306,69 @@ def maltiverse(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("Maltiverse", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="maltiverse", error_message=error_message)
 
 
 def numverify(indicator):
     try:
         if config["NUMVERIFY_API_KEY"] == "":
-            raise Exception("NUMVERIFY_API_KEY is not set in .env file.")
+            return missing_apikey("numverify")
 
         response = requests.get(
             f"http://apilayer.net/api/validate?access_key={config['NUMVERIFY_API_KEY']}&number={indicator.indicator}&format=1"
         )
 
         if response.status_code != 200:
-            return status_code_error("numverify", response.status_code, response.reason)
+            return failed_to_run(
+                tool_name="numverify",
+                status_code=response.status_code,
+                reason=response.reason,
+            )
 
         return (
             # fmt: off
                 {
                     "tool": "numverify",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": response.json()
                 },
             # fmt: on
         )
 
-    except Exception as e:
-        return failed_to_run("Numverify", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="numverify", error_message=error_message)
 
 
 def ipqualityscore_phone(indicator):
     try:
         if config["IPQS_API_KEY"] == "":
-            raise Exception("IPQS_API_KEY is not set in .env file.")
+            return missing_apikey("ipqualityscore")
 
         response = requests.get(
             f"https://us.ipqualityscore.com/api/json/phone/{config['IPQS_API_KEY']}/{indicator.indicator}",
         )
 
         if response.status_code != 200:
-            return status_code_error(
-                "ip_quality_score_phone", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="ip_quality_score_phone",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         return (
             # fmt: off
                 {
                     "tool": "ip_quality_score_phone",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": response.json()
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("ip_quality_score_phone", e)
+    except Exception as error_message:
+        return failed_to_run(
+            tool_name="ip_quality_score_phone", error_message=error_message
+        )
 
 
 def wayback_machine(indicator):
@@ -1286,8 +1389,10 @@ def wayback_machine(indicator):
             raise Exception("Invalid indicator type for wayback")
 
         if response.status_code != 200:
-            return status_code_error(
-                "wayback_machine", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="wayback_machine",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         if not response.json().get("archived_snapshots"):
@@ -1297,12 +1402,13 @@ def wayback_machine(indicator):
             # fmt: off
                 {
                     "tool": "wayback_machine",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": response.json().get("archived_snapshots", {}).get("closest")
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("wayback_machine", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="wayback_machine", error_message=error_message)
 
 
 def kickbox_disposible_email(indicator):
@@ -1312,8 +1418,10 @@ def kickbox_disposible_email(indicator):
         )
 
         if response.status_code != 200:
-            return status_code_error(
-                "kickbox_disposible_email", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="kickbox_disposible_email",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         if not response.json().get("disposable"):
@@ -1323,18 +1431,21 @@ def kickbox_disposible_email(indicator):
             # fmt: off
                 {
                     "tool": "kickbox_disposible_email",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": response.json().get("disposable", {})
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("kickbox_disposible_email", e)
+    except Exception as error_message:
+        return failed_to_run(
+            tool_name="kickbox_disposible_email", error_message=error_message
+        )
 
 
 def whatsmybrowser_ua(indicator):
     try:
         if config["WHATSMYBROWSER_API_KEY"] == "":
-            raise Exception("WHATSMYBROWSER_API_KEY is not set in .env file.")
+            return missing_apikey("whatsmybrowser")
 
         response = requests.post(
             "https://api.whatismybrowser.com/api/v2/user_agent_parse",
@@ -1350,14 +1461,17 @@ def whatsmybrowser_ua(indicator):
         )
 
         if response.status_code != 200:
-            return status_code_error(
-                "whatsmybrowser_ua", response.status_code, response.reason
+            return failed_to_run(
+                tool_name="whatsmybrowser_ua",
+                status_code=response.status_code,
+                reason=response.reason,
             )
 
         return (
             # fmt: off
                 {
                     "tool": "whatsmybrowser_ua",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": {
                         "is_abusive": response.json().get("parse", {}).get("is_abusive"),
                         "simple_software_string": response.json().get("parse", {}).get("simple_software_string"),
@@ -1372,8 +1486,8 @@ def whatsmybrowser_ua(indicator):
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("whatsmybrowser_ua", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="whatsmybrowser_ua", error_message=error_message)
 
 
 def shimon(indicator):
@@ -1393,15 +1507,20 @@ def shimon(indicator):
         if response.status_code == 500:
             return no_results_found("shimon")
         if response.status_code != 200:
-            return status_code_error("shimon", response.status_code, response.reason)
+            return failed_to_run(
+                tool_name="shimon",
+                status_code=response.status_code,
+                reason=response.reason,
+            )
 
         return (
             # fmt: off
                 {
                     "tool": "shimon",
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
                     "results": response.json()
                 },
             # fmt: on
         )
-    except Exception as e:
-        return failed_to_run("shimon", e)
+    except Exception as error_message:
+        return failed_to_run(tool_name="shimon", error_message=error_message)

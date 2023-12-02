@@ -74,7 +74,6 @@
       </div>
     </div>
 
-    {# Display the related indicators if any #}
     <div class="column" style="padding-left: 0px">
       <div class="ui raised fluid card">
         <div class="content">
@@ -82,9 +81,9 @@
             <i class="fa-solid fa-square-poll-horizontal"></i> Search Results
           </p>
           <div class="ui list">
-            {% for result in indicator.results %}
-            {% if not result.results.error %}
-            <div class="item">• <a href="#{{result.tool}}">{{result.tool|snakecase_to_title}}</a></div>
+            {% for tool in indicator.results %}
+            {% if tool.outcome.status == "results_found" %}
+            <div class="item">• <a href="#{{tool.tool}}">{{tool.tool|snakecase_to_title}}</a></div>
             {% endif %}
             {% endfor %}
           </div>

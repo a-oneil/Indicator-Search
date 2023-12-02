@@ -59,12 +59,23 @@
 
 {%for tool in indicator.results %}
 
-{% if "is not set in .env file" in tool.results.error %}
-
-{% elif "No results found" in tool.results.error %}
+{% if tool.outcome.status == "no_results_found" %}
 <div class="ui segment">
   <p class="ui small header"><i class="fa-solid fa-circle-xmark"></i> {{tool.tool|snakecase_to_title}}: No results found
   </p>
+</div>
+
+{% elif tool.outcome.status == "failed_to_run" %}
+<div class="ui segment">
+  <p class="ui small header"><i class="fa-solid fa-circle-xmark"></i> {{tool.tool|snakecase_to_title}}: Failed to run
+  </p>
+  <div class="ui raised segment">
+    <div class="content">
+      <div class="item"><b>Error Message:</b> {{tool.outcome.error_message}}</div>
+      <div class="item"><b>Status Code:</b> {{tool.outcome.status_code}}</div>
+      <div class="item"><b>Reason:</b> {{tool.outcome.reason}}</div>
+    </div>
+  </div>
 </div>
 
 {% else %}
@@ -81,6 +92,7 @@
   </p>
   <div class="ui two column grid">
     {% for key,value in tool.results.items() %}
+    {% if value %}
     <div class="column" style="padding: 14px; word-wrap: break-word">
       <div class="ui raised fluid card">
         <div class="content">
@@ -132,6 +144,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
     {% endfor %}
   </div>
   <br />
