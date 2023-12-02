@@ -17,20 +17,22 @@ def new_indicator_handler(indicator, user, db: Session):
             "BLUE",
         )
 
-        feedlist_supported_types = [
-            "ipv4",
-            "ipv6",
-            "fqdn",
-            "url",
-            "email",
-            "hash.md5",
-            "hash.sha1",
-            "hash.sha256",
-            "hash.sha512",
-        ]
-
+        # Search feedlists for indicator in a new thread
         threads_to_wait_for = []
-        if any(match in indicator.indicator_type for match in feedlist_supported_types):
+        if any(
+            match in indicator.indicator_type
+            for match in [
+                "ipv4",
+                "ipv6",
+                "fqdn",
+                "url",
+                "email",
+                "hash.md5",
+                "hash.sha1",
+                "hash.sha256",
+                "hash.sha512",
+            ]
+        ):
             thread = threading.Thread(
                 target=tools.search_feedlists, daemon=False, args=(indicator, db)
             )
@@ -145,19 +147,12 @@ def new_indicator_handler(indicator, user, db: Session):
             for thread in threads_to_wait_for:
                 thread.join()
 
-        # Remove results that have no data or tools that did not have an API key set
-        for each in indicator.results:
-            keys_to_remove = []
-            for key, value in each["results"].items():
-                if key == "error" and "is not set in .env file." in value:
-                    indicator.results.remove(each)
-                if not value:
-                    keys_to_remove.append(key)
-            for key in keys_to_remove:
-                del each["results"][key]
-
-            if not each["results"]:
-                each["results"] = {"error": "No results found"}
+        # Remove tools that did not have an API key set
+        indicator.results = [
+            tool
+            for tool in indicator.results
+            if tool["outcome"]["status"] != "missing_apikey"
+        ]
 
         # Sort results based on if the tool had results or not
         indicator.results = sorted(indicator.results, key=sort_results)
@@ -219,12 +214,18 @@ def new_indicator_handler(indicator, user, db: Session):
 
         notifications.slack_indicator_complete(indicator, "success")
 
-    except Exception as e:
+    except Exception as error_message:
         indicator.complete = True
         indicator.results = (
             {
-                "tool": "Error",
-                "results": {"error": str(e)},
+                "tool": "Indicator Search",
+                "outcome": {
+                    "status": "failed_to_run",
+                    "error_message": str(error_message),
+                    "status_code": 500,
+                    "reason": "Internal Server Error",
+                },
+                "results": {},
             },
         )
         indicator.tags = {"error": True}

@@ -82,25 +82,43 @@ def no_results_found(tool_name):
     return (
         {
             "tool": tool_name,
-            "results": {"error": "No results found"},
+            "outcome": {
+                "status": "no_results_found",
+                "error_message": None,
+                "status_code": None,
+                "reason": None,
+            },
+            "results": {},
         },
     )
 
 
-def failed_to_run(tool_name, error):
+def failed_to_run(tool_name, error_message=None, status_code=None, reason=None):
     return (
         {
             "tool": tool_name,
-            "results": {"error": f"{tool_name} failed to run: {str(error)}"},
+            "outcome": {
+                "status": "failed_to_run",
+                "error_message": error_message,
+                "status_code": status_code,
+                "reason": reason,
+            },
+            "results": {},
         },
     )
 
 
-def status_code_error(tool_name, status_code, reason):
+def missing_apikey(tool_name):
     return (
         {
             "tool": tool_name,
-            "results": {"error": f"{tool_name} failed to run: {status_code} {reason}"},
+            "outcome": {
+                "status": "missing_apikey",
+                "error_message": None,
+                "status_code": None,
+                "reason": None,
+            },
+            "results": {},
         },
     )
 
@@ -153,9 +171,9 @@ def convert_url_to_fqdn(url):
 
 def sort_results(item):
     """This function is used to sort indicator.results. It places items with results at the top and items with "No results found" at the bottom. The tools will be sorted alphabetically within each group."""
-    if "error" in item["results"] and item["results"]["error"] == "No results found":
-        # Place tools with "No results found" at the bottom
-        return (float("inf"), item["tool"])
-    else:
+    if item["outcome"]["status"] == "results_found":
         # Place tools with results at the top
         return (float("-inf"), item["tool"])
+    else:
+        # Place tools that failed to run or no results found at the bottom
+        return (float("inf"), item["tool"])
