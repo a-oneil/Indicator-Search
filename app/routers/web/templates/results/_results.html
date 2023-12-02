@@ -92,7 +92,6 @@
   </p>
   <div class="ui two column grid">
     {% for key,value in tool.results.items() %}
-    {% if value %}
     <div class="column" style="padding: 14px; word-wrap: break-word">
       <div class="ui raised fluid card">
         <div class="content">
@@ -115,6 +114,7 @@
           {# If the value is a list, display it as a bulleted list #} {% if
           value is iterable and (value is not string and value is not
           mapping) %}
+          {% if value %}
           <div class="ui bulleted list">
             {% for item in value %} {% if item is mapping %} {% for k,v in
             item.items() %}
@@ -125,6 +125,9 @@
             <div class="item">{{item}}</div>
             {% endif %} {% endfor %}
           </div>
+          {% else %}
+          <div class=" description">None</div>
+          {% endif %}
 
           {% elif value is mapping %}
           <div class="ui bulleted list">
@@ -144,7 +147,6 @@
         </div>
       </div>
     </div>
-    {% endif %}
     {% endfor %}
   </div>
   <br />
