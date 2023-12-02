@@ -22,8 +22,8 @@ Filter Functions
 """
 
 
-def time_created_strftime(value):
-    return value.strftime("%m/%d/%Y (%H:%M:%S UTC)")
+def time_strftime(value):
+    return value.strftime("%m/%d/%Y %H:%M:%S UTC")
 
 
 def snakecase_to_title(value):
@@ -34,8 +34,6 @@ def snakecase_to_title(value):
 def searchable(value):
     if get_type(value):
         return True
-    else:
-        return False
 
 
 def tag_order(tag_dict):
@@ -72,7 +70,7 @@ def supported_feedlist_types(indicator_type):
         return False
 
 
-templates.env.filters["time_created_strftime"] = time_created_strftime
+templates.env.filters["time_strftime"] = time_strftime
 templates.env.filters["snakecase_to_title"] = snakecase_to_title
 templates.env.filters["searchable"] = searchable
 templates.env.filters["tag_order"] = tag_order

@@ -7,10 +7,10 @@
     Created by: {{ indicator.username }}
 </a>
 <a class="ui label">
-    Created: {{ indicator.time_created }}
+    Created: {{ indicator.time_created|time_strftime }}
 </a>
 <a class="ui label">
-    Last Updated: {{ indicator.time_updated }}
+    Last Updated: {{ indicator.time_updated|time_strftime }}
 </a>
 <a class="ui label">
     Processing Time: {{ indicator.processing_time }}s

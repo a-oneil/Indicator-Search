@@ -19,8 +19,8 @@ from sqlalchemy.orm.attributes import flag_modified
 class Indicators(Base):
     __tablename__ = "indicators"
     id = Column(Integer, primary_key=True, index=True)
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
-    time_updated = Column(DateTime(timezone=True), onupdate=func.now())
+    time_created = Column(DateTime(timezone=False), server_default=func.now())
+    time_updated = Column(DateTime(timezone=False), onupdate=func.now())
     processing_time = Column(Numeric(5, 2), nullable=True)
     creator = relationship("User_Accounts", back_populates="indicators")
     username = Column(String, ForeignKey("user_accounts.username"))
