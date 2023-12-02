@@ -77,8 +77,6 @@ def menu_switch(choice):
         elif choice == "2c":
             docker_compose_logs()
         elif choice == "3":
-            launch_postgres()
-            time.sleep(15)
             run_dev()
         elif choice == "4":
             push_docker_to_registry()
