@@ -1,6 +1,7 @@
 import time
 import traceback
 import threading
+import queue
 from . import enrichments_handler, tagging_handler, links_handler
 from .. import notifications
 from ..models import Iocs
@@ -18,8 +19,9 @@ def new_indicator_handler(indicator, user, db: Session):
             "BLUE",
         )
 
-        # Search feedlists for indicator in a new thread
+        # Search for indicator in active feedlists in a new thread
         threads_to_wait_for = []
+        feedlist_result_queue = queue.Queue()
         if any(
             match in indicator.indicator_type
             for match in [
@@ -35,10 +37,12 @@ def new_indicator_handler(indicator, user, db: Session):
             ]
         ):
             thread = threading.Thread(
-                target=search_feedlists, daemon=False, args=(indicator, db)
+                target=search_feedlists,
+                daemon=False,
+                args=(indicator, db, feedlist_result_queue),
             )
             threads_to_wait_for.append(thread)
-            threads_to_wait_for[0].start()
+            thread.start()
 
         # Run the tools based on the indicator type
         indicator.results = run_tools(indicator)
@@ -57,23 +61,26 @@ def new_indicator_handler(indicator, user, db: Session):
         if threads_to_wait_for:
             for thread in threads_to_wait_for:
                 thread.join()
-
-        if indicator.feedlist_results:
+            indicator.feedlist_results = feedlist_result_queue.get()
             notifications.console_output(
                 f"Indicator found in {len(indicator.feedlist_results)} feeds",
                 indicator,
                 "BLUE",
             )
+        else:
+            indicator.feedlist_results = None
 
         # Tagging and enriching using useful info from results
-        add_tags = tagging_handler(indicator, db)
-        indicator.tags = add_tags if add_tags else None
-        if indicator.tags:
+        add_tags = tagging_handler(indicator)
+        if add_tags:
+            indicator.tags = add_tags
             notifications.console_output(
                 "Indicator has been tagged",
                 indicator,
                 "BLUE",
             )
+        else:
+            indicator.tags = None
 
         # Add external links to indicattor
         add_links = links_handler(indicator)
@@ -81,13 +88,15 @@ def new_indicator_handler(indicator, user, db: Session):
 
         # Add external enrichments to results
         add_enrichments = enrichments_handler(indicator)
-        indicator.enrichments = add_enrichments if add_enrichments else None
-        if indicator.enrichments:
+        if add_enrichments:
+            indicator.enrichments = add_enrichments
             notifications.console_output(
                 "Indicator has enrichements",
                 indicator,
                 "BLUE",
             )
+        else:
+            indicator.enrichments = None
 
         # Search if this indicator has been IOC'd before
         indicator = Iocs.search_for_ioc(indicator, db)

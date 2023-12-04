@@ -1,6 +1,6 @@
 import requests
 from ... import notifications
-from ...models import FeedLists, Indicators
+from ...models import FeedLists
 from ..utils import (
     get_feedlist_type,
     remove_ip_address,
@@ -9,7 +9,7 @@ from ..utils import (
 )
 
 
-def search_feedlists(indicator, db):
+def search_feedlists(indicator, db, feedlist_result_queue=None):
     def perform_search(indicator, feedlist, list_type):
         try:
             if indicator.indicator_type == "url":
@@ -95,7 +95,7 @@ def search_feedlists(indicator, db):
                 notifications.console_output(str(e), indicator, "RED")
                 continue
 
-    if results:
-        return Indicators.save_feedlist_results(indicator.id, results, db)
-    else:
-        return None
+        if feedlist_result_queue:
+            feedlist_result_queue.put(results)
+
+        return results if results else None
