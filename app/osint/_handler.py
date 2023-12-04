@@ -82,7 +82,7 @@ def new_indicator_handler(indicator, user, db: Session):
         else:
             indicator.tags = None
 
-        # Add external links to indicattor
+        # Add external links to indicator
         add_links = links_handler(indicator)
         indicator.external_links = add_links if add_links else None
 
@@ -99,7 +99,17 @@ def new_indicator_handler(indicator, user, db: Session):
             indicator.enrichments = None
 
         # Search if this indicator has been IOC'd before
-        indicator = Iocs.search_for_ioc(indicator, db)
+        previously_iocd = Iocs.get_ioc_by_indicator(indicator.indicator, db)
+        if previously_iocd:
+            indicator.ioc_id = previously_iocd.id
+            tags_dict = indicator.tags if indicator.tags else {}
+            tags_dict.update({"ioc": previously_iocd.id})
+            indicator.tags = tags_dict
+            notifications.console_output(
+                f"Indicator has been IOC'd before (IOC ID: {previously_iocd.id})",
+                indicator,
+                "BLUE",
+            )
 
         # Mark indicator as complete and commit to database
         t1_stop = time.time()
