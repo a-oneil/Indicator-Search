@@ -135,8 +135,8 @@ def get_feedlist_type(indicator):
         return "hash"
     elif indicator.indicator_type in ["fqdn", "url", "email"]:
         return "fqdn"
-    else:
-        return None
+
+    return None
 
 
 def remove_ip_address(string):
