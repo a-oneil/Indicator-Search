@@ -10,8 +10,8 @@ from sqlalchemy.orm.attributes import flag_modified
 class Iocs(Base):
     __tablename__ = "iocs"
     id = Column(Integer, primary_key=True, index=True)
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
-    ageout = Column(DateTime(timezone=True))
+    time_created = Column(DateTime(timezone=False), server_default=func.now())
+    ageout = Column(DateTime(timezone=False))
     indicator = Column(String)
     indicator_type = Column(String)
     indicator_scan = relationship("Indicators", uselist=False, back_populates="ioc")
@@ -147,19 +147,6 @@ class Iocs(Base):
         db.delete(ioc)
         db.commit()
         return {"success": "IOC removed"}
-
-    @classmethod
-    def search_for_ioc(cls, indicator, db: Session):
-        input_indicator = Indicators.get_indicator_by_id(indicator.id, db)
-        ioc = cls.get_ioc_by_indicator(input_indicator.indicator, db)
-        if ioc:
-            input_indicator.ioc_id = ioc.id
-            tags_dict = input_indicator.tags if input_indicator.tags else {}
-            tags_dict.update({"ioc": ioc.id})
-            input_indicator.tags = tags_dict
-            flag_modified(input_indicator, "tags")
-            db.add(input_indicator)
-        return input_indicator
 
     @classmethod
     def ageout_iocs(cls, db: Session):
