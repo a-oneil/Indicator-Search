@@ -75,18 +75,13 @@ def search_feedlists(indicator, db, feedlist_result_queue=None):
             return None
 
         notifications.console_output(
-            f"{len(feedlists_to_search)} {list_type} feedlists enabled. Searching feedlists now",
+            f"{len(feedlists_to_search) + len(any_type_lists)} {list_type} feedlists enabled; Starting searching now",
             indicator,
             "BLUE",
         )
 
         for feedlist in feedlists_to_search:
             try:
-                notifications.console_output(
-                    f"Searching for indicator in {feedlist.name} - {feedlist.list_type}",
-                    indicator,
-                    "BLUE",
-                )
                 search_results = perform_search(indicator, feedlist, list_type)
                 if search_results:
                     results.append(search_results)
