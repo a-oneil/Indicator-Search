@@ -2,7 +2,7 @@ from .utils import remove_duplicate_keys
 from datetime import datetime, timedelta
 
 
-def tagging_handler(indicator, db):
+def tagging_handler(indicator):
     tags = {}
 
     tags.update(feedlist_results(indicator))
