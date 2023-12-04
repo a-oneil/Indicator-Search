@@ -177,3 +177,7 @@ def sort_results(item):
     else:
         # Place tools that failed to run or no results found at the bottom
         return (float("inf"), item["tool"])
+
+
+def remove_missingapikey_results(results):
+    return [tool for tool in results if tool["outcome"]["status"] != "missing_apikey"]
