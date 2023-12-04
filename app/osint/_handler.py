@@ -7,7 +7,7 @@ from .. import notifications
 from ..models import Iocs
 from sqlalchemy.orm import Session
 from .utils import sort_results, remove_missingapikey_results
-from .tools import run_tools, search_feedlists
+from .tools import run_tools, feedlists_handler
 
 
 def new_indicator_handler(indicator, user, db: Session):
@@ -37,7 +37,7 @@ def new_indicator_handler(indicator, user, db: Session):
             ]
         ):
             thread = threading.Thread(
-                target=search_feedlists,
+                target=feedlists_handler,
                 daemon=False,
                 args=(indicator, db, feedlist_result_queue),
             )

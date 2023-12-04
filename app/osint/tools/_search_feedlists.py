@@ -9,51 +9,7 @@ from ..utils import (
 )
 
 
-def search_feedlists(indicator, db, feedlist_result_queue=None):
-    def perform_search(indicator, feedlist, list_type):
-        try:
-            if indicator.indicator_type == "url":
-                search_string = convert_url_to_fqdn(indicator.indicator)
-            elif indicator.indicator_type == "email":
-                search_string = convert_email_to_fqdn(indicator.indicator)
-            else:
-                search_string = indicator.indicator
-
-            req = requests.get(feedlist.url)
-            if req.status_code == 200:
-                results = {}
-                lines = req.text.splitlines()
-                for line in lines:
-                    line = remove_ip_address(line) if list_type == "fqdn" else line
-                    if (
-                        search_string in line
-                        and not ("feedlist", feedlist.name) in results.items()
-                    ):
-                        results.update(
-                            {
-                                "feedlist_id": feedlist.id,
-                                "match": line,
-                                "feedlist": feedlist.name,
-                                "description": feedlist.description,
-                                "category": feedlist.category,
-                                "list_period": feedlist.list_period,
-                                "list_type": feedlist.list_type,
-                                "url": feedlist.url,
-                            }
-                        )
-            else:
-                raise Exception("Did not get a 200 OK response from the feedlist.")
-
-            if results:
-                return results
-            else:
-                return None
-
-        except Exception as e:
-            raise Exception(
-                f"Error during searching through {feedlist.name}(ID-{feedlist.id}) {str(e)} "
-            )
-
+def feedlists_handler(indicator, db, feedlist_result_queue=None):
     results = []
 
     list_type = get_feedlist_type(indicator)
@@ -94,3 +50,48 @@ def search_feedlists(indicator, db, feedlist_result_queue=None):
             feedlist_result_queue.put(results)
 
         return results if results else None
+
+
+def perform_search(indicator, feedlist, list_type):
+    try:
+        if indicator.indicator_type == "url":
+            search_string = convert_url_to_fqdn(indicator.indicator)
+        elif indicator.indicator_type == "email":
+            search_string = convert_email_to_fqdn(indicator.indicator)
+        else:
+            search_string = indicator.indicator
+
+        req = requests.get(feedlist.url)
+        if req.status_code == 200:
+            results = {}
+            lines = req.text.splitlines()
+            for line in lines:
+                line = remove_ip_address(line) if list_type == "fqdn" else line
+                if (
+                    search_string in line
+                    and not ("feedlist", feedlist.name) in results.items()
+                ):
+                    results.update(
+                        {
+                            "feedlist_id": feedlist.id,
+                            "match": line,
+                            "feedlist": feedlist.name,
+                            "description": feedlist.description,
+                            "category": feedlist.category,
+                            "list_period": feedlist.list_period,
+                            "list_type": feedlist.list_type,
+                            "url": feedlist.url,
+                        }
+                    )
+        else:
+            raise Exception("Did not get a 200 OK response from the feedlist.")
+
+        if results:
+            return results
+        else:
+            return None
+
+    except Exception as e:
+        raise Exception(
+            f"Error during searching through {feedlist.name}(ID-{feedlist.id}) {str(e)} "
+        )

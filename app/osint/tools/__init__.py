@@ -1,4 +1,4 @@
-from ._search_feedlists import search_feedlists
+from ._search_feedlists import feedlists_handler
 from ._ipinfoio import ipinfoio
 from ._ipwhois import search_ipwhois as ipwhois
 from ._ipqualityscore import ipqualityscore_ip, ipqualityscore_phone
