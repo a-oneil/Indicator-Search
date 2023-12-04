@@ -78,9 +78,12 @@
       <div class="ui raised fluid card">
         <div class="content">
           <p class="ui small header">
-            <i class="fa-solid fa-square-poll-horizontal"></i> Search Results
+            <i class="fa-solid fa-square-poll-horizontal"></i> Tool Results
           </p>
           <div class="ui list">
+            {% if indicator.feedlist_results %}
+            <div class="item">• <a href="#Feedlists">Feedlists</a></div>
+            {% endif %}
             {% for tool in indicator.results %}
             {% if tool.outcome.status == "results_found" %}
             <div class="item">• <a href="#{{tool.tool}}">{{tool.tool|snakecase_to_title}}</a></div>
