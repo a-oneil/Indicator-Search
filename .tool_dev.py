@@ -66,22 +66,27 @@ class TestIndicator:
         return self.enrichments
 
 
+def print_and_write_output(data):
+    print(json.dumps(data, indent=4))
+    with open("./.tool_dev.json", "w") as outfile:
+        json.dump(data, outfile, indent=4)
+
+
 indicator = TestIndicator(
     indicator="6f0fac3b955e63f25bd199ec373c677152212fceda20d8bc6672cf62e68482e8"
 )
 
 # Run a specific tool
-tool_to_run = tools.malware_bazzar(indicator)
-print(json.dumps(tool_to_run, indent=4))
+print_and_write_output(tools.malware_bazzar(indicator))
 
 # Run all tools
-# print(json.dumps(indicator.run_tools(), indent=4))
+# print_and_write_output(indicator.run_tools())
 
 # Run tagging
-# print(json.dumps(indicator.run_tagging(), indent=4))
+# print_and_write_output(indicator.run_tagging())
 
 # Get external links
-# print(json.dumps(indicator.get_links(), indent=4))
+# print_and_write_output(indicator.get_links())
 
 # Get enrichments
-# print(json.dumps(indicator.get_enrichments(), indent=4))
+# print_and_write_output(indicator.get_enrichments())
