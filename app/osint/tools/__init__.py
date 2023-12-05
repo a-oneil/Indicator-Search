@@ -8,7 +8,7 @@ from ._virustotal import (
     virustotal_url,
     virustotal_hash,
 )
-from ._greynoise import greynoise_community
+from ._greynoise import greynoise_community, greynoise_enterprise
 from ._hackedip import hacked_ip
 from ._tweetfeed import tweetfeed_live
 from ._abuseipdb import abuseipdb
@@ -45,6 +45,7 @@ def run_tools(indicator):
         indicator.results += abuseipdb(indicator)
         indicator.results += ipqualityscore_ip(indicator)
         indicator.results += greynoise_community(indicator)
+        indicator.results += greynoise_enterprise(indicator)
         indicator.results += virustotal_ip(indicator)
         indicator.results += project_honeypot(indicator)
         indicator.results += hacked_ip(indicator)
