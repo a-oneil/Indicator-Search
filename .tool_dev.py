@@ -83,7 +83,7 @@ class TestIndicator:
         """
         Add feedlist results to the indicator
         """
-        self.feedlist_results = tools.search_feedlists(
+        self.feedlist_results = tools.feedlists_handler(
             self,
             self.db,
         )

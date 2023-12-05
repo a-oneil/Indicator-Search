@@ -7,7 +7,7 @@ from .. import notifications
 from ..models import Iocs
 from sqlalchemy.orm import Session
 from .utils import sort_results, remove_missingapikey_results
-from .tools import run_tools, search_feedlists
+from .tools import run_tools, feedlists_handler
 
 
 def new_indicator_handler(indicator, user, db: Session):
@@ -22,27 +22,13 @@ def new_indicator_handler(indicator, user, db: Session):
         # Search for indicator in active feedlists in a new thread
         threads_to_wait_for = []
         feedlist_result_queue = queue.Queue()
-        if any(
-            match in indicator.indicator_type
-            for match in [
-                "ipv4",
-                "ipv6",
-                "fqdn",
-                "url",
-                "email",
-                "hash.md5",
-                "hash.sha1",
-                "hash.sha256",
-                "hash.sha512",
-            ]
-        ):
-            thread = threading.Thread(
-                target=search_feedlists,
-                daemon=False,
-                args=(indicator, db, feedlist_result_queue),
-            )
-            threads_to_wait_for.append(thread)
-            thread.start()
+        thread = threading.Thread(
+            target=feedlists_handler,
+            daemon=False,
+            args=(indicator, db, feedlist_result_queue),
+        )
+        threads_to_wait_for.append(thread)
+        thread.start()
 
         # Run the tools based on the indicator type
         indicator.results = run_tools(indicator)

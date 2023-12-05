@@ -45,7 +45,7 @@ class FeedLists(Base):
         )
 
     @classmethod
-    def any_list_type_feedlists(cls, db: Session):
+    def get_active_any_type_feedlist(cls, db: Session):
         return (
             db.query(cls)
             .filter(cls.active == True)

@@ -10,6 +10,7 @@ from ... import templates
 from ...models import Indicators, Iocs
 from ...database import get_db
 from ...osint import new_indicator_handler, get_type, refang
+from ...osint.utils import get_feedlist_type
 from ...authentication import frontend_auth_required
 from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse, HTMLResponse
@@ -54,20 +55,7 @@ def tag_order(tag_dict):
 
 
 def supported_feedlist_types(indicator_type):
-    if indicator_type in [
-        "ipv4",
-        "ipv6",
-        "fqdn",
-        "url",
-        "email",
-        "hash.md5",
-        "hash.sha1",
-        "hash.sha256",
-        "hash.sha512",
-    ]:
-        return True
-    else:
-        return False
+    return True if get_feedlist_type(indicator_type) else False
 
 
 templates.env.filters["time_strftime"] = time_strftime
