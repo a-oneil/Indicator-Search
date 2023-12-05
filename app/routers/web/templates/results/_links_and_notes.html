@@ -78,17 +78,23 @@
       <div class="ui raised fluid card">
         <div class="content">
           <p class="ui small header">
-            <i class="fa-solid fa-square-poll-horizontal"></i> Tool Results
+            <i class="fa-solid fa-wrench"></i> Tool Results
           </p>
+          {% set count = namespace(value=0) %}
           <div class="ui list">
             {% if indicator.feedlist_results %}
             <div class="item">• <a href="#Feedlists">Feedlists</a></div>
+            {% set count.value = count.value + 1 %}
             {% endif %}
             {% for tool in indicator.results %}
             {% if tool.outcome.status == "results_found" %}
             <div class="item">• <a href="#{{tool.tool}}">{{tool.tool|snakecase_to_title}}</a></div>
+            {% set count.value = count.value + 1 %}
             {% endif %}
             {% endfor %}
+            {% if count.value == 0 %}
+            <div class="item">No Results Found</div>
+            {% endif %}
           </div>
         </div>
       </div>
