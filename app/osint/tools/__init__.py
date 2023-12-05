@@ -58,6 +58,8 @@ def run_tools(indicator):
         indicator.results += ipinfoio(indicator)
         indicator.results += abuseipdb(indicator)
         indicator.results += ipqualityscore_ip(indicator)
+        indicator.results += greynoise_community(indicator)
+        indicator.results += greynoise_enterprise(indicator)
         indicator.results += virustotal_ip(indicator)
         indicator.results += stopforumspam_ip(indicator)
 

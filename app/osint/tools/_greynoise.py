@@ -11,6 +11,11 @@ def greynoise_community(indicator):
     try:
         if config["GREYNOISE_API_KEY"] == "":
             return missing_apikey("greynoise_community")
+
+        # If the user has enterprise, don't run community
+        if config["GREYNOISE_ENTERPRISE"]:
+            return missing_apikey("greynoise_enterprise")
+
         params = {"apikey": config["GREYNOISE_API_KEY"]}
         response = requests.get(
             f"https://api.greynoise.io/v3/community/{indicator.indicator}",
@@ -25,6 +30,7 @@ def greynoise_community(indicator):
                 tool_name="greynoise_community",
                 status_code=response.status_code,
                 reason=response.reason,
+                error_message=response.json().get("message"),
             )
 
         return (
@@ -59,11 +65,6 @@ def greynoise_enterprise(indicator):
         if not config["GREYNOISE_ENTERPRISE"]:
             return missing_apikey("greynoise_enterprise")
 
-        context_url = "https://api.greynoise.io/v2/noise/context/"
-        quick_url = "https://api.greynoise.io/v2/noise/quick/"
-        riot_url = "https://api.greynoise.io/v2/riot/"
-        metadata_url = "https://api.greynoise.io/v2/meta/metadata"
-
         headers = {
             "key": config["GREYNOISE_API_KEY"],
             "Accept": "application/json",
@@ -73,30 +74,38 @@ def greynoise_enterprise(indicator):
         ip_address = indicator.indicator
         output = []
 
-        def build_tag_details(metadata, tags):
-            detailed_tags = []
-            for tag in tags:
-                for detailed_tag in metadata["metadata"]:
-                    if tag == detailed_tag["name"]:
-                        detailed_tags.append(detailed_tag)
-            return detailed_tags
+        quick_response = requests.get(
+            "https://api.greynoise.io/v2/noise/quick/" + ip_address, headers=headers
+        )
 
-        quick_response = requests.get(quick_url + ip_address, headers=headers)
+        if quick_response.json().get("code") == "0x00":
+            return no_results_found("greynoise_enterprise")
+
+        if quick_response.status_code != 200:
+            return failed_to_run(
+                tool_name="greynoise_enterprise",
+                status_code=quick_response.status_code,
+                reason=quick_response.reason,
+                error_message=quick_response.json().get("message"),
+            )
 
         context_json = {}
         riot_json = {}
         if quick_response.json()["noise"]:
-            context_response = requests.get(context_url + ip_address, headers=headers)
+            context_response = requests.get(
+                "https://api.greynoise.io/v2/noise/context/" + ip_address,
+                headers=headers,
+            )
             context_json = context_response.json()
-            if len(context_json["tags"]) >= 1:
-                tags_response = requests.get(metadata_url, headers=headers)
-                tags_json = tags_response.json()
-                updated_tags = build_tag_details(tags_json, context_json["tags"])
-                context_json.pop("tags")
-                context_json["tags"] = updated_tags
+            context_json.pop("raw_data", None)
+            context_json.pop("cve", None)
+
         if quick_response.json()["riot"]:
-            riot_response = requests.get(riot_url + ip_address, headers=headers)
+            riot_response = requests.get(
+                "https://api.greynoise.io/v2/riot/" + ip_address, headers=headers
+            )
             riot_json = riot_response.json()
+            riot_json.pop("ip", None)
 
         if context_json and riot_json:
             response = context_json.copy()
@@ -109,42 +118,19 @@ def greynoise_enterprise(indicator):
         else:
             output = quick_response.json()
 
-        return output
+        return (
+            {
+                "tool": "greynoise_enterprise",
+                "outcome": {
+                    "status": "results_found",
+                    "error_message": None,
+                    "status_code": quick_response.status_code,
+                    "reason": quick_response.reason,
+                },
+                "results": output,
+            },
+        )
 
-        # params = {"apikey": config["GREYNOISE_API_KEY"]}
-        # response = requests.get(
-        #     f"https://api.greynoise.io/v3/community/{indicator.indicator}",
-        #     params=params,
-        # )
-
-        # if "IP not observed" in response.json().get("message"):
-        #     return no_results_found("greynoise_enterprise")
-
-        # if response.status_code != 200:
-        #     return failed_to_run(
-        #         tool_name="greynoise_enterprise",
-        #         status_code=response.status_code,
-        #         reason=response.reason,
-        #     )
-
-        # return (
-        #     {
-        #         "tool": "greynoise_enterprise",
-        #         "outcome": {
-        #             "status": "results_found",
-        #             "error_message": None,
-        #             "status_code": response.status_code,
-        #             "reason": response.reason,
-        #         },
-        #         "results": {
-        #             "classification": response.json().get("classification"),
-        #             "noise": response.json().get("noise"),
-        #             "riot": response.json().get("riot"),
-        #             "name": response.json().get("name"),
-        #             "last_seen": response.json().get("last_seen"),
-        #         },
-        #     },
-        # )
     except Exception as error_message:
         return failed_to_run(
             tool_name="greynoise_enterprise", error_message=error_message
