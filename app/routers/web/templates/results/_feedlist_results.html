@@ -2,7 +2,7 @@
 {% if indicator.feedlist_results %}
 <div class="ui segment">
   <p class="ui small header">
-    <i class="fa-solid fa-circle-check"></i><a id="Feedlists"></a>Feedlists
+    <i class="fa-solid fa-circle-check"></i><a id="Feedlists"></a> Feedlists
   </p>
   {# Setup card grid #}
   <div class="ui two column grid">
@@ -10,28 +10,13 @@
     <div class="column">
       <div class="ui fluid card">
         <div class="content" style="word-wrap: break-word"">
-          <a href=" {{item.url}}" indicator="_blank" class="header">{{item.feedlist}} [ID-{{item.feedlist_id}}]</a>
-          <ul>
-            <li>
-              <div class="description"><b>Match:</b> {{item.match}}</div>
-            </li>
-            <li>
-              <div class="description">
-                <b>Description:</b> {{item.description}}
-              </div>
-            </li>
-            <li>
-              <div class="description"><b>Category:</b> {{item.category}}</div>
-            </li>
-            <li>
-              <div class="list_period">
-                <b>List Period:</b> {{item.list_period}}
-              </div>
-            </li>
-            <li>
-              <div class="list_type"><b>List Type:</b> {{item.list_type}}</div>
-            </li>
-          </ul>
+          <a href=" {{item.url}}" indicator="_blank" class="header">{{item.feedlist}}</a>
+          <div class="ui list">
+            {% for key, value in item.items() %}
+            <div class="item">• <b>{{key|snakecase_to_title}}:</b> {{value}}
+            </div>
+            {% endfor %}
+          </div>
         </div>
       </div>
     </div>

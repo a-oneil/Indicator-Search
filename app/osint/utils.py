@@ -123,28 +123,20 @@ def missing_apikey(tool_name):
     )
 
 
-def get_feedlist_type(indicator):
-    if indicator.indicator_type in ["ipv4", "ipv6"]:
+def get_feedlist_type(indicator_type):
+    if indicator_type in ["ipv4", "ipv6"]:
         return "ip"
-    elif indicator.indicator_type in [
+    elif indicator_type in [
         "hash.md5",
         "hash.sha1",
         "hash.sha256",
         "hash.sha512",
     ]:
         return "hash"
-    elif indicator.indicator_type in ["fqdn", "url", "email"]:
+    elif indicator_type in ["fqdn", "url", "email"]:
         return "fqdn"
 
     return None
-
-
-def remove_ip_address(string):
-    ip_address_pattern = r"\b(?:[0-9]{1,3}\.){3}[0-9]{1,3} \b"
-    if re.search(ip_address_pattern, string):
-        string = string.split(" ")[1]
-        string = string.strip()
-    return string
 
 
 def convert_email_to_fqdn(email):
