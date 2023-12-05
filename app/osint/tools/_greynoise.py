@@ -16,10 +16,12 @@ def greynoise_community(indicator):
         if config["GREYNOISE_ENTERPRISE"]:
             return missing_apikey("greynoise_enterprise")
 
-        params = {"apikey": config["GREYNOISE_API_KEY"]}
         response = requests.get(
             f"https://api.greynoise.io/v3/community/{indicator.indicator}",
-            params=params,
+            headers={
+                "key": config["GREYNOISE_API_KEY"],
+                "Accept": "application/json",
+            },
         )
 
         if "IP not observed" in response.json().get("message"):
@@ -68,7 +70,6 @@ def greynoise_enterprise(indicator):
         headers = {
             "key": config["GREYNOISE_API_KEY"],
             "Accept": "application/json",
-            "User-Agent": "sample-python-script",
         }
 
         ip_address = indicator.indicator
