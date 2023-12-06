@@ -40,7 +40,7 @@ def get_indicator_summary(results, summary_queue=None):
             ],
         )
 
-        summary = completion.choices[0].message.content
+        summary = str(completion.choices[0].message.content)
         if not summary:
             update_queue(summary, summary_queue)
             return None
