@@ -19,8 +19,14 @@ from sqlalchemy.orm.attributes import flag_modified
 class Indicators(Base):
     __tablename__ = "indicators"
     id = Column(Integer, primary_key=True, index=True)
-    time_created = Column(DateTime(timezone=False), server_default=func.now())
-    time_updated = Column(DateTime(timezone=False), onupdate=func.now())
+    time_created = Column(
+        DateTime(timezone=False),
+        default=func.timezone("UTC", func.current_timestamp()),
+    )
+    time_updated = Column(
+        DateTime(timezone=False),
+        onupdate=func.timezone("UTC", func.current_timestamp()),
+    )
     processing_time = Column(Numeric(5, 2), nullable=True)
     creator = relationship("User_Accounts", back_populates="indicators")
     username = Column(String, ForeignKey("user_accounts.username"))
@@ -32,6 +38,7 @@ class Indicators(Base):
     tags = Column(JSON)
     notes = Column(Text)
     enrichments = Column(JSON)
+    summary = Column(Text)
     complete = Column(Boolean, default=False)
     ioc_id = Column(Integer, ForeignKey("iocs.id"))
     ioc = relationship("Iocs", uselist=False, back_populates="indicator_scan")

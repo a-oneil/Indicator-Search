@@ -10,7 +10,10 @@ from sqlalchemy.orm.attributes import flag_modified
 class Iocs(Base):
     __tablename__ = "iocs"
     id = Column(Integer, primary_key=True, index=True)
-    time_created = Column(DateTime(timezone=False), server_default=func.now())
+    time_created = Column(
+        DateTime(timezone=False),
+        default=func.timezone("UTC", func.current_timestamp()),
+    )
     ageout = Column(DateTime(timezone=False))
     indicator = Column(String)
     indicator_type = Column(String)
