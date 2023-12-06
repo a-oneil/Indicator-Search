@@ -7,12 +7,18 @@ def get_indicator_summary(results):
         if config["OPENAI_API_KEY"] == "":
             return None
 
+        if not config["OPENAI_ENABLED"]:
+            return None
+
+        if not config["OPENAI_MODEL"]:
+            return None
+
         if not results:
             return None
 
         client = OpenAI(api_key=config["OPENAI_API_KEY"])
         completion = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=config["OPENAI_MODEL"],
             messages=[
                 {
                     "role": "system",
@@ -25,5 +31,5 @@ def get_indicator_summary(results):
             ],
         )
         return completion.choices[0].message.content
-    except Exception as e:
-        return str(e)
+    except Exception:
+        return None

@@ -6,7 +6,9 @@ def enrichments_handler(indicator):
     enrichments = {}
 
     if indicator.results:
-        enrichments.update({"description": get_indicator_summary(indicator.results)})
+        description = get_indicator_summary(indicator.results)
+        if description:
+            enrichments.update({"description": description})
 
     if indicator.indicator_type == "ipv4":
         enrichments.update(geo_data(indicator))
