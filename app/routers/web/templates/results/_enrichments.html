@@ -1,6 +1,13 @@
 {% if indicator.enrichments %}
   {% for key,value in indicator.enrichments.items() %}
-  {% if key == "last_scan_screenshot" %}
+  {% if key == "description" %}
+  <div class="ui segment">
+    <p class="ui small header">
+      <i class="fa-solid fa-robot"></i> Indicator Summary
+    </p>
+    <div class="content" style="word-wrap: break-word;white-space: pre-line">{{value}}</div>
+  </div>
+  {% elif key == "last_scan_screenshot" %}
   <div class="ui segment">
     <p class="ui small header">
       <i class="fa-solid fa-camera"></i> URLScan.io Screenshot</p>
