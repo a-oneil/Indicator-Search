@@ -1,14 +1,8 @@
 from .utils import remove_duplicate_keys
-from ._gpt import get_indicator_summary
 
 
 def enrichments_handler(indicator):
     enrichments = {}
-
-    if indicator.results:
-        description = get_indicator_summary(indicator.results)
-        if description:
-            enrichments.update({"description": description})
 
     if indicator.indicator_type == "ipv4":
         enrichments.update(geo_data(indicator))

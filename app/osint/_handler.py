@@ -3,6 +3,7 @@ import traceback
 import threading
 import queue
 from . import enrichments_handler, tagging_handler, links_handler
+from ._gpt import get_indicator_summary
 from .. import notifications
 from ..models import Iocs
 from sqlalchemy.orm import Session
@@ -43,11 +44,22 @@ def new_indicator_handler(indicator, user, db: Session):
             "BLUE",
         )
 
+        if indicator.results:
+            summary_queue = queue.Queue()
+            thread2 = threading.Thread(
+                target=get_indicator_summary,
+                daemon=False,
+                args=(indicator.results, summary_queue),
+            )
+            threads_to_wait_for.append(thread2)
+            thread2.start()
+
         # Wait for feedlist thread to finish
         if threads_to_wait_for:
             for thread in threads_to_wait_for:
                 thread.join()
             indicator.feedlist_results = feedlist_result_queue.get()
+            indicator.summary = summary_queue.get()
             notifications.console_output(
                 f"Indicator found in {len(indicator.feedlist_results)} feeds",
                 indicator,
@@ -55,6 +67,7 @@ def new_indicator_handler(indicator, user, db: Session):
             )
         else:
             indicator.feedlist_results = None
+            indicator.summary = None
 
         # Tagging and enriching using useful info from results
         add_tags = tagging_handler(indicator)
