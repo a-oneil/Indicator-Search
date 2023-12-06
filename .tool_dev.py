@@ -5,7 +5,12 @@ import traceback
 import app.osint.tools as tools
 from datetime import datetime
 from app import color
-from app.osint import tagging_handler, links_handler, enrichments_handler
+from app.osint import (
+    tagging_handler,
+    links_handler,
+    enrichments_handler,
+    get_indicator_summary,
+)
 from app.database import SessionManager
 from app.osint.utils import (
     get_type,
@@ -161,6 +166,12 @@ try:
         help="Get feedlist results for an indicator",
     )
 
+    parser.add_argument(
+        "--openai",
+        action="store_true",
+        help="Get a short description of the indicator using OpenAI's API",
+    )
+
     if parser.parse_args().indicator:
         indicator = parser.parse_args().indicator
     else:
@@ -189,6 +200,10 @@ try:
         
         elif parser.parse_args().feedlists:
             print_and_write_output(indicator.get_feedlist_results(), parser.parse_args())
+        
+        elif parser.parse_args().openai:
+            results = indicator.run_tools()
+            print(get_indicator_summary(results).choices[0].message.content)
         
         else:
             print_and_write_output(indicator.run_tools(), parser.parse_args())
