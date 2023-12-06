@@ -13,8 +13,8 @@ from sqlalchemy.orm import Session
 class FeedLists(Base):
     __tablename__ = "feedlists"
     id = Column(Integer, primary_key=True, index=True)
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
-    time_updated = Column(DateTime(timezone=True), onupdate=func.now())
+    time_created = Column(DateTime(timezone=False), server_default=func.now())
+    time_updated = Column(DateTime(timezone=False), onupdate=func.now())
     name = Column(String)
     description = Column(String)
     category = Column(String)

@@ -22,7 +22,7 @@ class User_Accounts(Base):
     __tablename__ = "user_accounts"
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True)
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
+    time_created = Column(DateTime(timezone=False), server_default=func.now())
     api_key = Column(String)
     password_hash = Column(HexByteString)
     disabled = Column(Boolean, default=True)
