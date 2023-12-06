@@ -4,10 +4,10 @@ from .. import config
 
 def get_indicator_summary(results):
     try:
-        if config["OPENAI_API_KEY"] == "":
+        if not config["OPENAI_ENABLED"]:
             return None
 
-        if not config["OPENAI_ENABLED"]:
+        if config["OPENAI_API_KEY"] == "":
             return None
 
         if not config["OPENAI_MODEL"]:
