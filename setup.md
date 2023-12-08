@@ -74,6 +74,6 @@ The tool will be omitted from the indicators results.
 To see the list of tools that Indicator Search can run, visit the [readme.md](./readme.md#tools). Use the link column to navigate to the tool and signup for an API key.
 
 ## Slack Notifications
-If you would like Indicator Search to notify a Slack channel on every successful for failure search, be sure to fill out the `SLACK_BOT_TOKEN` and `SLACK_CHANNEL` key in the config file.
+If you would like Indicator Search to notify a Slack channel on every successful or failure search, be sure to fill out the `SLACK_BOT_TOKEN` and `SLACK_CHANNEL` key in the config file.
 
 ![Slack Notifications](./app/routers/web/static/images/slack_notifications.png)
