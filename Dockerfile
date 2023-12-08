@@ -9,7 +9,7 @@ COPY ./ ./
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install all required dependencies
-RUN apt-get update && apt-get install -y python3 python3-pip cron tzdata ntp python3-venv git libpq-dev
+RUN apt-get update && apt-get install -y python3.11 python3-pip cron tzdata ntp python3-venv git libpq-dev
 
 # Set timezone
 ENV TZ=America/New_York
