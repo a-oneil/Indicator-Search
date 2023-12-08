@@ -57,9 +57,6 @@ def menu():
         menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
     except KeyboardInterrupt:
         print(f"{color.RED}Exiting...{color.ENDCOLOR}")
-        current_system_pid = os.getpid()
-        ThisSystem = psutil.Process(current_system_pid)
-        ThisSystem.terminate()
 
 
 def menu_switch(choice):
@@ -486,7 +483,6 @@ if __name__ == "__main__":
         config_venv()
 
     import requests
-    import psutil
     from urllib3.exceptions import InsecureRequestWarning
 
     requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)

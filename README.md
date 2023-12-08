@@ -60,7 +60,7 @@ Discover the app's features and capabilities through a live demonstration at [in
 |MAC Vendors|MAC Address|No|[link](https://macvendors.com/)|
 
 ## Setup / How to use
-See the [Indicator Search setup guide](docs/setup.md) and [menu options](docs/menu.md).
+See the [Indicator Search setup guide](./setup.md).
 
 ## Example Results
 ![Search Results](app/routers/web/static/images/results.png)
