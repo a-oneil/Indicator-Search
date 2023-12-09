@@ -57,6 +57,7 @@ def menu():
         menu_switch(input(f"{color.YELLOW}~> {color.ENDCOLOR}"))
     except KeyboardInterrupt:
         print(f"{color.RED}Exiting...{color.ENDCOLOR}")
+        exit(1)
 
 
 def menu_switch(choice):
