@@ -67,11 +67,11 @@ See the [Indicator Search setup guide](./setup.md).
 
 ```
 {
-  "time_updated": "2023-12-02T03:46:11.523330-05:00",
-  "time_created": "2023-12-02T03:46:11.520002-05:00",
-  "username": "demo2023",
+  "time_created": "2023-12-09T15:34:33.616428",
+  "time_updated": "2023-12-09T15:34:33.627550",
+  "username": "aoneil",
   "indicator_type": "url",
-  "feedlist_results": null,
+  "feedlist_results": [],
   "tags": {
     "tweetfeed_match": true,
     "vt_hits": "6/90",
@@ -80,9 +80,9 @@ See the [Indicator Search setup guide](./setup.md).
   "enrichments": {
     "last_scan_screenshot": "https://urlscan.io/screenshots/7e27ee56-5caa-4227-841a-1121cf65b692.png"
   },
-  "ioc_id": null,
-  "id": 40,
-  "processing_time": 5.54,
+  "complete": true,
+  "id": 25,
+  "processing_time": 26.55,
   "indicator": "https://injective.claims",
   "results": [
     {
@@ -201,16 +201,6 @@ See the [Indicator Search setup guide](./setup.md).
       "results": {}
     },
     {
-      "tool": "maltiverse",
-      "outcome": {
-        "status": "no_results_found",
-        "error_message": null,
-        "status_code": null,
-        "reason": null
-      },
-      "results": {}
-    },
-    {
       "tool": "shimon",
       "outcome": {
         "status": "no_results_found",
@@ -247,9 +237,10 @@ See the [Indicator Search setup guide](./setup.md).
     "urlscan.io": "https://urlscan.io/search/#injective.claims",
     "google": "https://www.google.com/search?q=https://injective.claims",
     "twitter": "https://twitter.com/search?q=https://injective.claims&src=typed_query",
-    "json": "https://indicatorsearch.app/api/indicator/40"
+    "json": "https://indicatorsearch.app/api/indicator/25"
   },
   "notes": null,
-  "complete": true
+  "summary": "The analysis from the data collected from multiple tools reveals significant findings. Tweetfeed.live has identified a potentially malicious URL posted by the user 'CarlyGriggs13', which was tagged as #phishing, #scam, and #malware. Further investigation into this URL was conducted, with Urlscan.io recording no indication of malicious activity. It provided a screenshot of the page visited via this URL link for reference. However contrary findings were noted from the Virustotal domain and Virustotal URL tools which both showed results suggesting this could be a potentially harmful URL. They flagged the URL as 'Spyware and Malware', 'Phishing and Other Frauds', 'Media sharing' and as 'Suspicious' by alphaMountain.ai respectively. Still, it's worth mentioning that the majority of antivirus solutions used by Virustotal domain and Virustotal URL did not detect any issues. The exact threat identified was 'Mal/HTMLGen-A', yet community votes found no consensus on the URL being either harmful or harmless. The contradiction in the data calls for additional analysis and scrutiny of the identified URL. Furthermore, no specific details regarding the creation date or whois date were provided.",
+  "ioc_id": null
 }
 ```
