@@ -1,4 +1,8 @@
-<div class="ui segment"> {% if related_indicators %} <div class="ui two column centered grid">
+<div class="ui segment">
+  {{render_partial("results/_summary.html", indicator=indicator)}}
+
+  {% if related_indicators %}
+  <div class="ui two column centered grid">
     <div class="column">
       <div class="ui raised fluid card">
         <div class="content">
