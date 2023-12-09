@@ -52,7 +52,7 @@ def run_tools(indicator):
         results += stopforumspam_ip(indicator)
         results += shodan(indicator)
         results += inquestlabs(indicator)
-        # results += maltiverse(indicator)
+        results += maltiverse(indicator)
 
     elif indicator.indicator_type == "ipv6":
         results += ipinfoio(indicator)
@@ -68,7 +68,7 @@ def run_tools(indicator):
         results += urlvoid(indicator)
         results += urlscanio(indicator)
         results += inquestlabs(indicator)
-        # results += maltiverse(indicator)
+        results += maltiverse(indicator)
         results += wayback_machine(indicator)
         results += kickbox_disposible_email(indicator)
         results += shimon(indicator)
@@ -80,7 +80,6 @@ def run_tools(indicator):
         results += urlvoid(indicator)
         results += urlscanio(indicator)
         results += inquestlabs(indicator)
-        # results += maltiverse(indicator)
         results += wayback_machine(indicator)
         results += shimon(indicator)
 
@@ -102,7 +101,7 @@ def run_tools(indicator):
         results += hybrid_analysis(indicator)
         results += malware_bazzar(indicator)
         results += inquestlabs(indicator)
-        # results += maltiverse(indicator)
+        results += maltiverse(indicator)
 
     elif indicator.indicator_type == "hash.sha1":
         results += circl_lu(indicator)
@@ -110,7 +109,7 @@ def run_tools(indicator):
         results += hybrid_analysis(indicator)
         results += malware_bazzar(indicator)
         results += inquestlabs(indicator)
-        # results += maltiverse(indicator)
+        results += maltiverse(indicator)
 
     elif indicator.indicator_type == "hash.sha256":
         results += circl_lu(indicator)
@@ -120,12 +119,12 @@ def run_tools(indicator):
         results += hybrid_analysis(indicator)
         results += malware_bazzar(indicator)
         results += inquestlabs(indicator)
-        # results += maltiverse(indicator)
+        results += maltiverse(indicator)
 
     elif indicator.indicator_type == "hash.sha512":
         results += virustotal_hash(indicator)
         results += inquestlabs(indicator)
-        # results += maltiverse(indicator)
+        results += maltiverse(indicator)
 
     elif indicator.indicator_type == "mac":
         results += macvendors(indicator)
