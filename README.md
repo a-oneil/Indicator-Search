@@ -42,8 +42,8 @@ Discover the app's features and capabilities through a live demonstration at [in
 |IPInfoio|IPv4, IPv6|No|[link](https://ipinfo.io/)|
 |Abuse IPDB|IPv4, IPv6|Yes|[link](https://www.abuseipdb.com/)|
 |IP Quality Score|IPv4, IPv6, Phone|Yes|[link](https://www.ipqualityscore.com/)|
-|Greynoise Community|IPv4, IPv6|Yes|[link](https://www.greynoise.io/)|
-|Greynoise Enterprise|IPv4, IPv6|Yes|[link](https://www.greynoise.io/)|
+|Greynoise Community|IPv4|Yes|[link](https://www.greynoise.io/)|
+|Greynoise Enterprise|IPv4|Yes|[link](https://www.greynoise.io/)|
 |Project Honeypot|IPv4|Yes|[link](https://www.projecthoneypot.org/)|
 |Hacked IP Threatlist|IPv4|No|[link](http://www.hackedip.com/)|
 |Shodan|IPv4|Yes|[link](https://www.shodan.io/)|
