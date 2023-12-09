@@ -92,6 +92,7 @@
   </p>
   <div class="ui two column grid">
     {% for key,value in tool.results.items() %}
+    {% if value %}
     <div class="column" style="padding: 14px; word-wrap: break-word">
       <div class="ui raised fluid card">
         <div class="content">
@@ -147,6 +148,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
     {% endfor %}
   </div>
   <br />
