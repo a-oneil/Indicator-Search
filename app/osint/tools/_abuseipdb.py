@@ -3,6 +3,7 @@ from ... import config
 from ..utils import (
     failed_to_run,
     missing_apikey,
+    no_results_found,
 )
 
 
@@ -27,6 +28,9 @@ def abuseipdb(indicator):
                 status_code=response.status_code,
                 reason=response.reason,
             )
+
+        if not response.json().get("data", {}).get("lastReportedAt"):
+            return no_results_found(tool_name="abuseipdb")
 
         # fmt: off
         return (
