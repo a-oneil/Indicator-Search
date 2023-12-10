@@ -63,6 +63,7 @@ async def feedlists_handler(indicator, db):
         except Exception:
             continue
 
+    client.aclose()
     return results if results else None
 
 
