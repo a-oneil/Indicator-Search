@@ -1,4 +1,4 @@
-import requests
+import httpx
 import json
 from ... import config
 from ..utils import (
@@ -7,12 +7,12 @@ from ..utils import (
 )
 
 
-def whatsmybrowser_ua(indicator):
+async def whatsmybrowser_ua(indicator, client: httpx.AsyncClient):
     try:
         if config["WHATSMYBROWSER_API_KEY"] == "":
             return missing_apikey("whatsmybrowser")
 
-        response = requests.post(
+        response = await client.post(
             "https://api.whatismybrowser.com/api/v2/user_agent_parse",
             data=json.dumps(
                 {
@@ -29,14 +29,13 @@ def whatsmybrowser_ua(indicator):
             return failed_to_run(
                 tool_name="whatsmybrowser_ua",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
-        return (
-            # fmt: off
-                {
+        # fmt: off
+        return {
                     "tool": "whatsmybrowser_ua",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
                     "results": {
                         "is_abusive": response.json().get("parse", {}).get("is_abusive"),
                         "simple_software_string": response.json().get("parse", {}).get("simple_software_string"),
@@ -48,8 +47,8 @@ def whatsmybrowser_ua(indicator):
                         "operating_system_name": response.json().get("parse", {}).get("operating_system_name"),
                         "operating_system_version_full": response.json().get("parse", {}).get("operating_system_version_full"),
                     }
-                },
-            # fmt: on
-        )
+                }
+        # fmt: on
+
     except Exception as error_message:
         return failed_to_run(tool_name="whatsmybrowser_ua", error_message=error_message)

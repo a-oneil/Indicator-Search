@@ -79,48 +79,42 @@ def get_type(indicator):
 
 
 def no_results_found(tool_name):
-    return (
-        {
-            "tool": tool_name,
-            "outcome": {
-                "status": "no_results_found",
-                "error_message": None,
-                "status_code": None,
-                "reason": None,
-            },
-            "results": {},
+    return {
+        "tool": tool_name,
+        "outcome": {
+            "status": "no_results_found",
+            "error_message": None,
+            "status_code": None,
+            "reason": None,
         },
-    )
+        "results": {},
+    }
 
 
 def failed_to_run(tool_name, error_message=None, status_code=None, reason=None):
-    return (
-        {
-            "tool": tool_name,
-            "outcome": {
-                "status": "failed_to_run",
-                "error_message": error_message,
-                "status_code": status_code,
-                "reason": reason,
-            },
-            "results": {},
+    return {
+        "tool": tool_name,
+        "outcome": {
+            "status": "failed_to_run",
+            "error_message": error_message,
+            "status_code": status_code,
+            "reason": reason,
         },
-    )
+        "results": {},
+    }
 
 
 def missing_apikey(tool_name):
-    return (
-        {
-            "tool": tool_name,
-            "outcome": {
-                "status": "missing_apikey",
-                "error_message": None,
-                "status_code": None,
-                "reason": None,
-            },
-            "results": {},
+    return {
+        "tool": tool_name,
+        "outcome": {
+            "status": "missing_apikey",
+            "error_message": None,
+            "status_code": None,
+            "reason": None,
         },
-    )
+        "results": {},
+    }
 
 
 def get_feedlist_type(indicator_type):

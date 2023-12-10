@@ -1,4 +1,4 @@
-import requests
+import httpx
 from ... import config
 from ..utils import (
     failed_to_run,
@@ -7,12 +7,12 @@ from ..utils import (
 )
 
 
-def echo_trail(indicator):
+async def echo_trail(indicator, client: httpx.AsyncClient):
     try:
         if config["ECHOTRAIL_API_KEY"] == "":
             return missing_apikey("echo_trail")
 
-        response = requests.get(
+        response = await client.get(
             f"https://api.echotrail.io/v1/insights/{indicator.indicator}",
             headers={
                 "X-Api-Key": str(config["ECHOTRAIL_API_KEY"]),
@@ -24,26 +24,28 @@ def echo_trail(indicator):
             return failed_to_run(
                 tool_name="echo_trail",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
         if "EchoTrail has never observed" in response.json().get("message", ""):
             return no_results_found("echo_trail")
 
-        return (
-            # fmt: off
-                {
-                    "tool": "echo_trail",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
-                    "results": {
-                        "file_name": response.json().get("filenames"),
-                        "description": response.json().get("description"),
-                        "intel": response.json().get("intel"),
-                        "parents": response.json().get("parents"),
-                        "children": response.json().get("children"),
-                    },
-                },
-            # fmt: on
-        )
+        return {
+            "tool": "echo_trail",
+            "outcome": {
+                "status": "results_found",
+                "error_message": None,
+                "status_code": response.status_code,
+                "reason": response.reason_phrase,
+            },
+            "results": {
+                "file_name": response.json().get("filenames"),
+                "description": response.json().get("description"),
+                "intel": response.json().get("intel"),
+                "parents": response.json().get("parents"),
+                "children": response.json().get("children"),
+            },
+        }
+
     except Exception as error_message:
         return failed_to_run(tool_name="echo_trail", error_message=error_message)

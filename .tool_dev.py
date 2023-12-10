@@ -14,8 +14,6 @@ from app.osint import (
 from app.database import SessionManager
 from app.osint.utils import (
     get_type,
-    remove_missingapikey_results,
-    sort_results,
     refang,
 )
 
@@ -48,9 +46,8 @@ class TestIndicator:
         """
         Run all tools on the indicator
         """
-        self.results = tools.run_tools(self)
-        self.results = sorted(self.results, key=sort_results)
-        self.results = remove_missingapikey_results(self.results)
+        self.results = tools.tool_handler(self)
+
         return self.results
 
     def run_tagging(self):

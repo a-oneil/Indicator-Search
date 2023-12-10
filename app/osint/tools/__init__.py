@@ -1,3 +1,6 @@
+import asyncio
+import httpx
+from ..utils import sort_results, remove_missingapikey_results
 from ._search_feedlists import feedlists_handler
 from ._ipinfoio import ipinfoio
 from ._ipwhois import search_ipwhois as ipwhois
@@ -33,108 +36,154 @@ from ._malware_bazzar import malware_bazzar
 from ._whatsmybrowser import whatsmybrowser_ua
 
 
-def run_tools(indicator):
+async def tool_handler(indicator):
     """Setup indicator json objects"""
     results = []
+    client = httpx.AsyncClient()
 
-    # fmt: off
     if indicator.indicator_type == "ipv4":
-        results += tweetfeed_live(indicator)
-        results += ipwhois(indicator)
-        results += ipinfoio(indicator)
-        results += abuseipdb(indicator)
-        results += ipqualityscore_ip(indicator)
-        results += greynoise_community(indicator)
-        results += greynoise_enterprise(indicator)
-        results += virustotal_ip(indicator)
-        results += project_honeypot(indicator)
-        results += hacked_ip(indicator)
-        results += stopforumspam_ip(indicator)
-        results += shodan(indicator)
-        results += inquestlabs(indicator)
-        results += maltiverse(indicator)
+        funcs = [
+            tweetfeed_live,
+            ipinfoio,
+            abuseipdb,
+            ipqualityscore_ip,
+            greynoise_community,
+            greynoise_enterprise,
+            virustotal_ip,
+            hacked_ip,
+            stopforumspam_ip,
+            inquestlabs,
+            maltiverse,
+        ]
+        func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
+        results.append(shodan(indicator))
+        results.append(project_honeypot(indicator))
+        results.extend(await func_calls)
 
     elif indicator.indicator_type == "ipv6":
-        results += ipinfoio(indicator)
-        results += abuseipdb(indicator)
-        results += ipqualityscore_ip(indicator)
-        results += virustotal_ip(indicator)
-        results += stopforumspam_ip(indicator)
+        funcs = [
+            ipinfoio,
+            abuseipdb,
+            ipqualityscore_ip,
+            virustotal_ip,
+            stopforumspam_ip,
+        ]
+        func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
+        results.extend(await func_calls)
 
     elif indicator.indicator_type == "fqdn":
-        results += tweetfeed_live(indicator)
-        results += virustotal_domain(indicator)
-        results += virustotal_url(indicator)
-        results += urlvoid(indicator)
-        results += urlscanio(indicator)
-        results += inquestlabs(indicator)
-        results += maltiverse(indicator)
-        results += wayback_machine(indicator)
-        results += kickbox_disposible_email(indicator)
-        results += shimon(indicator)
+        funcs = [
+            tweetfeed_live,
+            virustotal_domain,
+            virustotal_url,
+            urlvoid,
+            urlscanio,
+            inquestlabs,
+            maltiverse,
+            wayback_machine,
+            kickbox_disposible_email,
+            shimon,
+        ]
+        func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
+        results.extend(await func_calls)
 
     elif indicator.indicator_type == "url":
-        results += tweetfeed_live(indicator)
-        results += virustotal_domain(indicator)
-        results += virustotal_url(indicator)
-        results += urlvoid(indicator)
-        results += urlscanio(indicator)
-        results += inquestlabs(indicator)
-        results += wayback_machine(indicator)
-        results += shimon(indicator)
+        funcs = [
+            tweetfeed_live,
+            virustotal_domain,
+            virustotal_url,
+            urlvoid,
+            urlscanio,
+            inquestlabs,
+            wayback_machine,
+            shimon,
+        ]
+        func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
+        results.extend(await func_calls)
 
     elif indicator.indicator_type == "email":
-        results += emailrepio(indicator)
-        results += breach_directory(indicator)
-        results += stopforumspam_email(indicator)
-        results += virustotal_domain(indicator)
-        results += urlvoid(indicator)
-        results += inquestlabs(indicator)
-        results += wayback_machine(indicator)
-        results += kickbox_disposible_email(indicator)
+        funcs = [
+            emailrepio,
+            breach_directory,
+            stopforumspam_email,
+            virustotal_domain,
+            urlvoid,
+            inquestlabs,
+            wayback_machine,
+            kickbox_disposible_email,
+        ]
+        func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
+        results.extend(await func_calls)
 
     elif indicator.indicator_type == "hash.md5":
-        results += circl_lu(indicator)
-        results += echo_trail(indicator)
-        results += tweetfeed_live(indicator)
-        results += virustotal_hash(indicator)
-        results += hybrid_analysis(indicator)
-        results += malware_bazzar(indicator)
-        results += inquestlabs(indicator)
-        results += maltiverse(indicator)
+        funcs = [
+            circl_lu,
+            echo_trail,
+            tweetfeed_live,
+            virustotal_hash,
+            hybrid_analysis,
+            malware_bazzar,
+            inquestlabs,
+            maltiverse,
+        ]
+        func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
+        results.extend(await func_calls)
 
     elif indicator.indicator_type == "hash.sha1":
-        results += circl_lu(indicator)
-        results += virustotal_hash(indicator)
-        results += hybrid_analysis(indicator)
-        results += malware_bazzar(indicator)
-        results += inquestlabs(indicator)
-        results += maltiverse(indicator)
+        funcs = [
+            circl_lu,
+            virustotal_hash,
+            hybrid_analysis,
+            malware_bazzar,
+            inquestlabs,
+            maltiverse,
+        ]
+        func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
+        results.extend(await func_calls)
 
     elif indicator.indicator_type == "hash.sha256":
-        results += circl_lu(indicator)
-        results += echo_trail(indicator)
-        results += tweetfeed_live(indicator)
-        results += virustotal_hash(indicator)
-        results += hybrid_analysis(indicator)
-        results += malware_bazzar(indicator)
-        results += inquestlabs(indicator)
-        results += maltiverse(indicator)
+        funcs = [
+            circl_lu,
+            echo_trail,
+            tweetfeed_live,
+            virustotal_hash,
+            hybrid_analysis,
+            malware_bazzar,
+            inquestlabs,
+            maltiverse,
+        ]
+        func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
+        results.extend(await func_calls)
 
     elif indicator.indicator_type == "hash.sha512":
-        results += virustotal_hash(indicator)
-        results += inquestlabs(indicator)
-        results += maltiverse(indicator)
+        funcs = [
+            virustotal_hash,
+            inquestlabs,
+            maltiverse,
+        ]
+        func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
+        results.extend(await func_calls)
 
     elif indicator.indicator_type == "mac":
-        results += macvendors(indicator)
+        funcs = [macvendors]
+        func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
+        results.extend(await func_calls)
 
     elif indicator.indicator_type == "phone":
-        results += numverify(indicator)
-        results += ipqualityscore_phone(indicator)
+        funcs = [numverify, ipqualityscore_phone]
+        func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
+        results.extend(await func_calls)
 
     elif indicator.indicator_type == "useragent":
-        results += whatsmybrowser_ua(indicator)
-    # fmt: on
+        funcs = [whatsmybrowser_ua]
+        func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
+        results.extend(await func_calls)
 
+    # Remove tools that did not have an API key set
+    results = remove_missingapikey_results(results)
+
+    # Sort results based on if the tool had results or not
+    results = sorted(results, key=sort_results)
+
+    await client.aclose()
     return results

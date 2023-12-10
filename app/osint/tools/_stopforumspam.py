@@ -1,11 +1,11 @@
-import requests
+import httpx
 import xmltodict
 from ..utils import failed_to_run
 
 
-def stopforumspam_email(indicator):
+async def stopforumspam_email(indicator, client: httpx.AsyncClient):
     try:
-        response = requests.get(
+        response = await client.get(
             f"http://api.stopforumspam.org/api?email={indicator.indicator}",
         )
         results = xmltodict.parse(response.text)
@@ -14,14 +14,14 @@ def stopforumspam_email(indicator):
             return failed_to_run(
                 tool_name="stop_forum_spam_email",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
         return (
             # fmt: off
                 {
                     "tool": "stop_forum_spam_email",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
                     "results": {
                         "appears": results.get("response", {}).get("appears"),
                         "frequency": results.get("response", {}).get("frequency")
@@ -35,9 +35,9 @@ def stopforumspam_email(indicator):
         )
 
 
-def stopforumspam_ip(indicator):
+async def stopforumspam_ip(indicator, client: httpx.AsyncClient):
     try:
-        response = requests.get(
+        response = await client.get(
             f"http://api.stopforumspam.org/api?ip={indicator.indicator}",
         )
         results = xmltodict.parse(response.text)
@@ -46,21 +46,22 @@ def stopforumspam_ip(indicator):
             return failed_to_run(
                 tool_name="stop_forum_spam_ip",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
-        return (
-            # fmt: off
-                {
-                    "tool": "stop_forum_spam_ip",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
-                    "results": {
-                        "appears": results.get("response", {}).get("appears"),
-                        "frequency": results.get("response", {}).get("frequency")
-                    },
-                },
-            # fmt: on
-        )
+        return {
+            "tool": "stop_forum_spam_ip",
+            "outcome": {
+                "status": "results_found",
+                "error_message": None,
+                "status_code": response.status_code,
+                "reason": response.reason_phrase,
+            },
+            "results": {
+                "appears": results.get("response", {}).get("appears"),
+                "frequency": results.get("response", {}).get("frequency"),
+            },
+        }
     except Exception as error_message:
         return failed_to_run(
             tool_name="stop_forum_spam_ip", error_message=error_message

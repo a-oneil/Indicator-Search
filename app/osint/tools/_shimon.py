@@ -1,4 +1,4 @@
-import requests
+import httpx
 from urllib.parse import quote
 from ..utils import (
     no_results_found,
@@ -7,7 +7,7 @@ from ..utils import (
 )
 
 
-def shimon(indicator):
+async def shimon(indicator, client: httpx.AsyncClient):
     try:
         if indicator.indicator_type == "fqdn":
             encoded_url = quote(convert_fqdn_to_url(indicator.indicator), safe="")
@@ -16,7 +16,7 @@ def shimon(indicator):
         else:
             raise Exception("Invalid indicator type for shimon")
 
-        response = requests.get(
+        response = await client.get(
             f"https://shimon-6983d71a338d.herokuapp.com/api/fingerprint/calculate?url={encoded_url}",
             headers={"accept": "application/json"},
         )
@@ -27,17 +27,18 @@ def shimon(indicator):
             return failed_to_run(
                 tool_name="shimon",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
-        return (
-            # fmt: off
-                {
-                    "tool": "shimon",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
-                    "results": response.json()
-                },
-            # fmt: on
-        )
+        return {
+            "tool": "shimon",
+            "outcome": {
+                "status": "results_found",
+                "error_message": None,
+                "status_code": response.status_code,
+                "reason": response.reason_phrase,
+            },
+            "results": response.json(),
+        }
     except Exception as error_message:
         return failed_to_run(tool_name="shimon", error_message=error_message)

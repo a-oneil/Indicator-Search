@@ -1,4 +1,4 @@
-import requests
+import httpx
 from ... import config
 from ..utils import (
     no_results_found,
@@ -7,7 +7,7 @@ from ..utils import (
 )
 
 
-def maltiverse(indicator):
+async def maltiverse(indicator, client: httpx.AsyncClient):
     try:
         if config["MALTIVERSE_API_KEY"] == "":
             return missing_apikey("maltiverse")
@@ -16,32 +16,34 @@ def maltiverse(indicator):
         api = "https://api.maltiverse.com"
 
         if indicator.indicator_type == "hash.md5":
-            results = requests.get(
+            results = await client.get(
                 f"{api}/sample/md5/{indicator.indicator}", headers=header
             )
 
         elif indicator.indicator_type == "hash.sha1":
-            results = requests.get(
+            results = await client.get(
                 f"{api}/sample/sha1/{indicator.indicator}", headers=header
             )
 
         elif indicator.indicator_type == "hash.sha256":
-            results = requests.get(
+            results = await client.get(
                 f"{api}/sample/{indicator.indicator}", headers=header
             )
 
         elif indicator.indicator_type == "hash.sha512":
-            results = requests.get(
+            results = await client.get(
                 f"{api}/sample/sha512/{indicator.indicator}", headers=header
             )
 
         elif indicator.indicator_type == "fqdn":
-            results = requests.get(
+            results = await client.get(
                 f"{api}/hostname/{indicator.indicator}", headers=header
             )
 
         elif indicator.indicator_type == "ipv4":
-            results = requests.get(f"{api}/ip/{indicator.indicator}", headers=header)
+            results = await client.get(
+                f"{api}/ip/{indicator.indicator}", headers=header
+            )
 
         else:
             raise Exception("Invalid indicator type for maltiverse")
@@ -49,7 +51,7 @@ def maltiverse(indicator):
         if results.status_code != 200:
             return failed_to_run(
                 tool_name="maltiverse",
-                error_message=results.reason,
+                error_message=results.reason_phrase,
                 status_code=results.status_code,
             )
 
@@ -65,8 +67,7 @@ def maltiverse(indicator):
 
         # fmt: off
         if indicator.indicator_type == "ipv4":
-            return (
-                {
+            return {
                     "tool": "maltiverse",
                     "outcome": {
                         "status": "results_found",
@@ -93,12 +94,10 @@ def maltiverse(indicator):
                         "is_vpn_node": results.json().get("is_vpn_node"),
                         "registrant_name": results.json().get("registrant_name"),
                     },
-                },
-            )
+                }
 
         elif indicator.indicator_type == "fqdn":
-            return (
-                {
+            return {
                     "tool": "maltiverse",
                     "outcome": {
                         "status": "results_found",
@@ -118,12 +117,10 @@ def maltiverse(indicator):
                         "nameserver": results.json().get("nameserver"),
                         "resolved_ip": results.json().get("resolved_ip"),
                     },
-                },
-            )
+                }
         
         else:
-            return (
-                {
+            return {
                     "tool": "maltiverse",
                     "outcome": {
                         "status": "results_found",
@@ -142,8 +139,7 @@ def maltiverse(indicator):
                         "suricata_alerts": results.json().get("network_suricata_alert"),
                         "process_list": results.json().get("process_list")
                     },
-                },
-            )
-        # fmt: on
+                }
+
     except Exception as error_message:
         return failed_to_run(tool_name="maltiverse", error_message=error_message)

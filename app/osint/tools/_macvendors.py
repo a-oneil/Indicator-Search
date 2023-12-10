@@ -1,28 +1,29 @@
-import requests
+import httpx
 from ..utils import failed_to_run
 
 
-def macvendors(indicator):
+async def macvendors(indicator, client: httpx.AsyncClient):
     try:
-        response = requests.get(f"https://api.macvendors.com/{indicator.indicator}")
+        response = await client.get(f"https://api.macvendors.com/{indicator.indicator}")
 
         if response.status_code != 200:
             return failed_to_run(
                 tool_name="mac_vendors",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
-        return (
-            # fmt: off
-            {
-                "tool": "mac_vendors",
-                "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
-                "results": {
-                    "manufacturer": response.text,
-                },
+        return {
+            "tool": "mac_vendors",
+            "outcome": {
+                "status": "results_found",
+                "error_message": None,
+                "status_code": response.status_code,
+                "reason": response.reason_phrase,
             },
-            # fmt: on
-        )
+            "results": {
+                "manufacturer": response.text,
+            },
+        }
     except Exception as error_message:
         return failed_to_run(tool_name="mac_vendors", error_message=error_message)

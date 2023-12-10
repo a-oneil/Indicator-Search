@@ -1,4 +1,4 @@
-import requests
+import httpx
 import datetime
 import base64
 from ... import config
@@ -12,11 +12,11 @@ from ..utils import (
 )
 
 
-def virustotal_ip(indicator):
+async def virustotal_ip(indicator, client: httpx.AsyncClient):
     try:
         if config["VIRUSTOTAL_API_KEY"] == "":
             return missing_apikey("virustotal_ip")
-        response = requests.get(
+        response = await client.get(
             f"https://www.virustotal.com/api/v3/ip_addresses/{indicator.indicator}",
             headers={
                 "x-apikey": config["VIRUSTOTAL_API_KEY"],
@@ -31,14 +31,13 @@ def virustotal_ip(indicator):
             return failed_to_run(
                 tool_name="virustotal_ip",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
-        return (
-            # fmt: off
-                {
+        # fmt: off
+        return {
                     "tool": "virustotal_ip",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
                     "results": {
                         "last analysis date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("last_analysis_date")).strftime('%c') if response.json().get("data").get("attributes").get("last_analysis_date") else "",
                         "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
@@ -48,14 +47,13 @@ def virustotal_ip(indicator):
                         "reputation": response.json().get("data").get("attributes").get("reputation"),
                         "tags": response.json().get("data").get("attributes").get("tags"),
                     },
-                },
-            # fmt: on
-        )
+                }
+        # fmt: on
     except Exception as error_message:
         return failed_to_run(tool_name="virustotal_ip", error_message=error_message)
 
 
-def virustotal_domain(indicator):
+async def virustotal_domain(indicator, client: httpx.AsyncClient):
     try:
         if config["VIRUSTOTAL_API_KEY"] == "":
             return missing_apikey("virustotal_domain")
@@ -67,7 +65,7 @@ def virustotal_domain(indicator):
         else:
             domain = indicator.indicator
 
-        response = requests.get(
+        response = await client.get(
             f"https://www.virustotal.com/api/v3/domains/{domain}",
             headers={
                 "x-apikey": config["VIRUSTOTAL_API_KEY"],
@@ -82,14 +80,13 @@ def virustotal_domain(indicator):
             return failed_to_run(
                 tool_name="virustotal_domain",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
-        return (
-            # fmt: off
-                {
+        # fmt: off
+        return {
                     "tool": "virustotal_domain",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
                     "results": {
                         "whois": response.json().get("data").get("attributes").get("whois"),
                         "creation_date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("creation_date")).strftime('%c') if response.json().get("data").get("attributes").get("creation_date") else "",
@@ -104,14 +101,13 @@ def virustotal_domain(indicator):
                         "community_votes": response.json().get("data").get("attributes").get("total_votes"),
                         "last_analysis": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("last_analysis_date")).strftime('%c') if response.json().get("data").get("attributes").get("last_analysis_date") else ""
                     },
-                },
-            # fmt: on
-        )
+                }
+        # fmt: on
     except Exception as error_message:
         return failed_to_run(tool_name="virustotal_domain", error_message=error_message)
 
 
-def virustotal_url(indicator):
+async def virustotal_url(indicator, client: httpx.AsyncClient):
     try:
         if config["VIRUSTOTAL_API_KEY"] == "":
             return missing_apikey("virustotal_url")
@@ -131,7 +127,7 @@ def virustotal_url(indicator):
                 .strip("=")
             )
 
-        response = requests.get(
+        response = await client.get(
             f"https://www.virustotal.com/api/v3/urls/{url_id}",
             headers={
                 "x-apikey": config["VIRUSTOTAL_API_KEY"],
@@ -146,14 +142,13 @@ def virustotal_url(indicator):
             return failed_to_run(
                 tool_name="virustotal_url",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
-        return (
-            # fmt: off
-                {
+        # fmt: off
+        return {
                     "tool": "virustotal_url",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
                     "results": {
                         "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
                         "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
@@ -169,20 +164,19 @@ def virustotal_url(indicator):
                         "community_votes": response.json().get("data").get("attributes").get("total_votes"),
                         "categories": response.json().get("data").get("attributes").get("categories"),
                     },
-                },
-            # fmt: on
-        )
+                }
+        # fmt: on
 
     except Exception as error_message:
         return failed_to_run(tool_name="virustotal_url", error_message=error_message)
 
 
-def virustotal_hash(indicator):
+async def virustotal_hash(indicator, client: httpx.AsyncClient):
     try:
         if config["VIRUSTOTAL_API_KEY"] == "":
             return missing_apikey("virustotal_hash")
 
-        response = requests.get(
+        response = await client.get(
             f"https://www.virustotal.com/api/v3/files/{indicator.indicator}",
             headers={
                 "x-apikey": config["VIRUSTOTAL_API_KEY"],
@@ -197,14 +191,13 @@ def virustotal_hash(indicator):
             return failed_to_run(
                 tool_name="virustotal_hash",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
-        return (
-            # fmt: off
-                {
+        # fmt: off
+        return {
                     "tool": "virustotal_hash",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
                     "results": {
                         "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
                         "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
@@ -227,8 +220,7 @@ def virustotal_hash(indicator):
                         "sha1": response.json().get("data").get("attributes").get("sha1"),
                         "sha256": response.json().get("data").get("attributes").get("sha256"),
                     },
-                },
-            # fmt: on
-        )
+                }
+        # fmt: on
     except Exception as error_message:
         return failed_to_run(tool_name="virustotal_hash", error_message=error_message)

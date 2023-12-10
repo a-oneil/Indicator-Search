@@ -1,4 +1,4 @@
-import requests
+import httpx
 from ..utils import (
     no_results_found,
     failed_to_run,
@@ -6,14 +6,14 @@ from ..utils import (
 )
 
 
-def urlscanio(indicator):
+async def urlscanio(indicator, client: httpx.AsyncClient):
     try:
         if indicator.indicator_type == "url":
             domain = convert_url_to_fqdn(indicator.indicator)
         else:
             domain = indicator.indicator
 
-        response = requests.get(
+        response = await client.get(
             f"https://urlscan.io/api/v1/search/?q=domain:{domain}",
         )
 
@@ -21,7 +21,7 @@ def urlscanio(indicator):
             return failed_to_run(
                 tool_name="urlscan.io",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
         if not response.json().get("results"):
@@ -30,7 +30,7 @@ def urlscanio(indicator):
         last_scan_response = {}
         for scan in response.json().get("results"):
             if domain in scan.get("task").get("domain"):
-                last_scan_response = requests.get(
+                last_scan_response = await client.get(
                     f"https://urlscan.io/api/v1/result/{scan.get('task').get('uuid')}/",
                 )
                 break
@@ -38,11 +38,10 @@ def urlscanio(indicator):
         if not last_scan_response:
             return no_results_found("urlscan.io")
 
-        return (
-            # fmt: off
-                {
+        # fmt: off
+        return {
                     "tool": "urlscan.io",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
                     "results": {
                         "last_scan_guid": last_scan_response.json().get("task").get("uuid"),
                         "last_scan_url": last_scan_response.json().get("task").get("reportURL"),
@@ -53,8 +52,7 @@ def urlscanio(indicator):
                         "tags": last_scan_response.json().get("verdicts").get("overall").get("tags"),
                         "last_scan_screenshot": last_scan_response.json().get("task").get("screenshotURL"),
                     },
-                },
-            # fmt: on
-        )
+                }
+        # fmt: on
     except Exception as error_message:
         return failed_to_run(tool_name="urlscan.io", error_message=error_message)

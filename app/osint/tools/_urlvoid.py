@@ -1,4 +1,4 @@
-import requests
+import httpx
 from ... import config
 from ..utils import (
     no_results_found,
@@ -9,24 +9,24 @@ from ..utils import (
 )
 
 
-def urlvoid(indicator):
+async def urlvoid(indicator, client: httpx.AsyncClient):
     try:
         if config["APIVOID_API_KEY"] == "":
             return missing_apikey("url_void")
 
         if indicator.indicator_type == "fqdn":
             fqdn = convert_fqdn_to_url(indicator.indicator)
-            response = requests.get(
+            response = await client.get(
                 f"https://endpoint.apivoid.com/urlrep/v1/pay-as-you-go/?key={config['APIVOID_API_KEY']}&host={fqdn}",
             )
         elif indicator.indicator_type == "url":
             url = indicator.indicator
-            response = requests.get(
+            response = await client.get(
                 f"https://endpoint.apivoid.com/urlrep/v1/pay-as-you-go/?key={config['APIVOID_API_KEY']}&url={url}",
             )
         elif indicator.indicator_type == "email":
             fqdn = convert_email_to_fqdn(indicator.indicator)
-            response = requests.get(
+            response = await client.get(
                 f"https://endpoint.apivoid.com/urlrep/v1/pay-as-you-go/?key={config['APIVOID_API_KEY']}&host={fqdn}",
             )
         else:
@@ -36,7 +36,7 @@ def urlvoid(indicator):
             return failed_to_run(
                 tool_name="url_void",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
         blacklists = (
@@ -61,11 +61,10 @@ def urlvoid(indicator):
                 if v and k not in security_checks_list:
                     security_checks_list.append(k)
 
-            return (
-                # fmt: off
-                    {
+            # fmt: off
+            return {
                         "tool": "url_void",
-                        "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
+                        "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
                         "results": {
                             "dns_records": response.json().get("data", {}).get("report", {}).get("dns_records", {}).get("mx", {}).get("records", []),
                             "detections": response.json().get("data", {}).get("report", {}).get("domain_blacklist", {}).get("detections"),
@@ -74,9 +73,8 @@ def urlvoid(indicator):
                             "risk_score": response.json().get("data", {}).get("report", {}).get("risk_score", "").get("result"),
                             "redirection": response.json().get("data", {}).get("report", {}).get("redirection", {}),
                         },
-                    },
-                # fmt: on
-            )
+                    }
+            # fmt: on
         else:
             return no_results_found("url_void")
 

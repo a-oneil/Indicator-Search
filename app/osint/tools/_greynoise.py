@@ -1,4 +1,4 @@
-import requests
+import httpx
 from ... import config
 from ..utils import (
     no_results_found,
@@ -7,7 +7,7 @@ from ..utils import (
 )
 
 
-def greynoise_community(indicator):
+async def greynoise_community(indicator, client: httpx.AsyncClient):
     try:
         if config["GREYNOISE_API_KEY"] == "":
             return missing_apikey("greynoise_community")
@@ -16,7 +16,7 @@ def greynoise_community(indicator):
         if config["GREYNOISE_ENTERPRISE"]:
             return missing_apikey("greynoise_enterprise")
 
-        response = requests.get(
+        response = await client.get(
             f"https://api.greynoise.io/v3/community/{indicator.indicator}",
             headers={
                 "key": config["GREYNOISE_API_KEY"],
@@ -31,35 +31,33 @@ def greynoise_community(indicator):
             return failed_to_run(
                 tool_name="greynoise_community",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
                 error_message=response.json().get("message"),
             )
 
-        return (
-            {
-                "tool": "greynoise_community",
-                "outcome": {
-                    "status": "results_found",
-                    "error_message": None,
-                    "status_code": response.status_code,
-                    "reason": response.reason,
-                },
-                "results": {
-                    "classification": response.json().get("classification"),
-                    "noise": response.json().get("noise"),
-                    "riot": response.json().get("riot"),
-                    "name": response.json().get("name"),
-                    "last_seen": response.json().get("last_seen"),
-                },
+        return {
+            "tool": "greynoise_community",
+            "outcome": {
+                "status": "results_found",
+                "error_message": None,
+                "status_code": response.status_code,
+                "reason": response.reason_phrase,
             },
-        )
+            "results": {
+                "classification": response.json().get("classification"),
+                "noise": response.json().get("noise"),
+                "riot": response.json().get("riot"),
+                "name": response.json().get("name"),
+                "last_seen": response.json().get("last_seen"),
+            },
+        }
     except Exception as error_message:
         return failed_to_run(
             tool_name="greynoise_community", error_message=error_message
         )
 
 
-def greynoise_enterprise(indicator):
+async def greynoise_enterprise(indicator, client: httpx.AsyncClient):
     try:
         if config["GREYNOISE_API_KEY"] == "":
             return missing_apikey("greynoise_enterprise")
@@ -75,7 +73,7 @@ def greynoise_enterprise(indicator):
         ip_address = indicator.indicator
         output = []
 
-        quick_response = requests.get(
+        quick_response = await client.get(
             "https://api.greynoise.io/v2/noise/quick/" + ip_address, headers=headers
         )
 
@@ -86,14 +84,14 @@ def greynoise_enterprise(indicator):
             return failed_to_run(
                 tool_name="greynoise_enterprise",
                 status_code=quick_response.status_code,
-                reason=quick_response.reason,
+                reason=quick_response.reason_phrase,
                 error_message=quick_response.json().get("message"),
             )
 
         context_json = {}
         riot_json = {}
         if quick_response.json()["noise"]:
-            context_response = requests.get(
+            context_response = await client.get(
                 "https://api.greynoise.io/v2/noise/context/" + ip_address,
                 headers=headers,
             )
@@ -102,7 +100,7 @@ def greynoise_enterprise(indicator):
             context_json.pop("cve", None)
 
         if quick_response.json()["riot"]:
-            riot_response = requests.get(
+            riot_response = await client.get(
                 "https://api.greynoise.io/v2/riot/" + ip_address, headers=headers
             )
             riot_json = riot_response.json()
@@ -119,18 +117,16 @@ def greynoise_enterprise(indicator):
         else:
             output = quick_response.json()
 
-        return (
-            {
-                "tool": "greynoise_enterprise",
-                "outcome": {
-                    "status": "results_found",
-                    "error_message": None,
-                    "status_code": quick_response.status_code,
-                    "reason": quick_response.reason,
-                },
-                "results": output,
+        return {
+            "tool": "greynoise_enterprise",
+            "outcome": {
+                "status": "results_found",
+                "error_message": None,
+                "status_code": quick_response.status_code,
+                "reason": quick_response.reason_phrase,
             },
-        )
+            "results": output,
+        }
 
     except Exception as error_message:
         return failed_to_run(

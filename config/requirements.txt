@@ -8,6 +8,7 @@ click==8.1.7
 click-plugins==1.1.1
 colorama==0.4.6
 cryptography==41.0.5
+distro==1.8.0
 dnspython==1.15.0
 dnspython3==1.15.0
 ecdsa==0.18.0
@@ -17,6 +18,8 @@ filelock==3.12.4
 greenlet==3.0.0
 h11==0.14.0
 httpbl==1.0.1
+httpcore==1.0.2
+httpx==0.25.2
 idna==3.4
 ipaddress==1.0.23
 ipwhois==0.10.3
@@ -49,6 +52,7 @@ starlette==0.27.0
 strictyaml==1.7.3
 thefuzz==0.20.0
 tldextract==5.0.1
+tqdm==4.66.1
 typing_extensions==4.8.0
 urllib3==2.0.7
 uvicorn==0.23.2

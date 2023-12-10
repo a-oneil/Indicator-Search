@@ -1,4 +1,4 @@
-import requests
+import httpx
 from ..utils import (
     no_results_found,
     failed_to_run,
@@ -7,18 +7,18 @@ from ..utils import (
 )
 
 
-def wayback_machine(indicator):
+async def wayback_machine(indicator, client: httpx.AsyncClient):
     try:
         if indicator.indicator_type == "fqdn":
-            response = requests.get(
+            response = await client.get(
                 f"http://archive.org/wayback/available?url={indicator.indicator}",
             )
         elif indicator.indicator_type == "email":
-            response = requests.get(
+            response = await client.get(
                 f"http://archive.org/wayback/available?url={convert_email_to_fqdn(indicator.indicator)}"
             )
         elif indicator.indicator_type == "url":
-            response = requests.get(
+            response = await client.get(
                 f"http://archive.org/wayback/available?url={convert_url_to_fqdn(indicator.indicator)}"
             )
         else:
@@ -28,20 +28,21 @@ def wayback_machine(indicator):
             return failed_to_run(
                 tool_name="wayback_machine",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
         if not response.json().get("archived_snapshots"):
             return no_results_found("wayback_machine")
 
-        return (
-            # fmt: off
-                {
-                    "tool": "wayback_machine",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
-                    "results": response.json().get("archived_snapshots", {}).get("closest")
-                },
-            # fmt: on
-        )
+        return {
+            "tool": "wayback_machine",
+            "outcome": {
+                "status": "results_found",
+                "error_message": None,
+                "status_code": response.status_code,
+                "reason": response.reason_phrase,
+            },
+            "results": response.json().get("archived_snapshots", {}).get("closest"),
+        }
     except Exception as error_message:
         return failed_to_run(tool_name="wayback_machine", error_message=error_message)

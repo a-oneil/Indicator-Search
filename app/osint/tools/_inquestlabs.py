@@ -1,11 +1,11 @@
-import requests
+import httpx
 from ..utils import (
     no_results_found,
     failed_to_run,
 )
 
 
-def inquestlabs(indicator):
+async def inquestlabs(indicator, client: httpx.AsyncClient):
     try:
         hash_type = None
         kind = None
@@ -27,14 +27,14 @@ def inquestlabs(indicator):
             kind = "url"
 
         if hash_type:
-            response = requests.get(
+            response = await client.get(
                 f"https://labs.inquest.net/api/dfi/search/hash/{hash_type}",
                 params={"hash": f"{indicator.indicator}"},
                 headers={"accept": "application/json"},
             )
 
         elif kind:
-            response = requests.get(
+            response = await client.get(
                 f"https://labs.inquest.net/api/dfi/search/ioc/{kind}",
                 params={"keyword": f"{indicator.indicator}"},
                 headers={"accept": "application/json"},
@@ -47,7 +47,7 @@ def inquestlabs(indicator):
             return failed_to_run(
                 tool_name="inquest_labs",
                 status_code=response.status_code,
-                reason=response.reason,
+                reason=response.reason_phrase,
             )
 
         if response.json().get("success") is False:
@@ -56,11 +56,10 @@ def inquestlabs(indicator):
         if not response.json().get("data"):
             return no_results_found("inquest_labs")
 
-        return (
-            # fmt: off
-                {
+        # fmt: off
+        return {
                     "tool": "inquest_labs",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
                     "results": {
                         "classification": response.json().get("data", [])[0].get("classification"),
                         "file_type": response.json().get("data", [])[0].get("file_type"),
@@ -71,8 +70,7 @@ def inquestlabs(indicator):
                         "subcategory_url": response.json().get("data", [])[0].get("subcategory_url"),
                         "tags": response.json().get("data", [])[0].get("tags"),
                     },
-                },
-            # fmt: on
-        )
+                }
+        # fmt: on
     except Exception as error_message:
         return failed_to_run(tool_name="inquest_labs", error_message=error_message)
