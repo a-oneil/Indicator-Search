@@ -14,11 +14,11 @@ async def new_indicator_handler(indicator, user, db: Session):
         # fmt: off
         notifications.console_output(f"New indicator added by {user.username}, starting scan for {indicator.indicator_type}: {indicator.indicator}", indicator, "BLUE")
 
-        # Search for indicator in active feedlists
-        indicator.feedlist_results = await feedlists_handler(indicator, db)
-
         # Run the tools based on the indicator type
         indicator.results = await tool_handler(indicator)
+
+        # Search for indicator in active feedlists
+        indicator.feedlist_results = await feedlists_handler(indicator, db)
 
         # Give the results to OpenAI to summarize the results in a paragraph
         indicator.summary = (await get_indicator_summary(indicator.results) if indicator.results else None)
@@ -41,9 +41,13 @@ async def new_indicator_handler(indicator, user, db: Session):
         
         # Console notificiations on progress
         notifications.console_output(f"Indicator was queried against {len(indicator.results)} tools", indicator, "BLUE") if indicator.results else None
+
         notifications.console_output(f"Indicator found in {len(indicator.feedlist_results)} feeds", indicator, "BLUE") if indicator.feedlist_results else None
+
         notifications.console_output(f"Indicator has {len(indicator.tags)} tags", indicator, "BLUE") if indicator.tags else None
+
         notifications.console_output(f"Indicator has {len(indicator.enrichments)} enrichments", indicator, "BLUE") if indicator.enrichments else None
+
         notifications.console_output(f"Indicator has been IOC'd before (IOC ID: {indicator.ioc_id})", indicator, "BLUE") if indicator.ioc_id else None
 
         # Mark indicator as complete, commit to database, notifications of completion
