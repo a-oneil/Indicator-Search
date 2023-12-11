@@ -24,7 +24,7 @@ async def new_indicator_handler(indicator, user, db: Session):
         indicator.summary = (await get_indicator_summary(indicator.results) if indicator.results else None)
 
         # Tagging  using useful info from results
-        indicator.tags = (tagging_handler(indicator) if tagging_handler(indicator) else None)
+        indicator.tags = (tagging_handler(indicator) if tagging_handler(indicator) else {})
 
         # Add external links to indicator
         indicator.external_links = (links_handler(indicator) if links_handler(indicator) else None)
