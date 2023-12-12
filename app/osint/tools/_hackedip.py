@@ -14,6 +14,9 @@ async def hacked_ip(indicator, client: httpx.AsyncClient):
         if response.status_code != 200:
             return failed_to_run(tool_name="hacked_ip")
 
+        if not response.json():
+            return no_results_found("hacked_ip")
+
         results_list = []
         for item in response.json():
             item.remove(indicator.indicator)
