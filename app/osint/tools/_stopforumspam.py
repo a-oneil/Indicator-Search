@@ -17,18 +17,19 @@ async def stopforumspam_email(indicator, client: httpx.AsyncClient):
                 reason=response.reason_phrase,
             )
 
-        return (
-            # fmt: off
-                {
-                    "tool": "stop_forum_spam_email",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
-                    "results": {
-                        "appears": results.get("response", {}).get("appears"),
-                        "frequency": results.get("response", {}).get("frequency")
-                    },
-                },
-            # fmt: on
-        )
+        return {
+            "tool": "stop_forum_spam_email",
+            "outcome": {
+                "status": "results_found",
+                "error_message": None,
+                "status_code": response.status_code,
+                "reason": response.reason_phrase,
+            },
+            "results": {
+                "appears": results.get("response", {}).get("appears"),
+                "frequency": results.get("response", {}).get("frequency"),
+            },
+        }
     except Exception as error_message:
         return failed_to_run(
             tool_name="stop_forum_spam_email", error_message=error_message
