@@ -57,7 +57,7 @@ async def feedlists_handler(indicator, db):
             continue
 
     await client.aclose()
-    return results if results else None
+    return results if results else []
 
 
 async def perform_search(indicator, feedlist, client):

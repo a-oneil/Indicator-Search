@@ -27,10 +27,10 @@ async def new_indicator_handler(indicator, user, db: Session):
         indicator.tags = (tagging_handler(indicator) if tagging_handler(indicator) else {})
 
         # Add external links to indicator
-        indicator.external_links = (links_handler(indicator) if links_handler(indicator) else None)
+        indicator.external_links = (links_handler(indicator) if links_handler(indicator) else {})
 
         # Add external enrichments to results
-        indicator.enrichments = (enrichments_handler(indicator) if enrichments_handler(indicator) else None)
+        indicator.enrichments = (enrichments_handler(indicator) if enrichments_handler(indicator) else {})
 
         # Search if this indicator has been IOC'd before
         indicator.ioc_id = (Iocs.get_ioc_by_indicator(indicator.indicator, db).id if Iocs.get_ioc_by_indicator(indicator.indicator, db) else None)
