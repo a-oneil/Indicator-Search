@@ -3,7 +3,7 @@ import traceback
 from . import enrichments_handler, tagging_handler, links_handler
 from ._gpt import get_indicator_summary
 from .. import notifications
-from ..models import Iocs
+from ..models import Iocs, Indicators
 from sqlalchemy.orm import Session
 from .tools import tool_handler, feedlists_handler
 
@@ -62,6 +62,8 @@ async def new_indicator_handler(indicator, user, db: Session):
         # fmt: on
 
     except Exception as error_message:
+        db.rollback()
+        indicator = Indicators.get_indicator_by_id(indicator.id, db)
         indicator.complete = True
         indicator.results = {
             "tool": "Indicator Search",
