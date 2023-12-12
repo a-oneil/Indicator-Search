@@ -35,7 +35,6 @@ Discover the app's features and capabilities through a live demonstration at [in
 |------|----------------|-------------------|------|
 |Public Feedlists|IP, Hash, FQDN, Any|No, publicly available feedlists||
 |Virus Total|IPv4, IPv6, Hash, FQDN, URL|Yes|[link](https://virustotal.com)|
-|Inquest Labs|IPv4, IPv6, Hash, FQDN, URL, Email|No|[link](https://labs.inquest.net/)|
 |Tweetfeed|IPv4, Hash, FQDN, URL|No|[link](https://tweetfeed.live/)|
 |Maltiverse|IPv4, Hash, FQDN, URL|Yes|[link](https://whatis.maltiverse.com/)|
 |Stop Forum Spam|IPv4, IPv6, Email|No|[link](https://www.stopforumspam.com/)|
@@ -189,16 +188,6 @@ See the [Indicator Search setup guide](./setup.md).
           "alphaMountain.ai": "Suspicious (alphaMountain.ai)"
         }
       }
-    },
-    {
-      "tool": "inquest_labs",
-      "outcome": {
-        "status": "no_results_found",
-        "error_message": null,
-        "status_code": null,
-        "reason": null
-      },
-      "results": {}
     },
     {
       "tool": "shimon",
