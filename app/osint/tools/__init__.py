@@ -3,7 +3,6 @@ import httpx
 from ..utils import sort_results, remove_missingapikey_results
 from ._search_feedlists import feedlists_handler
 from ._ipinfoio import ipinfoio
-from ._ipwhois import search_ipwhois as ipwhois
 from ._ipqualityscore import ipqualityscore_ip, ipqualityscore_phone
 from ._virustotal import (
     virustotal_ip,
@@ -18,7 +17,6 @@ from ._abuseipdb import abuseipdb
 from ._project_honeypot import project_honeypot
 from ._stopforumspam import stopforumspam_ip, stopforumspam_email
 from ._shodan import shodan
-from ._inquestlabs import inquestlabs
 from ._urlvoid import urlvoid
 from ._maltiverse import maltiverse
 from ._urlscanio import urlscanio
@@ -52,7 +50,6 @@ async def tool_handler(indicator):
             virustotal_ip,
             hacked_ip,
             stopforumspam_ip,
-            # inquestlabs,
             maltiverse,
         ]
         func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
@@ -78,7 +75,6 @@ async def tool_handler(indicator):
             virustotal_url,
             urlvoid,
             urlscanio,
-            # inquestlabs,
             maltiverse,
             wayback_machine,
             kickbox_disposible_email,
@@ -94,7 +90,6 @@ async def tool_handler(indicator):
             virustotal_url,
             urlvoid,
             urlscanio,
-            # inquestlabs,
             wayback_machine,
             shimon,
         ]
@@ -108,7 +103,6 @@ async def tool_handler(indicator):
             stopforumspam_email,
             virustotal_domain,
             urlvoid,
-            # inquestlabs,
             wayback_machine,
             kickbox_disposible_email,
         ]
@@ -123,7 +117,6 @@ async def tool_handler(indicator):
             virustotal_hash,
             hybrid_analysis,
             malware_bazzar,
-            # inquestlabs,
             maltiverse,
         ]
         func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
@@ -135,7 +128,6 @@ async def tool_handler(indicator):
             virustotal_hash,
             hybrid_analysis,
             malware_bazzar,
-            # inquestlabs,
             maltiverse,
         ]
         func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
@@ -149,7 +141,6 @@ async def tool_handler(indicator):
             virustotal_hash,
             hybrid_analysis,
             malware_bazzar,
-            # inquestlabs,
             maltiverse,
         ]
         func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
@@ -158,7 +149,6 @@ async def tool_handler(indicator):
     elif indicator.indicator_type == "hash.sha512":
         funcs = [
             virustotal_hash,
-            # inquestlabs,
             maltiverse,
         ]
         func_calls = asyncio.gather(*[func(indicator, client) for func in funcs])
