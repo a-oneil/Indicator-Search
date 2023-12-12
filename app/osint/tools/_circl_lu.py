@@ -44,6 +44,7 @@ async def circl_lu(indicator, client: httpx.AsyncClient):
                 "product_code": response.json().get("ProductCode"),
                 "mimetype": response.json().get("mimetype"),
                 "source": response.json().get("source"),
+                "known_malicious": response.json().get("KnownMalicious"),
             },
         }
     except Exception as error_message:
