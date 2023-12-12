@@ -4,56 +4,35 @@ from .utils import remove_duplicate_keys
 def enrichments_handler(indicator):
     enrichments = {}
 
-    if indicator.indicator_type == "ipv4":
-        enrichments.update(geo_data(indicator))
+    if not indicator.results:
+        return None
 
-    elif indicator.indicator_type == "ipv6":
-        enrichments.update(geo_data(indicator))
+    for tool in indicator.results:
+        if not tool.get("outcome").get("status") == "results_found":
+            continue
 
-    elif indicator.indicator_type == "fqdn":
-        enrichments.update(urlscan(indicator))
+        funcs = [
+            urlscan,
+            geo_data,
+        ]
 
-    elif indicator.indicator_type == "url":
-        enrichments.update(urlscan(indicator))
-
-    elif indicator.indicator_type == "email":
-        pass
-
-    elif indicator.indicator_type == "hash.md5":
-        pass
-
-    elif indicator.indicator_type == "hash.sha1":
-        pass
-
-    elif indicator.indicator_type == "hash.sha256":
-        pass
-
-    elif indicator.indicator_type == "hash.sha512":
-        pass
-
-    elif indicator.indicator_type == "mac":
-        pass
+        for func in funcs:
+            func_output = func(tool)
+            if func_output:
+                enrichments.update(func_output)
 
     return remove_duplicate_keys(enrichments) if enrichments else {}
 
 
-def geo_data(indicator):
-    enrichment = {}
-    for result in indicator.results if indicator.results else []:
-        if result.get("tool") == "ipinfo.io":
-            if result.get("results").get("geolocation"):
-                geo = result.get("results").get("geolocation")
-                geo = geo.split(",")
-                enrichment.update({"geo_data": [geo[0], geo[1]]})
-    return enrichment
+def geo_data(tool):
+    if tool.get("tool") == "ipinfo.io" and tool.get("results").get("geolocation"):
+        geo = tool.get("results").get("geolocation")
+        geo = geo.split(",")
+        return {"geo_data": [geo[0], geo[1]]}
 
 
-def urlscan(indicator):
-    enrichment = {}
-    for result in indicator.results if indicator.results else []:
-        if result.get("tool") == "urlscan.io":
-            if result.get("results").get("last_scan_screenshot"):
-                # fmt: off
-                enrichment.update({"last_scan_screenshot": result.get("results").get("last_scan_screenshot")})
-                # fmt: on
-    return enrichment
+def urlscan(tool):
+    # fmt: off
+    if tool.get("tool") == "urlscan.io" and tool.get("results").get("last_scan_screenshot"):
+        return {"last_scan_screenshot": tool.get("results").get("last_scan_screenshot")}
+    # fmt: on
