@@ -4,8 +4,8 @@
 There are a couple of ways to get started with Indicator Search. Choose the best option that works out for you. 
 
 - The [Docker-compose](./setup.md#docker-compose) option will setup a reverse HTTPs (self-signed) proxy for you.
-- The [Docker image](./setup.md#docker-image) is a little more modular and requires you to put Indicator Search behind a reverse proxy yourself if you'd like encryption.
-- The [Locally accessible only](./setup.md#locally-accessible-only) option is used for devlopement. You can use [VSCode](https://code.visualstudio.com/) to portforward a remote host to your local machine.
+- The [Docker image](./setup.md#docker-image) is a little more modular and requires you to put Indicator Search behind a reverse proxy yourself if you'd like encryption. You'll also need to setup a postgres database.
+- The [Locally accessible only](./setup.md#locally-accessible-only) option is used for devlopement. You can use [VSCode](https://code.visualstudio.com/) to portforward from a remote host to your local machine.
 
 
 ## Docker-compose
