@@ -21,7 +21,7 @@ async def urlscanio(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="urlscan.io",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         if not response.json().get("results"):
@@ -41,7 +41,7 @@ async def urlscanio(indicator, client: httpx.AsyncClient):
         # fmt: off
         return {
                     "tool": "urlscan.io",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": str(response.reason_phrase)},
                     "results": {
                         "last_scan_guid": last_scan_response.json().get("task").get("uuid"),
                         "last_scan_url": last_scan_response.json().get("task").get("reportURL"),

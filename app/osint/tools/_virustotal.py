@@ -31,13 +31,13 @@ async def virustotal_ip(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="virustotal_ip",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         # fmt: off
         return {
                     "tool": "virustotal_ip",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": str(response.reason_phrase)},
                     "results": {
                         "last analysis date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("last_analysis_date")).strftime('%c') if response.json().get("data").get("attributes").get("last_analysis_date") else "",
                         "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
@@ -80,13 +80,13 @@ async def virustotal_domain(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="virustotal_domain",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         # fmt: off
         return {
                     "tool": "virustotal_domain",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": str(response.reason_phrase)},
                     "results": {
                         "whois": response.json().get("data").get("attributes").get("whois"),
                         "creation_date": datetime.datetime.fromtimestamp(response.json().get("data").get("attributes").get("creation_date")).strftime('%c') if response.json().get("data").get("attributes").get("creation_date") else "",
@@ -142,13 +142,13 @@ async def virustotal_url(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="virustotal_url",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         # fmt: off
         return {
                     "tool": "virustotal_url",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": str(response.reason_phrase)},
                     "results": {
                         "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
                         "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),
@@ -191,13 +191,13 @@ async def virustotal_hash(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="virustotal_hash",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         # fmt: off
         return {
                     "tool": "virustotal_hash",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": str(response.reason_phrase)},
                     "results": {
                         "harmless": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("harmless"),
                         "malicious": response.json().get("data").get("attributes").get("last_analysis_stats", {}).get("malicious"),

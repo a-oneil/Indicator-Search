@@ -31,7 +31,7 @@ async def greynoise_community(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="greynoise_community",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
                 error_message=response.json().get("message"),
             )
 
@@ -41,7 +41,7 @@ async def greynoise_community(indicator, client: httpx.AsyncClient):
                 "status": "results_found",
                 "error_message": None,
                 "status_code": response.status_code,
-                "reason": response.reason_phrase,
+                "reason": str(response.reason_phrase),
             },
             "results": {
                 "classification": response.json().get("classification"),
@@ -84,7 +84,7 @@ async def greynoise_enterprise(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="greynoise_enterprise",
                 status_code=quick_response.status_code,
-                reason=quick_response.reason_phrase,
+                reason=quick_str(response.reason_phrase),
                 error_message=quick_response.json().get("message"),
             )
 
@@ -123,7 +123,7 @@ async def greynoise_enterprise(indicator, client: httpx.AsyncClient):
                 "status": "results_found",
                 "error_message": None,
                 "status_code": quick_response.status_code,
-                "reason": quick_response.reason_phrase,
+                "reason": quick_str(response.reason_phrase),
             },
             "results": output,
         }

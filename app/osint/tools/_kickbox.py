@@ -15,7 +15,7 @@ async def kickbox_disposible_email(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="kickbox_disposible_email",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         if not response.json().get("disposable"):
@@ -27,7 +27,7 @@ async def kickbox_disposible_email(indicator, client: httpx.AsyncClient):
                 "status": "results_found",
                 "error_message": None,
                 "status_code": response.status_code,
-                "reason": response.reason_phrase,
+                "reason": str(response.reason_phrase),
             },
             "results": response.json().get("disposable", {}),
         }

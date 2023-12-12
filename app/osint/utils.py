@@ -96,9 +96,9 @@ def failed_to_run(tool_name, error_message=None, status_code=None, reason=None):
         "tool": tool_name,
         "outcome": {
             "status": "failed_to_run",
-            "error_message": error_message,
-            "status_code": status_code,
-            "reason": reason,
+            "error_message": str(error_message),
+            "status_code": int(status_code),
+            "reason": str(reason),
         },
         "results": {},
     }

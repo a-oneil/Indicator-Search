@@ -21,7 +21,7 @@ async def breach_directory(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="breach_directory",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         if not response.json().get("result", []):
@@ -33,7 +33,7 @@ async def breach_directory(indicator, client: httpx.AsyncClient):
                 "status": "results_found",
                 "error_message": None,
                 "status_code": response.status_code,
-                "reason": response.reason_phrase,
+                "reason": str(response.reason_phrase),
             },
             "results": {
                 "found": response.json().get("found", {}),

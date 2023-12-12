@@ -20,13 +20,13 @@ async def emailrepio(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="emailrep.io",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         # fmt: off
         return {
                     "tool": "emailrep.io",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": str(response.reason_phrase)},
                     "results": {
                         "reputation": response.json().get("reputation"),
                         "suspicious": response.json().get("suspicious"),

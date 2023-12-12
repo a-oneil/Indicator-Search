@@ -36,7 +36,7 @@ async def urlvoid(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="url_void",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         blacklists = (
@@ -64,7 +64,7 @@ async def urlvoid(indicator, client: httpx.AsyncClient):
             # fmt: off
             return {
                         "tool": "url_void",
-                        "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
+                        "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": str(response.reason_phrase)},
                         "results": {
                             "dns_records": response.json().get("data", {}).get("report", {}).get("dns_records", {}).get("mx", {}).get("records", []),
                             "detections": response.json().get("data", {}).get("report", {}).get("domain_blacklist", {}).get("detections"),

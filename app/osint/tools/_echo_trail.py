@@ -24,7 +24,7 @@ async def echo_trail(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="echo_trail",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         if "EchoTrail has never observed" in response.json().get("message", ""):
@@ -36,7 +36,7 @@ async def echo_trail(indicator, client: httpx.AsyncClient):
                 "status": "results_found",
                 "error_message": None,
                 "status_code": response.status_code,
-                "reason": response.reason_phrase,
+                "reason": str(response.reason_phrase),
             },
             "results": {
                 "file_name": response.json().get("filenames"),

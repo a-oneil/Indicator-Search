@@ -28,7 +28,7 @@ async def hybrid_analysis(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="hybrid_analysis",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         if not response.json():

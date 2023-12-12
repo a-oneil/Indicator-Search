@@ -19,7 +19,7 @@ async def numverify(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="numverify",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         return {
@@ -28,7 +28,7 @@ async def numverify(indicator, client: httpx.AsyncClient):
                 "status": "results_found",
                 "error_message": None,
                 "status_code": response.status_code,
-                "reason": response.reason_phrase,
+                "reason": str(response.reason_phrase),
             },
             "results": response.json(),
         }

@@ -25,7 +25,7 @@ async def abuseipdb(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="abuseipdb",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         if not response.json().get("data", {}).get("lastReportedAt"):
@@ -37,7 +37,7 @@ async def abuseipdb(indicator, client: httpx.AsyncClient):
                 "status": "results_found",
                 "error_message": None,
                 "status_code": response.status_code,
-                "reason": response.reason_phrase,
+                "reason": str(response.reason_phrase),
             },
             "results": {
                 "reports": response.json().get("data", {}).get("totalReports"),

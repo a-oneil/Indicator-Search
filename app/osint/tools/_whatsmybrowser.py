@@ -29,13 +29,13 @@ async def whatsmybrowser_ua(indicator, client: httpx.AsyncClient):
             return failed_to_run(
                 tool_name="whatsmybrowser_ua",
                 status_code=response.status_code,
-                reason=response.reason_phrase,
+                reason=str(response.reason_phrase),
             )
 
         # fmt: off
         return {
                     "tool": "whatsmybrowser_ua",
-                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": response.reason_phrase},
+                    "outcome": {"status": "results_found", "error_message": None, "status_code": response.status_code, "reason": str(response.reason_phrase)},
                     "results": {
                         "is_abusive": response.json().get("parse", {}).get("is_abusive"),
                         "simple_software_string": response.json().get("parse", {}).get("simple_software_string"),
