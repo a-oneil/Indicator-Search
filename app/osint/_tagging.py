@@ -1,4 +1,4 @@
-from .utils import remove_duplicate_keys
+from .utils import remove_duplicate_keys, top_domains_list
 from datetime import datetime, timedelta
 
 
@@ -12,6 +12,9 @@ def tagging_handler(indicator):
     # Always ran tags, regardless of the tool
     if feedlist_match(indicator):
         tags.update(feedlist_match(indicator))
+
+    if top_2k_domain(indicator):
+        tags.update(top_2k_domain(indicator))
 
     for tool in indicator.results:
         if not tool.get("outcome").get("status") == "results_found":
@@ -70,6 +73,12 @@ def suspicious(tool):
         if suspicious_hits and suspicious_hits >= 3:
             return t
     # fmt: on
+
+
+def top_2k_domain(indicator):
+    t = {"top_2k_domain": True}
+    if indicator.indicator in top_domains_list():
+        return t
 
 
 def new_domain(tool):

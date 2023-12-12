@@ -36,6 +36,11 @@
     {{value}} IP Address
 </a>
 
+{% elif key in ["top_2k_domain"] %}
+<a class="ui label">
+    {{key|snakecase_to_title}}
+</a>
+
 {% elif key == "note" %}
 <a class="ui purple label">
     {{key|snakecase_to_title}}

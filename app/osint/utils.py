@@ -167,3 +167,10 @@ def sort_results(item):
 
 def remove_missingapikey_results(results):
     return [tool for tool in results if tool["outcome"]["status"] != "missing_apikey"]
+
+
+def top_domains_list():
+    with open("./config/top_domains_list.txt", "r") as f:
+        output = f.read().splitlines()
+    f.close()
+    return output

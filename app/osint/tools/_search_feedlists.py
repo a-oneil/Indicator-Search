@@ -7,12 +7,8 @@ from ..utils import (
     get_feedlist_type,
     convert_email_to_fqdn,
     convert_url_to_fqdn,
+    top_domains_list,
 )
-
-
-def load_top_domains_list():
-    with open("./config/top_domains_list.txt", "r") as f:
-        return f.read().splitlines()
 
 
 def set_searchstring(indicator):
@@ -21,13 +17,10 @@ def set_searchstring(indicator):
         output = convert_url_to_fqdn(indicator.indicator)
     elif indicator.indicator_type == "email":
         output = convert_email_to_fqdn(indicator.indicator)
-    for domain in top_domains_list:
+    for domain in top_domains_list():
         if output in domain:
             raise Exception("Indicator is a top domain.")
     return output
-
-
-top_domains_list = load_top_domains_list()
 
 
 async def feedlists_handler(indicator, db):
