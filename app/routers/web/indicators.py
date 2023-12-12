@@ -6,10 +6,10 @@ from fastapi import (
     BackgroundTasks,
     Cookie,
 )
-from ... import templates
+from ... import templates, config
 from ...models import Indicators, Iocs
 from ...database import get_db
-from ...osint import new_indicator_handler, get_type, refang
+from ...osint import new_indicator_handler, get_type, refang, summary_handler
 from ...osint.utils import get_feedlist_type
 from ...authentication import frontend_auth_required
 from sqlalchemy.orm import Session
@@ -35,6 +35,10 @@ def snakecase_to_title(value):
 def searchable(value):
     if get_type(value):
         return True
+
+
+def open_ai_enabled(value):
+    return True if config["OPENAI_ENABLED"] else False
 
 
 def tag_order(tag_dict):
@@ -63,6 +67,7 @@ templates.env.filters["snakecase_to_title"] = snakecase_to_title
 templates.env.filters["searchable"] = searchable
 templates.env.filters["tag_order"] = tag_order
 templates.env.filters["supported_feedlist_types"] = supported_feedlist_types
+templates.env.filters["open_ai_enabled"] = open_ai_enabled
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -199,6 +204,54 @@ def get_indicator_results(
                 "indicator": indicator,
                 "related_indicators": Indicators.get_related_indicators(indicator, db),
                 "ioc": Iocs.get_ioc_by_id(indicator.ioc_id, db),
+            },
+        )
+    else:
+        return templates.TemplateResponse(
+            "home/home.html",
+            {
+                "request": request,
+                "recent_indicators": Indicators.get_recent_scans(db),
+                "_message_header": "Error!",
+                "_message_color": "red",
+                "_message": "Indicator not found!",
+            },
+        )
+
+
+@router.get("/indicator/summarize/{indicator_id}", response_class=HTMLResponse)
+def summarize_indicator(
+    indicator_id: int,
+    background_tasks: BackgroundTasks,
+    request: Request,
+    db: Session = Depends(get_db),
+    access_token: Optional[str] = Cookie(None),
+):
+    user = frontend_auth_required(access_token, db)
+    if not user:
+        return templates.TemplateResponse(
+            "user/login.html",
+            {
+                "request": request,
+                "_message_header": "",
+                "_message_color": "red",
+                "_message": "Please log in!",
+            },
+        )
+    indicator = Indicators.get_indicator_by_id(indicator_id, db)
+
+    if indicator:
+        background_tasks.add_task(summary_handler, indicator, db)
+        return templates.TemplateResponse(
+            "results/results.html",
+            {
+                "request": request,
+                "indicator": indicator,
+                "related_indicators": Indicators.get_related_indicators(indicator, db),
+                "ioc": Iocs.get_ioc_by_id(indicator.ioc_id, db),
+                "_message_header": "",
+                "_message_color": "blue",
+                "_message": "Summarizing results, this may a few seconds.",
             },
         )
     else:

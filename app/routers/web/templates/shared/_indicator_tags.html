@@ -32,7 +32,7 @@
 
 {% elif key == "connection_type" and value in ["Mobile", "Residential", "Proxy", "Tor", "Datacenter"]%}
 <a class="ui label"
-    href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key|snakecase_to_title}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
+    href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
     {{value}} IP Address
 </a>
 
@@ -41,10 +41,12 @@
     {{key|snakecase_to_title}}
 </a>
 
-{% elif key == "note" %}
-<a class="ui purple label">
+{% elif key in ["note", "summary"] %}
+<a class="ui purple label"
+    href="/searches?indicator_id=&indicator_name=&indicator_type=&indicator_tags={{key}}&indicator_notes=&indicator_results=&indicator_ioc_id=">
     {{key|snakecase_to_title}}
 </a>
+
 
 {% else %}
 <a class="ui label"

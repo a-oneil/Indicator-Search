@@ -1,5 +1,30 @@
 from openai import OpenAI
-from .. import config
+from .. import config, notifications
+from ..models import Indicators
+from sqlalchemy.orm import Session
+from sqlalchemy.orm.attributes import flag_modified
+
+
+async def summary_handler(indicator, db: Session):
+    try:
+        # fmt: off
+        notifications.console_output(indicator=indicator, message="Summarizing results", output_color="BLUE")
+        indicator = Indicators.get_indicator_by_id(indicator.id, db)
+        indicator.summary = (await get_indicator_summary(indicator.results) if indicator.results else None)      
+        tags_dict = indicator.tags if indicator.tags else {}
+        tags_dict.update({"summary": True})
+        indicator.tags = tags_dict
+        flag_modified(indicator, "tags")
+        db.add(indicator)
+        db.commit()
+        notifications.console_output(indicator=indicator, message="Summarizing complete", output_color="BLUE")
+        # fmt: on
+    except Exception:
+        db.rollback()
+        indicator = Indicators.get_indicator_by_id(indicator.id, db)
+        indicator.summary = "An error occurred while summarizing the results."
+        db.add(indicator)
+        db.commit()
 
 
 async def get_indicator_summary(results):

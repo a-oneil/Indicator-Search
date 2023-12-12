@@ -1,7 +1,6 @@
 import time
 import traceback
 from . import enrichments_handler, tagging_handler, links_handler
-from ._gpt import get_indicator_summary
 from .. import notifications
 from ..models import Iocs, Indicators
 from sqlalchemy.orm import Session
@@ -19,9 +18,6 @@ async def new_indicator_handler(indicator, user, db: Session):
 
         # Search for indicator in active feedlists
         indicator.feedlist_results = await feedlists_handler(indicator, db)
-
-        # Give the results to OpenAI to summarize the results in a paragraph
-        indicator.summary = (await get_indicator_summary(indicator.results) if indicator.results else None)
 
         # Tagging  using useful info from results
         indicator.tags = (tagging_handler(indicator) if tagging_handler(indicator) else {})
