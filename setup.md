@@ -5,7 +5,7 @@ There are a couple of ways to get started with Indicator Search. Choose the best
 
 - The [Docker-compose](./setup.md#docker-compose) option will setup a reverse HTTPs (self-signed) proxy for you.
 - The [Docker image](./setup.md#docker-image) is a little more modular and requires you to put Indicator Search behind a reverse proxy yourself if you'd like encryption. You'll also need to setup a postgres database.
-- The [Locally accessible only](./setup.md#locally-accessible-only) option is used for devlopement. You can use [VSCode](https://code.visualstudio.com/) to portforward from a remote host to your local machine.
+- The [Locally accessible only](./setup.md#locally-accessible-only) option is used for development. You can use [VSCode](https://code.visualstudio.com/) to portforward from a remote host to your local machine.
 
 
 ## Docker-compose
@@ -45,7 +45,7 @@ Finally, you can spin up an Indicator Search instance using the following comman
 
 ```
 docker run -d \
-    --name "indicator-search \ 
+    --name indicator-search \ 
     -v ~/home/user/.env:/code/config.env \
     -p 80:8000 \
     --restart always \
@@ -70,7 +70,7 @@ The env file located at `./config/.env` is used to configure the application's A
 * `SERVER_ADDRESS`: Required, Used for seeding API calls, slack notifications, and result links.
 * `HOSTNAME`: Required, Docker https proxy, this must be the same as the hostname on the SSL cert. 
 * `USER_INVITE_KEY`: Required, string to hand out to for user registration. This limits the installation of Indicator Search to your team members/people you know.
-* `POSTGRES_HOST`: Required, If running on the same host, this is handled for you. If you want to build an image and push to a container, make sure to set the correct postgres IP and port.
+* `POSTGRES_HOST`: Required, If running on the same host, this is handled for you. Otherwise, make sure to set the correct postgres details.
 * `POSTGRES_PORT`: Required, Default is 5432. 
 * `POSTGRES_USER`: Required, User for postgres.
 * `POSTGRES_PASSWORD`: Required, Password for the postgres user.
@@ -79,7 +79,7 @@ The env file located at `./config/.env` is used to configure the application's A
 * `ENABLE_SLACK`: true/false
 * `DOCKER_REGISTRY`: Dockerregistry.com/user/repo
 * `SLACK_BOT_TOKEN`: Slack bot token with message permissions.
-* `SLACK_CHANNEL`: Channel to post slack updates to.
+* `SLACK_CHANNEL`: Channel to post successful / failed search slack notifications to.
 * `OPENAI_ENABLED`: Experimental feature to add GPT-4 summaries of results as an enrichment. Adds additional processing time to every indicator searched.
 * `OPENAI_MODEL`: Choose the model you would like to create summaries with. [See OpenAI's documentation for available models.](https://platform.openai.com/docs/models)
 
