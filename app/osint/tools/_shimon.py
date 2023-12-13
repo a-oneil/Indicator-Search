@@ -23,6 +23,10 @@ async def shimon(indicator, client: httpx.AsyncClient):
 
         if response.status_code == 500:
             return no_results_found("shimon")
+
+        if response.json().get("detail") == "[Errno -2] Name does not resolve":
+            return no_results_found("shimon")
+
         if response.status_code != 200:
             return failed_to_run(
                 tool_name="shimon",
