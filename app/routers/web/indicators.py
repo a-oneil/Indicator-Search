@@ -251,7 +251,7 @@ def summarize_indicator(
                 "ioc": Iocs.get_ioc_by_id(indicator.ioc_id, db),
                 "_message_header": "",
                 "_message_color": "blue",
-                "_message": "Summarizing results, this may a few seconds.",
+                "_message": "Summarizing results, this may a few seconds. Refresh the page to see the results.",
             },
         )
     else:
