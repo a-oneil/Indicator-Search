@@ -1,3 +1,22 @@
+<script>
+  function GenerateSummary(button) {
+    // Set the desired URL
+    var targetURL = '/indicator/summarize/{{ indicator.id }}';
+
+    // Navigate to the specified URL
+    window.location.href = targetURL;
+
+    // Change button color on click
+    button.style.backgroundColor = '#28ba50'; // Change to the desired color
+
+    // Set a timeout to revert the button color after 1 second (1000 milliseconds)
+    setTimeout(function () {
+      button.style.backgroundColor = ''; // Revert to the original color
+      button.innerHTML = '<i class="fa-solid fa-comment"></i> Generate Summary'; // Revert to the original button text
+    }, 500);
+  }
+</script>
+
 {% if indicator.summary %}
 
 <div class="ui segment">
@@ -9,19 +28,13 @@
 {% elif indicator.summary|open_ai_enabled %}
 <div class="ui segment">
   <p class="ui small header">
-    <i class="fa-solid fa-robot"></i> Indicator Summary
+    <i class="fa-solid fa-robot"></i> Indicator Summary</i>
+
   </p>
-  <div class="ui three column centered grid">
-    <div class="column">
-      <button class="ui blue fluid button" onclick="window.location.href='/indicator/summarize/{{ indicator.id }}'">
-        Generate <i class="fa-solid fa-comment"></i>
-      </button>
-    </div>
-    <div class="column" style="padding-left: 0px">
-      <button class="ui fluid blue button" onclick="window.location.href='/indicator/results/{{ indicator.id }}'">
-        Refresh <i class="fa-solid fa-arrows-rotate"></i>
-      </button>
-    </div>
-  </div>
+  <button class="small ui icon blue left ui button"
+    style="position:absolute; top: 0px; right:-3.5px; width: 150px; border-radius: 0px 4px 0px 4px;"
+    onclick="GenerateSummary(this)">
+    <i class="fa-solid fa-comment"></i> Generate Summary
+  </button>
 </div>
 {% endif %}
