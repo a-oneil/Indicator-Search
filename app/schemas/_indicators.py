@@ -30,3 +30,5 @@ class SearchIndicators(BaseModel):
     indicator_tags: Optional[str] = None
     indicator_notes: Optional[str] = None
     indicator_results: Optional[str] = None
+    indicator_ioc_id: Optional[str] = None
+    created_by: Optional[str] = None
