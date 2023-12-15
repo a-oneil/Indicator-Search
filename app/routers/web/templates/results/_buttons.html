@@ -1,22 +1,28 @@
-<div class="ui three column centered grid">
+<div class="ui four column centered grid">
   <div class="column">
     <button class="ui blue fluid button" onclick="window.location.href='/'">
       Go Back <i class="fa-solid fa-arrow-left"></i>
     </button>
   </div>
-  
-  {# Display the related indicators if any #}
+
+  <div class="column" style="padding-left: 0px">
+    <button class="ui fluid blue button" onclick="window.location.href='/indicator/results/{{ indicator.id }}'">
+      Refresh <i class="fa-solid fa-arrows-rotate"></i>
+    </button>
+  </div>
+
   <div class="column" style="padding-left: 0px">
     {% if indicator.ioc_id %}
-    <button class="ui blue fluid button" onclick="window.location.href='/iocs/delete/results/{{ indicator.id }}'">
+    <button class="ui red fluid button" onclick="window.location.href='/iocs/delete/results/{{ indicator.id }}'">
       Remove Indicator As An IOC [ID-{{indicator.ioc_id}}]
     </button>
     {% else %}
-    <button class="ui red fluid button" onclick="window.location.href='/iocs/mark_ioc/{{ indicator.id }}'">
-      IOC This Indicator
+    <button class="ui blue fluid button" onclick="window.location.href='/iocs/mark_ioc/{{ indicator.id }}'">
+      Mark as IOC
     </button>
     {% endif %}
   </div>
+
   <div class="column" style="padding-left: 0px">
     <button class="ui red fluid button" onclick="window.location.href='/indicator/delete/{{ indicator.id }}'">
       Delete Indicator
