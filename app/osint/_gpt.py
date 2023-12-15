@@ -8,15 +8,25 @@ from sqlalchemy.orm.attributes import flag_modified
 async def summary_handler(indicator, db: Session):
     try:
         # fmt: off
+
         notifications.console_output(indicator=indicator, message="Summarizing results", output_color="BLUE")
         indicator = Indicators.get_indicator_by_id(indicator.id, db)
-        indicator.summary = (await get_indicator_summary(indicator.results) if indicator.results else None)      
+        
+        # Perform summarization
+        summarize_this = indicator.results + (indicator.feedlist_results if indicator.feedlist_results else [])
+
+        indicator.summary = (await get_indicator_summary(summarize_this) if summarize_this else None)  
+        
+        # Add summary tag
         tags_dict = indicator.tags if indicator.tags else {}
         tags_dict.update({"summary": True})
         indicator.tags = tags_dict
         flag_modified(indicator, "tags")
+        
+        # Commit changes
         db.add(indicator)
         db.commit()
+        
         notifications.console_output(indicator=indicator, message="Summarizing complete", output_color="BLUE")
         # fmt: on
     except Exception:
@@ -52,7 +62,7 @@ async def get_indicator_summary(results):
                 },
                 {
                     "role": "user",
-                    "content": f"Without jumping to conclusions on the results, provide a detailed summary in a paragraph. If there are tools with no results, dont mention them in the paragraph at all. {str(results)}",
+                    "content": f"Provide a detailed summary in a paragraph without making premature conclusions about the results. If there are tools with no results, exclude them from the paragraph. If a feedlist match is present, prioritize discussing those results first. The purpose of this is supposed to be a quick, actionable summary. Here is the JSON document: {str(results)}",
                 },
             ],
         )
