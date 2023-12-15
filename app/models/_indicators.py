@@ -10,6 +10,8 @@ from sqlalchemy import (
     ForeignKey,
     and_,
     Numeric,
+    cast,
+    String,
 )
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Session, relationship
@@ -64,23 +66,30 @@ class Indicators(Base):
             except ValueError:
                 raise ValueError("Indicator ID must be a number")
             results = results.filter(cls.id == indicator_id)
+
         if indicator_name:
             results = results.filter(
                 cls.indicator.ilike(f"%{str(indicator_name).strip()}%")
             )
+
         if indicator_type:
             results = results.filter(
                 cls.indicator_type.ilike(f"%{str(indicator_type).strip()}%")
             )
+
         if indicator_tags:
-            results = results.filter(cls.tags.ilike(f"%{str(indicator_tags).strip()}%"))
+            results = results.filter(
+                cast(cls.tags, String).ilike(f"%{str(indicator_tags).strip()}%")
+            )
+
         if indicator_notes:
             results = results.filter(
                 cls.notes.ilike(f"%{str(indicator_notes).strip()}%")
             )
+
         if indicator_results:
             results = results.filter(
-                cls.results.ilike(f"%{str(indicator_results).strip()}%")
+                cast(cls.results, String).ilike(f"%{str(indicator_results).strip()}%")
             )
 
         if indicator_ioc_id:
@@ -92,9 +101,8 @@ class Indicators(Base):
 
         if created_by:
             results = results.filter(cls.username == created_by)
-        query = results.all()
 
-        return query
+        return results.all()
 
     @classmethod
     def get_recent_scans(cls, db: Session):
