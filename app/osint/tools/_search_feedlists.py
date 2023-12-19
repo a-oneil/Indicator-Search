@@ -74,7 +74,10 @@ async def perform_search(indicator, feedlist, client):
                 continue
             match = False
             match_types = []
-            if fuzz.ratio(search_string, line) > 85:
+            if (
+                fuzz.ratio(search_string, line) > 85
+                and not ["ipv4", "ipv6"] in indicator.indicator_type
+            ):
                 match = True
                 match_types.append("fuzzy")
             if search_string in line:
