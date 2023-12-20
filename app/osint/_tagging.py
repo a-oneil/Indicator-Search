@@ -144,15 +144,13 @@ def vt_hits(tool):
 
 
 def country(tool):
-    t = {"country": tool.get("results").get("country")}
     if tool.get("tool") == "ip_quality_score" and tool.get("results").get("country"):
-        return t
+        return {"country": tool.get("results").get("country")}
 
 
 def mobile(tool):
-    t = {"mobile": tool.get("results").get("mobile")}
     if tool.get("tool") == "ip_quality_score" and tool.get("results").get("mobile"):
-        return t
+        return {"mobile": tool.get("results").get("mobile")}
 
 
 def tor(tool):
@@ -161,23 +159,18 @@ def tor(tool):
 
 
 def proxy(tool):
-    t = {"proxy": tool.get("results").get("proxy")}
     if tool.get("tool") == "ip_quality_score" and tool.get("results").get("proxy"):
-        return t
+        return {"proxy": tool.get("results").get("proxy")}
 
 
 def data_breach(tool):
-    t = {"data_breach": True}
-    # fmt: off
     if tool.get("tool") == "breach_directory" and tool.get("results").get("found"):
-        return t
-    # fmt: on
+        return {"data_breach": True}
 
 
 def connection_type(tool):
-    t = {"connection_type": tool.get("results").get("connection_type")}
-    # fmt: off
-    if tool.get("tool") == "ip_quality_score" and tool.get("results").get("connection_type"):
+    if tool.get("tool") == "ip_quality_score" and tool.get("results").get(
+        "connection_type"
+    ):
         if not tool.get("results").get("connection_type") == "Premium required.":
-            return t
-    # fmt: on
+            return {"connection_type": tool.get("results").get("connection_type")}
