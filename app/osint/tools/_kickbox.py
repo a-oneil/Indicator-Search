@@ -29,7 +29,7 @@ async def kickbox_disposible_email(indicator, client: httpx.AsyncClient):
                 "status_code": response.status_code,
                 "reason": str(response.reason_phrase),
             },
-            "results": response.json().get("disposable", {}),
+            "results": {"disposable": response.json().get("disposable")},
         }
 
     except Exception as error_message:
