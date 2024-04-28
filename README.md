@@ -9,11 +9,6 @@ If you're interested in contributing to Indicator Search, feel free to fork this
 ### Disclaimer
 Indicator Search is a tool designed for informational purposes and should be used responsibly and ethically. It relies on APIs and public threat feeds. Please ensure that you comply with the terms of use of the data sources accessed by this tool prior to its usage.
 
-### Demo
-Discover the app's features and capabilities through a live demonstration at [indicatorsearch.app](https://indicatorsearch.app).
-- User: `demo2023`
-- Pass: `demo2023`
-
 ![Home](app/routers/web/static/images/front-page.png)
 
 ## Supported Indicators
